@@ -3,7 +3,7 @@
 @section('content')
     <h3 class="page-title">@lang('quickadmin.businesses.title')</h3>
     
-    {!! Form::model($business, ['method' => 'PUT', 'route' => ['admin.businesses.update', $business->id]]) !!}
+    {{ html()->model($business)->form('PUT', route('admin.businesses.update', $business->id))->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -13,8 +13,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('name', trans('quickadmin.businesses.fields.name').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('name', old('name'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.businesses.fields.name'), 'name')->class('control-label') }}
+                    {{ html()->text('name')->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('name'))
                         <p class="help-block">
@@ -25,8 +25,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('icon', trans('Icon').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('icon', old('icon'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('Icon'), 'icon')->class('control-label') }}
+                    {{ html()->text('icon')->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('icon'))
                         <p class="help-block">
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
-    {!! Form::close() !!}
+    {{ html()->submit(trans('quickadmin.qa_update'))->class('btn btn-danger') }}
+    {{ html()->form()->close() }}
 @stop
 

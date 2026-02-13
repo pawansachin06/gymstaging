@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
-        return view('auth.login');
+        $type = $request->input('t');
+        return view('auth.user_login', [
+            'type' => $type,
+            'joinLink' => '/join',
+        ]);
     }
 
     public function login(Request $request)

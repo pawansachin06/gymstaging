@@ -56,22 +56,20 @@
 
                                 <td>
                                     @can('amenity_delete')
-                                        {!! Form::open(array(
-        'style' => 'display: inline-block;',
-        'method' => 'POST',
-        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-        'route' => ['admin.amenity.restore', $amenity->id])) !!}
-                                        {!! Form::submit(trans('quickadmin.qa_restore'), array('class' => 'btn btn-xs btn-success')) !!}
-                                        {!! Form::close() !!}
+                                        {{ html()->form('POST', route('admin.amenity.restore', $amenity->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_restore'))->class('btn btn-xs btn-success') }}
+                                        {{ html()->form()->close() }}
                                     @endcan
                                     @can('amenity_delete')
-                                        {!! Form::open(array(
-        'style' => 'display: inline-block;',
-        'method' => 'DELETE',
-        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-        'route' => ['admin.amenity.perma_del', $amenity->id])) !!}
-                                        {!! Form::submit(trans('quickadmin.qa_permadel'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                        {!! Form::close() !!}
+                                        {{ html()->form('DELETE', route('admin.amenity.perma_del', $amenity->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_permadel'))->class('btn btn-xs btn-danger') }}
+                                        {{ html()->form()->close() }}
                                     @endcan
                                 </td>
                             @else
@@ -83,13 +81,12 @@
                                         <a href="{{ route('admin.amenity.edit',[$amenity->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('amenity_delete')
-                                        {!! Form::open(array(
-                                                                                'style' => 'display: inline-block;',
-                                                                                'method' => 'DELETE',
-                                                                                'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                                                                'route' => ['admin.amenity.destroy', $amenity->id])) !!}
-                                        {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                        {!! Form::close() !!}
+                                        {{ html()->form('DELETE', route('admin.amenity.destroy', $amenity->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
+                                        {{ html()->form()->close() }}
                                     @endcan
 
                                 </td>
