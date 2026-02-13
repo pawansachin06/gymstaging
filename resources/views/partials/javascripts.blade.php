@@ -28,7 +28,7 @@
 <script src="{{ url('adminlte/js/app.min.js') }}"></script>
 <script src="{{ asset('assets/css/sweetalert.css') }}"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-@include('sweet::alert')
+@include('sweetalert::alert')
 <script>
     window._token = '{{ csrf_token() }}';
 </script>

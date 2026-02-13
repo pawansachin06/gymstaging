@@ -2,12 +2,12 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" href="{{ asset('css/sweetalert.css') }}">
 @section('content')
-@include('sweet::alert')
+@include('sweetalert::alert')
      <section class="innerpage-cont body-cont list-deatils">
         <div class="container mob-hed-radius"> 
                 <div class=""> 
                     <div class="contact-cont acc-deatils-cont"> 
-                        {!! Form::open(['method' => 'POST', 'route' => ['contact.sendmail'] , 'autocomplete' => 'off']) !!}
+                        {{ html()->form('POST', route('contact.sendmail'))->attribute('autocomplete', 'off')->open() }}
                         <div class="login-form-fields contact-mob-pad"> 
                             <div class="row">  
 
@@ -54,7 +54,7 @@
                             
                             </form>
                         </div>
-                        {!! Form::close() !!}
+                        {{ html()->form()->close() }}
                     </div>
                 </div>
         </div>

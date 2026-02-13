@@ -11,12 +11,12 @@
                     </div>
 
                     <div class="search-cont" id="location-form">
-                        {!! Form::open([ 'action' => 'HomePageController@table', 'method' => 'get','id'=>'search-form']) !!}
-                        {!! Form::hidden('pos', old('pos'),['id' => 'position']) !!}
-                        {!! Form::hidden('r', old('r',150)) !!}
+                        {{ html()->form('GET', route('home'))->id('search-form')->open() }}
+                        {{ html()->hidden('pos', old('pos'))->id('position') }}
+                        {{ html()->hidden('r', old('r', 150)) }}
                         <div class="form-row">
                             <div class="input-group col-12 mb-3 location-txt" id="loc-field">
-                                {!! Form::text('s', old('s'), ['class' => 'form-control', 'placeholder' => 'Enter Location or Post Code' ,'id' => 'searchTextField']) !!}
+                                {{ html()->text('s', old('s'))->class('form-control')->placeholder('Enter Location or Post Code')->id('searchTextField') }}
                                 <div class="input-group-append">
                                     <span class="input-group-text" onclick="javascript: getLocation();">
                                         <img src="{{ asset('/gymselect/images/crosshair-target-interface.png') }}" alt="Locate" />
@@ -25,20 +25,20 @@
                             </div>
                             <div class="input-group col-12 mb-3 location-txt" id="name-field" style="display:none;">
 {{--                                    {!! Form::open([ 'action' => 'HomePageController@searchGym', 'method' => 'get','id'=>'search-name']) !!}--}}
-                                {!! Form::text('','', ['class' => 'form-control', 'placeholder' => 'Enter Name' ,'id' => 'searchname','autocomplete'=>'off']) !!}
-{{--                                    {!! Form::close() !!}--}}
+                                {{ html()->text('', '')->class('form-control')->placeholder('Enter Name')->id('searchname')->attribute('autocomplete', 'off') }}
+
                                 <div  class="searchby-name">
                                     <ul id="searchResult"></ul>
                                 </div>
                             </div>
                             <div class="input-group col-12 location-select">
-                                {!! Form::select('b', \App\Models\Business::SEARCH_LABELS, null , ['placeholder' => 'I am looking for...', 'class' => 'niceselect','id'=>'businessField']) !!}
+                                {{ html()->select('b', \App\Models\Business::SEARCH_LABELS, null)->placeholder('I am looking for...')->class('niceselect')->id('businessField') }}
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-info btn-main">Search</button>
                                 </div>
                             </div>
                         </div>
-                        {!! Form::close() !!}
+                        {{ html()->form()->close() }}
                         <br>
                         <div class="select-form text-primary" data-search="name">Search by Name</div>
                         <div class="select-form text-primary search-location-text" data-search="location" style="display: none;">Search by Location</div>

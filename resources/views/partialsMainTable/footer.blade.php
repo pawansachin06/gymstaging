@@ -9,7 +9,7 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.6/jsrender.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
 {{--<script src="{{ mix('/js/mainTable.js')  }}"></script>--}}
-@include('sweet::alert')
+@include('sweetalert::alert')
 <script type="text/javascript">
     $.views.settings.delimiters("[%", "%]");
     $.views.helpers("UUID", function() {
