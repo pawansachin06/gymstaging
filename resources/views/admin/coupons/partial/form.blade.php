@@ -2,12 +2,12 @@
 <div class="panel-heading">
     @if(@$coupon->id) @lang('quickadmin.qa_edit') @else @lang('quickadmin.qa_create') @endif
 </div>
-{!! Form::hidden('coupon_type', @$partner->coupon_type) !!}
+{{ html()->hidden('coupon_type', @$partner->coupon_type) }}
 <div class="panel-body">
     <div class="row">
         <div class="col-xs-4 form-group">
-            {!! Form::label('code', trans('quickadmin.coupons.fields.code').'', ['class' => 'control-label']) !!}
-            {!! Form::text('code', old('code'),['class' => 'form-control', 'placeholder' => '']) !!}
+            {{ html()->label(trans('quickadmin.coupons.fields.code'), 'code')->class('control-label') }}
+            {{ html()->text('code', old('code'))->class('form-control')->placeholder('') }}
             <p class="help-block"></p>
             @if($errors->has('code'))
                 <p class="help-block">
@@ -16,8 +16,8 @@
             @endif
         </div>
         <div class="col-xs-4 form-group">
-                {!! Form::label('Business', trans('quickadmin.coupons.fields.business').'', ['class' => 'control-label']) !!}
-                {!! Form::select('business[]',$businesses, old('business'), ['class' => 'form-control select2' , 'multiple' => "multiple"]) !!}
+                {{ html()->label(trans('quickadmin.coupons.fields.business'), 'business')->class('control-label') }}
+                {{ html()->multiselect('business[]', $businesses, old('business'))->class('form-control select2') }}
                 <p class="help-block"></p>
                 @if($errors->has('business'))
                     <p class="help-block">
@@ -26,7 +26,7 @@
                 @endif
             </div>
             <div class="col-xs-4 form-group">
-                {!! Form::label('Status', trans('quickadmin.coupons.fields.status').'', ['class' => 'control-label']) !!}
+                {{ html()->label(trans('quickadmin.coupons.fields.status'))->class('control-label') }}
                 <br>
                     <label class="switch">
                             <input type="hidden" name="status" value="0">
@@ -45,7 +45,7 @@
             </div>
             @if(@$coupon->coupon_type != "V")
             <div class="col-xs-4 form-group">
-                {!! Form::label('Monthly', trans('quickadmin.coupons.fields.monthly').'', ['class' => 'control-label']) !!}
+                {{ html()->label(trans('quickadmin.coupons.fields.monthly'))->class('control-label') }}
                 <br>
                     <label class="switch">
                             <input type="hidden" name="monthly" value="0">
@@ -64,7 +64,7 @@
             </div>
 
             <div class="col-xs-4 form-group">
-                {!! Form::label('Yearly', trans('quickadmin.coupons.fields.yearly').'', ['class' => 'control-label']) !!}
+                {{ html()->label(trans('quickadmin.coupons.fields.yearly'))->class('control-label') }}
                 <br>
                     <label class="switch">
                             <input type="hidden" name="yearly" value="0">
@@ -84,15 +84,15 @@
             @endif
 
             <div class="col-xs-4 form-group">
-                {!! Form::label('description', trans('quickadmin.listings.fields.description').'', ['class' => 'control-label']) !!}
-                {!! Form::textarea('description', old('description'), ['class' => 'form-control ', 'placeholder' => '', 'rows' => "4"]) !!}
+                {{ html()->label(trans('quickadmin.listings.fields.description'), 'description')->class('control-label') }}
+                {{ html()->textarea('description', old('description'))->class('form-control')->placeholder('')->rows(4) }}
             </div>
         </div>
         @if(@!$coupon->id)
         <div class="row">
                 <div class="col-xs-4 form-group">
-                        {!! Form::label('type', trans('quickadmin.coupons.fields.type').'', ['class' => 'control-label']) !!}
-                        {!! Form::select('type', \App\Models\Coupon::$types, old('type'), ['class' => 'form-control']) !!}
+                        {{ html()->label(trans('quickadmin.coupons.fields.type'), 'type')->class('control-label') }}
+                        {{ html()->select('type', \App\Models\Coupon::$types, old('type'))->class('form-control') }}
                         <p class="help-block"></p>
                         @if($errors->has('type'))
                             <p class="help-block">
@@ -101,8 +101,8 @@
                         @endif
                 </div>
                 <div class="col-xs-4 form-group">
-                        {!! Form::label('value', trans('quickadmin.coupons.fields.value').'', ['class' => 'control-label']) !!}
-                        {!! Form::text('value', old('value'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                        {{ html()->label(trans('quickadmin.coupons.fields.value'), 'value')->class('control-label') }}
+                        {{ html()->text('value', old('value'))->class('form-control')->placeholder('') }}
                         <p class="help-block"></p>
                         @if($errors->has('value'))
                             <p class="help-block">
@@ -112,8 +112,8 @@
                 </div>
        
                 <div class="col-xs-4 form-group">
-                    {!! Form::label('duration', trans('quickadmin.coupons.fields.duration').'', ['class' => 'control-label']) !!}
-                    {!! Form::select('duration', \App\Models\Coupon::$duarationOptions, old('duration'), ['class' => 'form-control']) !!}
+                    {{ html()->label(trans('quickadmin.coupons.fields.duration'), 'duration')->class('control-label') }}
+                    {{ html()->select('duration', \App\Models\Coupon::$duarationOptions, old('duration'))->class('form-control') }}
                     <p class="help-block"></p>
                     @if($errors->has('duration'))
                         <p class="help-block">
@@ -127,8 +127,8 @@
         <div class="row">
             @if(@!$coupon->id)
             <div class="col-xs-4 form-group">
-                {!! Form::label('max_redemptions', trans('quickadmin.coupons.fields.max_redemptions').'', ['class' => 'control-label']) !!}
-                {!! Form::text('max_redemptions', old('max_redemptions'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                {{ html()->label(trans('quickadmin.coupons.fields.max_redemptions'), 'max_redemptions')->class('control-label') }}
+                {{ html()->text('max_redemptions', old('max_redemptions'))->class('form-control')->placeholder('') }}
                 <p class="help-block"></p>
                 @if($errors->has('max_redemptions'))
                     <p class="help-block">
@@ -139,8 +139,8 @@
             @endif
             @if(@!$coupon->id)
             <div class="col-xs-4 form-group">
-                    {!! Form::label('minprice', trans('quickadmin.coupons.fields.minprice').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('minprice', old('minprice'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.coupons.fields.minprice'), 'minprice')->class('control-label') }}
+                    {{ html()->text('minprice', old('minprice'))->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('minprice'))
                         <p class="help-block">
@@ -149,8 +149,8 @@
                     @endif
                 </div>
                 <div class="col-xs-4 form-group">
-                    {!! Form::label('expires_at', trans('quickadmin.coupons.fields.expires_at').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('expires_at', old('expires_at'), ['class' => 'form-control datetimepicker', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.coupons.fields.expires_at'), 'expires_at')->class('control-label') }}
+                    {{ html()->text('expires_at', old('expires_at'))->class('form-control datetimepicker')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('expires_at'))
                         <p class="help-block">
@@ -169,7 +169,7 @@
         </div>
     </div>
     @endif
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
     </div>
        
 @push('scripts')

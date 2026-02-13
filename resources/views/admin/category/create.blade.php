@@ -3,7 +3,7 @@
 @section('content')
 <a href="{{ route('admin.category.index') }}" class="btn btn-default"  style= "float:right">Back To Categories</a>
     <h3 class="page-title">@lang('quickadmin.category.title')</h3>
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.category.store']]) !!}
+    {{ html()->form('POST', route('admin.category.store'))->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -13,8 +13,8 @@
         <div class="panel-body">
                 <div class="row">
                         <div class="col-xs-12 form-group">
-                            {!! Form::label('business_name', trans('quickadmin.category.fields.business_name').'*', ['class' => 'control-label']) !!}
-                            {!! Form::select('business_id', $businesses, old('businesses'), ['class' => 'form-control select2']) !!}
+                            {{ html()->label(trans('quickadmin.category.fields.business_name') . '*', 'business_id')->class('control-label') }}
+                            {{ html()->select('business_id', $businesses, old('business_id'))->class('form-control select2') }}
                             <p class="help-block"></p>
                             @if($errors->has('business_name'))
                                 <p class="help-block">
@@ -25,8 +25,8 @@
                     </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('name', trans('quickadmin.category.fields.name').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('name', old('name'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {{ html()->label(trans('quickadmin.category.fields.name') . '*', 'name')->class('control-label') }}
+                    {{ html()->text('name', old('name'))->class('form-control')->placeholder('')->required() }}
                     <p class="help-block"></p>
                     @if($errors->has('name'))
                         <p class="help-block">
@@ -35,11 +35,11 @@
                     @endif
                 </div>
             </div>
-            {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+            {{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
         </div>
     </div>
 
    
-    {!! Form::close() !!}
+    {{ html()->form()->close() }}
 @stop
 

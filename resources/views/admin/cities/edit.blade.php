@@ -3,7 +3,7 @@
 @section('content')
     <h3 class="page-title">@lang('quickadmin.cities.title')</h3>
     
-    {!! Form::model($city, ['method' => 'PUT', 'route' => ['admin.cities.update', $city->id]]) !!}
+    {{ html()->model($city)->form('PUT', route('admin.cities.update', $city->id))->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -13,8 +13,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('name', trans('quickadmin.cities.fields.name').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('name', old('name'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.cities.fields.name'), 'name')->class('control-label') }}
+                    {{ html()->text('name')->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('name'))
                         <p class="help-block">
@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
-    {!! Form::close() !!}
+    {{ html()->submit(trans('quickadmin.qa_update'))->class('btn btn-danger') }}
+    {{ html()->form()->close() }}
 @stop
 

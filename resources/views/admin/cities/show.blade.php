@@ -62,23 +62,21 @@
                                         </a>@endif</td>
                                 @if( request('show_deleted') == 1 )
                                 <td>
-                                    @can('listing_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'POST',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.listings.restore', $listing->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_restore'), array('class' => 'btn btn-xs btn-success')) !!}
-                                    {!! Form::close() !!}
+                                @can('listing_delete')
+                                    {{ html()->form('POST', route('admin.listings.restore', $listing->id))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_restore'))->class('btn btn-xs btn-success') }}
+                                    {{ html()->form()->close() }}
                                 @endcan
-                                    @can('listing_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.listings.perma_del', $listing->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_permadel'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                @can('listing_delete')
+                                    {{ html()->form('DELETE', route('admin.listings.perma_del', $listing->id))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_permadel'))->class('btn btn-xs btn-danger') }}
+                                    {{ html()->form()->close() }}
                                 @endcan
                                 </td>
                                 @else
@@ -90,13 +88,12 @@
                                     <a href="{{ route('admin.listings.edit',[$listing->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('listing_delete')
-{!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.listings.destroy', $listing->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                        {{ html()->form('DELETE', route('admin.listings.destroy', $listing->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                            {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
+                                        {{ html()->form()->close() }}
                                     @endcan
                                 </td>
                                 @endif
@@ -104,11 +101,7 @@
             @endforeach
         @else
             <tr>
-<<<<<<< HEAD
                 <td colspan="10">@lang('quickadmin.qa_no_entries_in_table')</td>
-=======
-                <td colspan="11">@lang('quickadmin.qa_no_entries_in_table')</td>
->>>>>>> antras dublis
             </tr>
         @endif
     </tbody>

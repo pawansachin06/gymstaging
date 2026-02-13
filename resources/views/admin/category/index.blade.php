@@ -59,23 +59,21 @@
                               
                                 <td>
                                     @can('category_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'POST',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.category.restore', $category->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_restore'), array('class' => 'btn btn-xs btn-success')) !!}
-                                    {!! Form::close() !!}
-                                @endcan
+                                        {{ html()->form('POST', route('admin.category.restore', $category->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                            {{ html()->submit(trans('quickadmin.qa_restore'))->class('btn btn-xs btn-success') }}
+                                        {{ html()->form()->close() }}
+                                    @endcan
                                     @can('category_delete')
-                                    {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.category.perma_del', $category->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_permadel'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
-                                @endcan
+                                        {{ html()->form('DELETE', route('admin.category.perma_del', $category->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                            {{ html()->submit(trans('quickadmin.qa_permadel'))->class('btn btn-xs btn-danger') }}
+                                        {{ html()->form()->close() }}
+                                    @endcan
                                 </td>
                                 @else
                                 <td>
@@ -86,13 +84,12 @@
                                     <a href="{{ route('admin.category.edit',[$category->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('category_delete')
-{!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.category.destroy', $category->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                        {{ html()->form('DELETE', route('admin.category.destroy', $category->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                            {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
+                                        {{ html()->form()->close() }}
                                     @endcan
                                   
                                 </td>
