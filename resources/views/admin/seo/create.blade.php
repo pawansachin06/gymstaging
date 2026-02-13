@@ -4,7 +4,7 @@
 <a href="{{ route('admin.seo.index') }}" class="btn btn-default" style= "float:right">Back to SEO</a>
 
     <h3 class="page-title">@lang('quickadmin.seo.title')</h3>
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.seo.store'], 'files' => true, 'autocomplete' => 'off']) !!}
+    {{ html()->form('POST', route('admin.seo.store'))->acceptsFiles()->attribute('autocomplete', 'off')->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -14,8 +14,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('page_url', trans('quickadmin.seo.fields.page_url').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('page_url', old('page_url'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.seo.fields.page_url'), 'page_url')->class('control-label') }}
+                    {{ html()->text('page_url', old('page_url'))->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('page_url'))
                         <p class="help-block">
@@ -26,8 +26,8 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('meta_title', trans('quickadmin.seo.fields.meta_title').'', ['class' => 'control-label']) !!}
-                    {!! Form::text('meta_title', old('meta_title'), ['class' => 'form-control ', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.seo.fields.meta_title'), 'meta_title')->class('control-label') }}
+                    {{ html()->text('meta_title', old('meta_title'))->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('meta_title'))
                         <p class="help-block">
@@ -36,8 +36,8 @@
                     @endif
                 </div>
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('meta_keyword', trans('quickadmin.seo.fields.meta_keyword').'', ['class' => 'control-label']) !!}
-                    {!! Form::textarea('meta_keyword', old('meta_keyword'), ['class' => 'form-control ', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.seo.fields.meta_keyword'), 'meta_keyword')->class('control-label') }}
+                    {{ html()->textarea('meta_keyword', old('meta_keyword'))->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('meta_keyword'))
                         <p class="help-block">
@@ -46,8 +46,8 @@
                     @endif
                 </div>
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('meta_description', trans('quickadmin.seo.fields.meta_description').'', ['class' => 'control-label']) !!}
-                    {!! Form::textarea('meta_description', old('meta_description'), ['class' => 'form-control ', 'placeholder' => '']) !!}
+                    {{ html()->label(trans('quickadmin.seo.fields.meta_description'), 'meta_description')->class('control-label') }}
+                    {{ html()->textarea('meta_description', old('meta_description'))->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('meta_description'))
                         <p class="help-block">
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
-    {!! Form::close() !!}
+    {{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
+    {{ html()->form()->close() }}
 @stop
 

@@ -2,7 +2,7 @@
 
 @section('content')
     <h3 class="page-title">@lang('quickadmin.roles.title')</h3>
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.roles.store']]) !!}
+    {{ html()->form('POST', route('admin.roles.store'))->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -12,8 +12,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('title', trans('quickadmin.roles.fields.title').'*', ['class' => 'control-label']) !!}
-                    {!! Form::text('title', old('title'), ['class' => 'form-control', 'placeholder' => '', 'required' => '']) !!}
+                    {{ html()->label(trans('quickadmin.roles.fields.title') . '*', 'title')->class('control-label') }}
+                    {{ html()->text('title', old('title'))->class('form-control')->placeholder('')->required() }}
                     <p class="help-block"></p>
                     @if($errors->has('title'))
                         <p class="help-block">
@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
-    {!! Form::close() !!}
+    {{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
+    {{ html()->form()->close() }}
 @stop
 

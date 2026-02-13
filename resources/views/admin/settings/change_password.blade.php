@@ -3,11 +3,11 @@
         <h3 class="page-title">Change password</h3>
             <div class="panel panel-default">
                 <div class="panel-body">    
-                    {!! Form::open(['method' => 'PATCH', 'route' => ['admin.settings.change_password']]) !!}
+                    {{ html()->form('PATCH', route('admin.settings.change_password'))->open() }}
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <label>@lang('quickadmin.qa_current_password')</label>
-                        {!! Form::password('current_password', ['class' => 'form-control', 'placeholder' => '']) !!}
+                        {{ html()->password('current_password')->class('form-control')->placeholder('')->required() }}
                         <p class="help-block"></p>
                         @if($errors->has('current_password'))
                             <p class="help-block">
@@ -17,7 +17,7 @@
                     </div>
                     <div class="form-group">
                         <label>@lang('quickadmin.qa_new_password')</label>
-                        {!! Form::password('new_password', ['class' => 'form-control', 'placeholder' => '']) !!}
+                        {{ html()->password('new_password')->class('form-control')->placeholder('')->required() }}
                         <p class="help-block"></p>
                         @if($errors->has('new_password'))
                             <p class="help-block">
@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group">
                         <label>@lang('quickadmin.qa_password_confirm')</label>
-                        {!! Form::password('new_password_confirm', ['class' => 'form-control', 'placeholder' => '']) !!}
+                        {{ html()->password('new_password_confirm')->class('form-control')->placeholder('')->required() }}
                         <p class="help-block"></p>
                         @if($errors->has('new_password_confirm'))
                             <p class="help-block">
@@ -38,6 +38,7 @@
                     <p>
                         <button type="submit" class="btn btn-danger">@lang('quickadmin.qa_save')</button>
                     </p>
+                    {{ html()->form()->close() }}
                 </div>
             </div>
 

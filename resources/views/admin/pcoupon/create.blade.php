@@ -3,7 +3,7 @@
 @section('content')
 <a href="{{ route('admin.pcoupon.index') }}" class="btn btn-default"  style= "float:right">Back To Coupons</a>
     <h3 class="page-title">@lang('quickadmin.coupons.title')</h3>
-    {!! Form::open(['method' => 'POST', 'route' => ['admin.pcoupon.store']]) !!}
+    {{ html()->form('POST', route('admin.pcoupon.store'))->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -13,8 +13,8 @@
         <div class="panel-body">
                     <div class="row">
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('name', trans('quickadmin.pcoupon.fields.name').'*', ['class' => 'control-label']) !!}
-                            {!! Form::text('name', old('name'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                            {{ html()->label(trans('quickadmin.pcoupon.fields.name') . '*', 'name')->class('control-label') }}
+                            {{ html()->text('name', old('name'))->class('form-control')->placeholder('') }}
                             <p class="help-block"></p>
                             @if($errors->has('name'))
                                 <p class="help-block">
@@ -23,8 +23,8 @@
                             @endif
                         </div>
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('name', trans('quickadmin.pcoupon.fields.code').'*', ['class' => 'control-label']) !!}
-                            {!! Form::text('code', old('code'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                            {{ html()->label(trans('quickadmin.pcoupon.fields.code') . '*', 'code')->class('control-label') }}
+                            {{ html()->text('code', old('code'))->class('form-control')->placeholder('') }}
                             <p class="help-block"></p>
                             @if($errors->has('code'))
                                 <p class="help-block">
@@ -36,13 +36,13 @@
                    
                     <div class="row">
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('type', trans('quickadmin.pcoupon.fields.type').'', ['class' => 'control-label']) !!}
-                            {!! Form::select('type', \App\Models\Couponproducts::$types, old('type'), ['class' => 'form-control']) !!}
+                            {{ html()->label(trans('quickadmin.pcoupon.fields.type'), 'type')->class('control-label') }}
+                            {{ html()->select('type', \App\Models\Couponproducts::$types, old('type'))->class('form-control') }}
                             <p class="help-block"></p>
                         </div>
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('value', trans('quickadmin.pcoupon.fields.value').'*', ['class' => 'control-label']) !!}
-                            {!! Form::text('value', old('value'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                            {{ html()->label(trans('quickadmin.pcoupon.fields.value') . '*', 'value')->class('control-label') }}
+                            {{ html()->text('value', old('value'))->class('form-control')->placeholder('') }}
                             <p class="help-block"></p>
                             @if($errors->has('value'))
                                 <p class="help-block">
@@ -53,8 +53,8 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('max_red', trans('quickadmin.pcoupon.fields.max_red').'*', ['class' => 'control-label']) !!}
-                            {!! Form::number('maximum_redemptions', old('maximum_redemptions'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                            {{ html()->label(trans('quickadmin.pcoupon.fields.max_red') . '*', 'maximum_redemptions')->class('control-label') }}
+                            {{ html()->number('maximum_redemptions', old('maximum_redemptions'))->class('form-control')->placeholder('') }}
                             <p class="help-block"></p>
                             @if($errors->has('maximum_redemptions'))
                                 <p class="help-block">
@@ -63,7 +63,7 @@
                             @endif
                         </div>
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('Status', trans('quickadmin.pcoupon.fields.status').'', ['class' => 'control-label']) !!}
+                            {{ html()->label(trans('quickadmin.pcoupon.fields.status'))->class('control-label') }}
                             <br>
                                <label class="switch">
                                         <input type="hidden" name="status" value="0">
@@ -79,8 +79,8 @@
                     </div>
                     <div class="row">
                         <div class="col-xs-12 form-group">
-                            {!! Form::label('product_id', trans('quickadmin.pcoupon.fields.select_product').'*', ['class' => 'control-label']) !!}
-                            {!! Form::select('product_id[]', $products, old('product_id'), ['class' => 'form-control select2','multiple' => 'multiple']) !!}
+                            {{ html()->label(trans('quickadmin.pcoupon.fields.select_product') . '*', 'product_id')->class('control-label') }}
+                            {{ html()->multiselect('product_id[]', $products, old('product_id'))->class('form-control select2') }}
                             <p class="help-block"></p>
                             @if($errors->has('product_id'))
                                 <p class="help-block">
@@ -89,12 +89,12 @@
                             @endif
                         </div>
                     </div>
-            {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+            {{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
         </div>
     </div>
 
    
-    {!! Form::close() !!}
+    {{ html()->form()->close() }}
 @stop
 
 <style>

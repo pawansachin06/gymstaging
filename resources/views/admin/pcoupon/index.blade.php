@@ -62,22 +62,20 @@
                                 @if( request('show_deleted') == 1 )
                                 <td>
                                     @can('pcoupon_delete')
-                                                                        {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'POST',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.pcoupon.restore', $coupon->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_restore'), array('class' => 'btn btn-xs btn-success')) !!}
-                                    {!! Form::close() !!}
+                                    {{ html()->form('POST', route('admin.pcoupon.restore', $coupon->id))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_restore'))->class('btn btn-xs btn-success') }}
+                                    {{ html()->form()->close() }}
                                 @endcan
                                     @can('pcoupon_delete')
-                                    {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.pcoupon.perma_del', $coupon->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_permadel'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                    {{ html()->form('DELETE', route('admin.pcoupon.perma_del', $coupon->id))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_permadel'))->class('btn btn-xs btn-danger') }}
+                                    {{ html()->form()->close() }}
                                 @endcan
                                 </td>
                                 @else
@@ -89,13 +87,12 @@
                                     <a href="{{ route('admin.pcoupon.edit',[$coupon->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     @endcan
                                     @can('pcoupon_delete')
-{!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.pcoupon.destroy', $coupon->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                        {{ html()->form('DELETE', route('admin.pcoupon.destroy', $coupon->id))
+                                            ->style('display: inline-block;')
+                                            ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                            ->open() }}
+                                            {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
+                                        {{ html()->form()->close() }}
                                     @endcan
                                   
                                 </td>

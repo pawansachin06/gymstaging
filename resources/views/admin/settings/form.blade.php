@@ -2,15 +2,15 @@
 
 @section('content')
     <h4 class="card-title">{{ \Illuminate\Support\Str::title(str_replace('-',' ', $slug)) }}</h4>
-    {!! Form::open(array('url' => request()->fullUrl(), 'class' => 'form-horizontal m-t-40','files'=>true)) !!}
+    {{ html()->form('POST', request()->fullUrl())->class('form-horizontal m-t-40')->acceptsFiles()->open() }}
     @includeIf('admin.settings.partials.'.$slug)
 
     <div class="form-group row">
         <div class="offset-2 col-sm-10">
-            {!! Form::submit( "Save", ['class' => 'btn btn-success']) !!}
+            {{ html()->submit("Save")->class('btn btn-success') }}
         </div>
     </div>
-    {!! Form::close() !!}
+    {{ html()->form()->close() }}
 @endsection
 
 @push('scripts')

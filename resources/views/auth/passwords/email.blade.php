@@ -23,17 +23,17 @@
                                     </ul>
                                 </div>
                             @endif
-                            {!! Form::open(['method' => 'POST', 'url' => 'password/email']) !!}
+                            {{ html()->form('POST', url('password/email'))->open() }}
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <div class="form-group">
                                 <label>@lang('quickadmin.qa_email')</label>
-                                {!! Form::email('email','', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                {{ html()->email('email')->class('form-control')->placeholder('')->required() }}
                             </div>
                             <p>
                                 <button type="submit"
                                         class="btn btn-block btn1">@lang('quickadmin.qa_reset_password')</button>
                             </p>
-                            {!! Form::close() !!}
+                            {{ html()->form()->close() }}
                         </div>
                     </div>
                 </div>

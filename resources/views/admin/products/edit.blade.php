@@ -5,7 +5,7 @@
 <a href="{{ route('admin.products.index') }}" class="btn btn-default"  style= "float:right">Back To Product Coupon</a>
     <h3 class="page-title">@lang('quickadmin.products.title')</h3>
     
-    {!! Form::model($products, ['method' => 'PUT', 'route' => ['admin.products.update', $products->id],'enctype' => 'multipart/form-data']) !!}
+    {{ html()->model($products)->form('PUT', route('admin.products.update', $products->id))->acceptsFiles()->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -16,8 +16,8 @@
                     <div class="row">
                         <input type="hidden" name="product_id" value="{{$products->id}}">
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('name', trans('quickadmin.products.fields.name').'*', ['class' => 'control-label']) !!}
-                            {!! Form::text('name', old('name'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                            {{ html()->label(trans('quickadmin.products.fields.name') . '*', 'name')->class('control-label') }}
+                            {{ html()->text('name')->class('form-control')->placeholder('') }}
                             <p class="help-block"></p>
                             @if($errors->has('name'))
                                 <p class="help-block">
@@ -26,8 +26,8 @@
                             @endif
                         </div>
                         <div class="col-xs-6 form-group">
-                            {!! Form::label('price', trans('quickadmin.products.fields.price').'*', ['class' => 'control-label']) !!}
-                            {!! Form::text('price', old('price'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                            {{ html()->label(trans('quickadmin.products.fields.price') . '*', 'price')->class('control-label') }}
+                            {{ html()->text('price')->class('form-control')->placeholder('') }}
                             <p class="help-block"></p>
                             @if($errors->has('price'))
                                 <p class="help-block">
@@ -39,8 +39,7 @@
 
                     <div class="row">
                       <div class="col-xs-12 form-group">
-                        {!! Form::label('product_images', trans('quickadmin.products.fields.product_images').'*', ['class' => 'control-label']) !!}
-                        
+                        {{ html()->label(trans('quickadmin.products.fields.product_images') . '*')->class('control-label') }}
                         <input class="form-control" type="file" id="image" name="image[]" multiple>
                         <div id="removeImagesData"></div>
                       </div>
@@ -64,7 +63,7 @@
 
                     <div class="row">
                       <div class="col-xs-12 form-group">
-                        {!! Form::label('product_faq', trans('quickadmin.products.fields.product_faq').'*', ['class' => 'control-label']) !!}
+                        {{ html()->label(trans('quickadmin.products.fields.product_faq') . '*')->class('control-label') }}
                       </div>
                     </div>
                     @if(!$products->productfaqs->isEmpty())
@@ -90,8 +89,8 @@
                     <div class="row">
                       <div class="col-xs-12 form-group">
                         
-                            {!! Form::label('description', trans('quickadmin.products.fields.product_description').'*', ['class' => 'control-label']) !!}
-                            {{ Form::textarea('description', old('description'),  ['class' => 'form-control summernote','rows'=>1]) }}
+                            {{ html()->label(trans('quickadmin.products.fields.product_description') . '*', 'description')->class('control-label') }}
+                            {{ html()->textarea('description')->class('form-control summernote')->rows(1) }}
                             <p class="help-block"></p>
                             @if($errors->has('description'))
                                 <p class="help-block">
@@ -101,11 +100,11 @@
                        </div>
                     </div>
                     
-            {!! Form::submit(trans('quickadmin.qa_update'), ['class' => 'btn btn-danger']) !!}
+            {{ html()->submit(trans('quickadmin.qa_update'))->class('btn btn-danger') }}
         </div>
     </div>
 
-    {!! Form::close() !!}
+    {{ html()->form()->close() }}
 
     
 @stop
