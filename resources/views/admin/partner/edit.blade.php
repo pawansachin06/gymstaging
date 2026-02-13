@@ -3,7 +3,7 @@
 @section('content')
 <a href="{{ route('admin.partner.index') }}" class="btn btn-default"  style= "float:right">Back To Partners</a>
     <h3 class="page-title">Partner</h3>
-    {!! Form::open(['method' => 'PUT', 'route' => ['admin.partner.update',$partner->id], 'files' => true, 'autocomplete' => 'off']) !!}
+    {{ html()->model($partner)->form('PUT', route('admin.partner.update', $partner->id))->acceptsFiles()->attribute('autocomplete', 'off')->open() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -13,8 +13,8 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-6 form-group">
-                    {!! Form::label('name','Name', ['class' => 'control-label']) !!}
-                    {!! Form::text('name', @$partner->name, ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {{ html()->label('Name', 'name')->class('control-label') }}
+                    {{ html()->text('name')->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('name'))
                         <p class="help-block">
@@ -23,8 +23,8 @@
                     @endif
                 </div>
                 <div class="col-xs-6 form-group">
-                    {!! Form::label('link','Website Link', ['class' => 'control-label']) !!}
-                    {!! Form::text('link',@$partner->link, ['class' => 'form-control', 'placeholder' => '']) !!}
+                    {{ html()->label('Website Link', 'link')->class('control-label') }}
+                    {{ html()->text('link')->class('form-control')->placeholder('') }}
                     <p class="help-block"></p>
                     @if($errors->has('link'))
                         <p class="help-block">
@@ -35,9 +35,9 @@
             </div>
             <div class="row">
                 <div class="col-xs-6 form-group">
-                    {!! Form::label('logo','Partner Logo', ['class' => 'control-label']) !!}
-                    {!! Form::hidden('logo', old('logo')) !!}
-                    {!! Form::file('logo', ['class' => 'form-control', 'style' => 'margin-top: 4px;']) !!}
+                    {{ html()->label('Partner Logo', 'logo')->class('control-label') }}
+                    {{ html()->hidden('logo', old('logo')) }}
+                    {{ html()->file('logo')->class('form-control')->style('margin-top: 4px;') }}
                     <p><img src="{{{$thumb}}}" width='36'></p>
                     <p class="help-block"></p>
                     @if($errors->has('logo'))
@@ -47,8 +47,8 @@
                     @endif
                 </div>
                 <div class="col-xs-6 form-group">
-                    {!! Form::label('about_us','About Us', ['class' => 'control-label']) !!}
-                    {!! Form::textarea('about_us', @$partner->about_us, ['class' => 'form-control', 'style' => 'margin-top: 4px;']) !!}
+                    {{ html()->label('About Us', 'about_us')->class('control-label') }}
+                    {{ html()->textarea('about_us')->class('form-control')->style('margin-top: 4px;') }}
                     @if($errors->has('about_us'))
                         <p class="help-block">
                             {{ $errors->first('about_us') }}
@@ -60,6 +60,6 @@
     </div>
 
 
-{!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
-{!! Form::close() !!}
+{{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
+{{ html()->form()->close() }}
 @stop

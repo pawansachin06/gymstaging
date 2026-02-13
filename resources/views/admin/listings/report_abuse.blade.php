@@ -27,21 +27,19 @@
                                 <td>{{ $report->review->message}}</td>
                                 <td>
                                 @can('listing_delete')
-                                {!! Form::open(array(
-                                'style' => 'display: inline-block;',
-                                'method' => 'DELETE',
-                                'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                'route' => ['admin.report.delete', $report->id,'review'])) !!}
-                                {!! Form::submit('Delete Review', array('class' => 'btn btn-xs btn-danger')) !!}
-                                {!! Form::close() !!}
+                                    {{ html()->form('DELETE', route('admin.report.delete', [$report->id, 'review']))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit('Delete Review')->class('btn btn-xs btn-danger') }}
+                                    {{ html()->form()->close() }}
 
-                                {!! Form::open(array(
-                                    'style' => 'display: inline-block;',
-                                    'method' => 'DELETE',
-                                    'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                    'route' => ['admin.report.delete', $report->id,'report'])) !!}
-                                    {!! Form::submit('Close Report', array('class' => 'btn btn-xs btn-primary')) !!}
-                                    {!! Form::close() !!}
+                                    {{ html()->form('DELETE', route('admin.report.delete', [$report->id, 'report']))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit('Close Report')->class('btn btn-xs btn-primary') }}
+                                    {{ html()->form()->close() }}
                                 @endcan
                                 </td>
                             </tr>

@@ -33,13 +33,12 @@
                                 <td>
                                     <a href="{{ route('admin.partner.show',[$partner->id]) }}" class="btn btn-xs btn-primary">@lang('quickadmin.qa_view')</a>
                                     <a href="{{ route('admin.partner.edit',[$partner->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
-                                    {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.partner.destroy', $partner->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}
-                                    {!! Form::close() !!}
+                                    {{ html()->form('DELETE', route('admin.partner.destroy', $partner->id))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
+                                    {{ html()->form()->close() }}
                                 </td>
                             </tr>
                         @endforeach

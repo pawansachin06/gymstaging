@@ -4,29 +4,29 @@
     <a href="{{ route('admin.listings.index') }}" style="float:right" class="btn btn-default">@lang('quickadmin.qa_back_to_listing')</a>
     <h3 class="page-title">Review Listings</h3>
 
-    {!! Form::open(['method' => 'POST', 'id' => 'reviewForm' , 'route' => ['admin.listings.reviewstore', $id], 'autocomplete' => 'off']) !!}
+    {{ html()->form('POST', route('admin.listings.reviewstore', $id))->id('reviewForm')->attribute('autocomplete', 'off')->open() }}
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 form-group">
                     <label>User Name </label>&nbsp;&nbsp;<i class="help-inline">By Default Logged User Name</i>
-                    {!! Form::text('user_name', old('user_name') , ['class'=>'form-control','placeholder' => auth()->user()->name]) !!}
+                    {{ html()->text('user_name', old('user_name'))->class('form-control')->placeholder(auth()->user()->name) }}
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('ratings', trans('quickadmin.listings.fields.ratings').'', ['class' => 'control-label']) !!}&nbsp;
+                    {{ html()->label(trans('quickadmin.listings.fields.ratings'))->class('control-label') }}&nbsp;
                     <div class='rating'></div>
-                    {!! Form::hidden('rating', old('rating') , ['id' => 'rating']) !!}
+                    {{ html()->hidden('rating', old('rating'))->id('rating') }}
                 </div>
             </div>
             <div class="row star-field">
                 <div class="col-xs-12 form-group">
-                    {!! Form::radio('brand', 'F',old('brand')) !!}
+                    {{ html()->radio('brand', old('brand') === 'F', 'F') }}
                     <img src="{{ asset('/images/Facebook.png')  }}" alt=" " class="review-web-icon"> &nbsp;&nbsp;
-                    {!! Form::radio('brand', 'G', old('brand') ) !!}
+                    {{ html()->radio('brand', old('brand') === 'G', 'G') }}
                     <img src="{{ asset('/images/google.png')  }}" alt=" " class="review-web-icon">&nbsp;&nbsp;&nbsp;
-                    {!! Form::radio('brand', 'F',old('brand')) !!}
+                    {{ html()->radio('brand', old('brand') === 'D', 'D') }}
                     <img src="{{ asset('/images/IMG_0585.PNG')  }}" alt=" " class="review-web-icon">&nbsp;&nbsp;
 
                 </div>
@@ -34,14 +34,14 @@
 
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    {!! Form::label('message', trans('quickadmin.listings.fields.message').'', ['class' => 'control-label']) !!}
-                    {!! Form::textarea('message', old('message'), ['class' => 'form-control mention']) !!}
+                    {{ html()->label(trans('quickadmin.listings.fields.message'), 'message')->class('control-label') }}
+                    {{ html()->textarea('message', old('message'))->class('form-control mention') }}
                 </div>
             </div>
-            {!! Form::submit('Send', ['class' => 'btn btn-danger' , 'style' => 'margin-left:auto;margin-right:auto;display:block;margin-top:2%;margin-bottom:0%']) !!}
+            {{ html()->submit('Send')->class('btn btn-danger')->style('margin-left:auto; margin-right:auto; display:block; margin-top:2%; margin-bottom:0%') }}
         </div>
     </div>
-    {!! Form::close() !!}
+    {{ html()->form()->close() }}
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -78,14 +78,13 @@
                                     </span>
                                 </div>
                                 <div class='rating-brand-group' data-id="{{$review->id}}">
-                                    {!! Form::radio("brand_$review->id",  'F' , $review->brand=='F', ['class' => 'brand' ]) !!}
+                                    {{ html()->radio("brand_$review->id", $review->brand == 'F', 'F')->class('brand') }}
                                     <img src="{{ asset('/images/Facebook.png')  }}" alt=" " class="review-web-icon"> &nbsp;&nbsp;
 
-                                    {!! Form::radio("brand_$review->id", 'G', $review->brand=='G', ['class' => 'brand' ] ) !!}
+                                    {{ html()->radio("brand_$review->id", $review->brand == 'G', 'G')->class('brand') }}
                                     <img src="{{ asset('/images/google.png')  }}" alt=" " class="review-web-icon"> &nbsp;&nbsp;&nbsp;
 
-
-                                    {!! Form::radio("brand_$review->id", 'D', $review->brand=='D' ,['class' => 'brand' ]) !!}
+                                    {{ html()->radio("brand_$review->id", $review->brand == 'D', 'D')->class('brand') }}
                                     <img src="{{ asset('/images/IMG_0585.PNG')  }}" alt=" " class="review-web-icon">  &nbsp;&nbsp;
                                 </div>
                                 <div class="timeline-footer"></div>

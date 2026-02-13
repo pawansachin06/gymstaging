@@ -6,8 +6,8 @@
 <div class="panel-body">
     <div class="row">
         <div class="col-xs-12 form-group">
-            {!! Form::label('Question', trans('quickadmin.faqs.fields.question').'', ['class' => 'control-label']) !!}
-            {!! Form::textarea('question', old('question'), ['class' => 'form-control ', 'placeholder' => '', 'rows' => "4"]) !!}
+            {{ html()->label(trans('quickadmin.faqs.fields.question'), 'question')->class('control-label') }}
+            {{ html()->textarea('question', old('question'))->class('form-control')->placeholder('')->rows(4) }}
             <p class="help-block"></p>
             @if($errors->has('question'))
                 <p class="help-block">
@@ -16,8 +16,8 @@
             @endif
         </div>
         <div class="col-xs-12 form-group">
-            {!! Form::label('Answer', trans('quickadmin.faqs.fields.answer').'', ['class' => 'control-label']) !!}
-            {!! Form::textarea('answer', old('answer'), ['class' => 'form-control ', 'placeholder' => '', 'rows' => "4"]) !!}
+            {{ html()->label(trans('quickadmin.faqs.fields.answer'), 'answer')->class('control-label') }}
+            {{ html()->textarea('answer', old('answer'))->class('form-control')->placeholder('')->rows(4) }}
             <p class="help-block"></p>
             @if($errors->has('answer'))
                 <p class="help-block">
@@ -26,7 +26,7 @@
             @endif
         </div>
         <div class="col-xs-4 form-group">
-            {!! Form::label('Status', trans('quickadmin.coupons.fields.status').'', ['class' => 'control-label']) !!}
+            {{ html()->label(trans('quickadmin.coupons.fields.status'))->class('control-label') }}
             <br>
                 <label class="switch">
                         <input type="hidden" name="status" value="0">
@@ -44,7 +44,7 @@
             @endif
         </div>
     </div>
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
 </div>
        
 @push('scripts')

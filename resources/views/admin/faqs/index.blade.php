@@ -39,13 +39,12 @@
                                 <td><a href="{{ route('admin.faq.edit',$faq->id) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>&nbsp
                                 @endcan
                                 @can('faq_delete')
-                                    {!! Form::open(array(
-                                        'style' => 'display: inline-block;',
-                                        'method' => 'DELETE',
-                                        'onsubmit' => "return confirm('".trans("quickadmin.qa_are_you_sure")."');",
-                                        'route' => ['admin.faq.destroy', $faq->id])) !!}
-                                    {!! Form::submit(trans('quickadmin.qa_delete'), array('class' => 'btn btn-xs btn-danger')) !!}</td>
-                                    {!! Form::close() !!}
+                                    {{ html()->form('DELETE', route('admin.faq.destroy', $faq->id))
+                                        ->style('display: inline-block;')
+                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->open() }}
+                                        {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
+                                    {{ html()->form()->close() }}
                                 @endcan
                             </tr>
                         @endforeach
