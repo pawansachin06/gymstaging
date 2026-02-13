@@ -58,11 +58,11 @@
                                     </ul>
                                     <div class="add-paymethod">
                                         <a href="javascript:void(0)">+ Add payment method</a>
-                                        {!! Form::open(['method' => 'POST', 'route' => ['account.savecard']]) !!}
+                                        {{ html()->form('POST', route('account.savecard'))->open() }}
                                         <div id="add-new-card"></div>
                                         <button class="btn btn2 btn-block btn-save-card border-radius">Save Card</button>
                                         <input type="hidden" name="paymentMethod">
-                                        {!! Form::close() !!}
+                                        {{ html()->form()->close() }}
                                     </div>
                                     <div class="card invoice-card">
                                         <div class="card-header">View billing history</div>

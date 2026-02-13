@@ -65,7 +65,7 @@
             </div>
             <div class="row justify-content-md-center">
                 <div class="col-12 col-md-12 col-lg-12 col-xl-8 mb-1">
-                    {!! Form::open(['method' => 'POST', 'route' => ['business.boosted',$listing->id],'class'=>'verify-form']) !!}
+                    {{ html()->form('POST', route('business.boosted', $listing->id))->class('verify-form')->open() }}
 
                     <div class="row my-3">
                         <div class="col-12 col-md-12 col-lg-7 col-xl-7">
@@ -91,7 +91,7 @@
 
                             </div>
 
-                            {!! Form::close() !!}
+                            {{ html()->form()->close() }}
                         </div>
 
                     </div>

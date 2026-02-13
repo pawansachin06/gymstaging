@@ -49,9 +49,9 @@
     </div>
 </div>
 
-{!! Form::open(['route' => 'auth.logout', 'style' => 'display:none;', 'id' => 'logout']) !!}
+{{ html()->form('POST', route('auth.logout'))->id('logout')->style('display: none;')->open() }}
 <button type="submit">Logout</button>
-{!! Form::close() !!}
+{{ html()->form()->close() }}
 
 @include('partials.javascripts')
 @stack('scripts')

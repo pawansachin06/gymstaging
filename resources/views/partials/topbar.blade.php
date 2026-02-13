@@ -66,8 +66,8 @@
         </div>
     </nav>
 </header>
-{!! Form::open(['route' => 'auth.logout', 'style' => 'display:none;', 'id' => 'logout']) !!}
+{{ html()->form('POST', route('auth.logout'))->id('logout')->style('display: none;')->open() }}
 <button type="submit">@lang('quickadmin.logout')</button>
-{!! Form::close() !!}
+{{ html()->form()->close() }}
 
 

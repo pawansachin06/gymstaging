@@ -24,7 +24,6 @@
                                 </div>
                             </div>
                             <div class="input-group col-12 mb-3 location-txt" id="name-field" style="display:none;">
-{{--                                    {!! Form::open([ 'action' => 'HomePageController@searchGym', 'method' => 'get','id'=>'search-name']) !!}--}}
                                 {{ html()->text('', '')->class('form-control')->placeholder('Enter Name')->id('searchname')->attribute('autocomplete', 'off') }}
 
                                 <div  class="searchby-name">

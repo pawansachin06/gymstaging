@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 col-xl-12 mx-auto business-form editlist-cont">
                     @include('partials.heading',['title'=> $titles[1]['title'],'subtitle'=> $titles[1]['subtitle']])
-                    {{ Form::open(['route' => $saveRoute,'method' => 'POST','id'=>"step-form", 'files'=>true,'class'=> $editBiz ? 'edit-business hide-border' : '']) }}
+                    {{ html()->form('POST', $saveRoute)->id('step-form')->acceptsFiles()->class($editBiz ? 'edit-business hide-border' : '')->open() }}
                     <h3
                         data-title="{{ $titles[1]['title'] }}"
                         data-subtitle="{{ $titles[1]['subtitle'] }}">
@@ -33,9 +33,9 @@
                         @includeWhen($id, "mainTable.partials._step_{$type}_form")
                     </fieldset>
 
-                {{Form::hidden('mode',null,['id'=>'mode'])}}
-                {{Form::hidden('listing[timetable]', @$listing->timetable ,['id'=>'timetableFile'])}}
-                {{ Form::close() }}
+                {{ html()->hidden('mode', null)->id('mode') }}
+                {{ html()->hidden('listing[timetable]', $listing->timetable ?? null)->id('timetableFile') }}
+                {{ html()->form()->close() }}
 
                 <!-- End rounded tabs -->
                 </div>

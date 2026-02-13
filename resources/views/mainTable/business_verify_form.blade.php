@@ -102,7 +102,7 @@
                         </div>
                     @else
                         <h5 class="upload-evidence">Please upload evidence:</h5>
-                        {!! Form::open(['method' => 'POST', 'route' => ['business.verification',$listing->id],'class'=>'verify-form','files'=>true]) !!}
+                        {{ html()->form('POST', route('business.verification', $listing->id))->class('verify-form')->acceptsFiles()->open() }}
                         <div id="file-uploader"></div>
 
                         <div class="row my-3">
@@ -136,7 +136,7 @@
                                 @if($enableCoupon)
                                 <div class="form-group" id="coupon-section">
                                     <div class="input-group mb-3">
-                                        {!! Form::hidden('coupon_code') !!}
+                                        {{ html()->hidden('coupon_code') }}
                                         <input class="form-control" placeholder="Have a referral code?" id="c_code"/>
                                         <div class="input-group-append">
                                             <button class="btn btn2" type="button" id="apply-coupon">Apply</button>
@@ -154,7 +154,7 @@
                                 Verify Account
                             </button>
                         </div>
-                        {!! Form::close() !!}
+                        {{ html()->form()->close() }}
                     @endif
                 </div>
             </div>
