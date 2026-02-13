@@ -1,0 +1,1 @@
+<div class="list-map" id="listing-map{{ @$id }}"></div>

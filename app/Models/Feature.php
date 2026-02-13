@@ -1,0 +1,24 @@
+<?php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * Class City
+ *
+ * @package App
+ * @property string $name
+*/
+class Feature extends Model
+{
+    
+
+    protected $fillable = ['name'];
+    
+    public static function cities()
+    {
+        return static::pluck('name', 'id');
+    }
+    
+}

@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSubscriptionsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('subscriptions', function (Blueprint $table) {
+            $table->string('stripe_status')->after('stripe_id');
+            $table->index(['user_id', 'stripe_status']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('subscriptions', function (Blueprint $table) {
+            $table->dropColumn('stripe_status');
+            $table->dropIndex('subscriptions_user_id_stripe_status_index');
+        });
+    }
+}

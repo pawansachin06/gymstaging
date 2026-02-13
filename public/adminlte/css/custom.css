@@ -1,0 +1,16 @@
+
+#wrapper {
+    position: relative;
+}
+
+.mention  {
+    height: 220px !important;
+    overflow: hidden !important;
+}
+
+.review-web-icon
+{
+    width: 30px;
+    margin-left: 10px;
+    margin-bottom: 3px;
+}

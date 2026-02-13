@@ -1,0 +1,2064 @@
+@media (max-width: 575.98px) {
+    .verify-deatils h1 {
+        font-size: 28px !important;
+    }
+    .menu-left .menu-btn1 {
+        position: relative;
+        z-index: 99;
+    }
+
+    .topnav .dropdown-menu {
+        width: 80%;
+    }
+
+    .logo img {
+        width: 180px;
+        height: auto;
+    }
+
+    .logo {
+        position: relative;
+        top: -42px;
+        height: 40px;
+    }
+
+    .logo a {
+        position: relative;
+        z-index: 99;
+    }
+
+    .menu-btn2.dropdown-toggle {
+        padding: 0px !important;
+    }
+
+    .body-cont {
+        margin-top: 65px;
+        min-height: 100vh;
+    }
+
+    #step-form {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .signup-heading {
+        padding: 10px 25px;
+        font-size: 14px;
+        font-weight: 600;
+        /* margin: 0px 10px; */
+    }
+
+    .step-tab .nav-link,
+    .step-tab {
+        border-radius: 1rem;
+    }
+
+    .radio-toolbar label {
+        font-size: 17px;
+    }
+
+    .features-list ul li {
+        width: 100%;
+        margin-right: 1%;
+    }
+
+    .line-bar::before,
+    .line-bar::after {
+        display: none;
+    }
+
+    .line-bar {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #000;
+        line-height: 0.1em;
+        margin-top: -20px;
+    }
+
+    .line-bar span {
+        padding: 0 10px;
+        background: #ffffff;
+        line-height: 50px;
+        position: relative;
+        bottom: -14px;
+    }
+
+    .open-24 {
+        margin-top: 20px;
+    }
+
+    .wizard>.steps>ul>li {
+        font-size: 16px;
+    }
+
+    .wizard>.content {
+        padding: 5px !important;
+    }
+
+    .wizard .w-50 {
+        width: 100% !important;
+    }
+
+    .wizard>.steps>ul>li {
+        font-size: 15px !important;
+    }
+
+    #gym-step4 .custom-select,
+    #coach-step4 .custom-select,
+    #physio-step4 .custom-select {
+        width: 100% !important;
+    }
+
+    #step-form .btn2 {
+        min-width: auto;
+    }
+
+    .search-filter {
+        margin-bottom: 15px;
+    }
+
+    .search-cont {
+        width: 94%;
+    }
+
+    .location-select .nice-select {
+        font-size: 14px !important;
+    }
+
+    .home-logo {
+        width: auto;
+    }
+
+    .search-cont .nice-select {
+        padding: .7rem .75rem;
+    }
+
+    .location-select,
+    .location-txt {
+        /* height: 45px; */
+    }
+
+    .nice-select .option {
+        padding-left: 6px;
+    }
+
+    .input-group.col-12.location-select {
+        padding-left: 0px;
+        padding-right: 0px;
+        height: 45px;
+    }
+
+    .nice-select .option {
+        padding-left: 6px !important;
+    }
+
+    .home-screen .menu-right {
+        top: -93px;
+    }
+
+    /* .home-screen .menu-left .dropdown-menu.show {
+        margin-top: 13px;
+    } */
+    .home-screen .dropdown-menu-right {
+        top: -55px !important;
+    }
+
+    .loggedin .dropdown-menu-right {
+        top: -52px !important;
+    }
+
+    .home-screen .topnav .notification-dropdown {
+        top: -75px !important;
+    }
+
+    .list-mobile {
+        margin-top: 60px !important;
+    }
+
+    .loggedin .topnav .notification-dropdown {
+        top: -53px !important;
+    }
+
+    .loggedin .menu-right {
+        top: -93px;
+    }
+
+    .loggedin .logo img {
+        /* margin-left: -64px;
+        margin-top: 3px; */
+    }
+
+    .login-cont {
+        margin-top: 0px;
+    }
+
+    .contact-mob-pad {
+        padding: 10px 5px;
+    }
+
+    .contact-heading {
+        font-size: 16px;
+    }
+
+    .btn-radius {
+        font-size: 14px;
+    }
+
+    .contact-cont .form-control {
+        border: none;
+        height: 35px;
+        box-shadow: 1px 0px 10px 0px rgba(50, 50, 50, 0.25);
+        font-weight: normal;
+        border-radius: 10px;
+        font-size: 16px;
+        padding-left: 20px;
+    }
+
+    .business-join-cont {
+        margin-top: 0px !important;
+        box-shadow: none !important;
+        padding: 0px 0px;
+    }
+
+    .business-join-cont .pl-4,
+    .business-join-cont .px-4 {
+        padding: 0px !important;
+    }
+
+    .nav-selection li {
+        padding: 10px 20px;
+        border-radius: 13px;
+        position: relative;
+    }
+
+    .nav-selection li::before {
+        content: '';
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+        width: 100%;
+        /* height: 49px; */
+        display: block;
+        position: absolute;
+        border-radius: 13px;
+        top: 0px;
+        left: 0px;
+    }
+
+    .wizard>.content {
+        box-shadow: none !important;
+    }
+
+    .nav-selection.my-4 {
+        margin-bottom: 5px !important;
+    }
+
+    .list-group.list-group-flush.listing-options1,
+    .membership-options-cont ul {
+        border: none;
+    }
+
+    .card.membership-options-cont>.list-group:last-child .list-group-item:last-child {
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    /* map */
+    .gm-style .gm-style-iw {
+        padding: 0px !important;
+        max-height: 300px !important;
+        max-width: 338px !important;
+    }
+
+    .gm-style .gm-style-iw-d {
+        max-height: 300px !important;
+        max-width: 338px !important;
+    }
+
+    .gm-style-iw-d .thumb-btn1 {
+        font-size: 12px;
+    }
+
+    .gm-style .gm-style-iw-t::after {
+        top: -1px;
+    }
+
+    .topnav.map-page .logo img {
+        width: 180px;
+        height: auto;
+    }
+
+    .topnav.map-page,
+    .topnav.map-page .row,
+    .topnav.map-page .container {
+        height: 65px;
+    }
+
+    .topnav,
+    .topnav .row,
+    .topnav .container {
+        height: 65px;
+    }
+
+    .media {
+        /* margin-right: 10px !important; */
+    }
+
+    .editlist-cont {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .editlist-cont .form-section {
+        border-radius: 0px;
+    }
+
+    .editlist-cont .signup-heading h2 {
+        font-size: 28px;
+        margin-bottom: 0px;
+    }
+
+    /* .editlist-cont .signup-heading {
+        border-radius: 0px;
+    } */
+    .editlist-cont .wizard>.content {
+        padding: 0px !important;
+        margin-top: 15px;
+    }
+
+    .login-heading {
+        font-size: 20px;
+    }
+
+    .list-thumb-heading-right {
+        padding-left: 0px;
+    }
+
+    .home-logo img {
+        height: 65px;
+    }
+
+    .menu-btn1 {
+        width: 35px;
+        height: 35px !important;
+        color: #9c9c9d;
+        font-size: 16px;
+        padding: 0px 0px !important;
+    }
+
+    .profile-avatar img {
+        width: 35px !important;
+        height: 35px !important;
+    }
+
+    #userMenuButton>img {
+        width: 45px !important;
+        height: 45px !important;
+        margin-top: 0px !important;
+        position: relative;
+        right: -4px;
+    }
+
+    .time-hours p {
+        width: 42%;
+    }
+
+    .list-comments ul li ul {
+        padding-left: 0px;
+    }
+
+    .comments::before,
+    .comments::after {
+        display: none;
+    }
+
+    .business-option {
+        /* padding-left: 0px;
+        padding-right: 0px; */
+        margin-top: 10px;
+    }
+
+    /* .list-popover {
+        max-width: 100% !important;
+        width: 90%;
+    } */
+    .list-popover {
+        max-width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .mob-none {
+        display: none;
+    }
+
+    .mob-trial {
+        display: block;
+    }
+
+    .gym-benefits {
+        margin-top: 30px;
+    }
+
+    .listing-deatils-heading .owl-next {
+        right: -4px;
+    }
+
+    .carousel-control-next:after {
+        content: '\203A';
+        color: #ffffff;
+        font-size: 25px;
+        opacity: 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        display: block;
+        position: absolute;
+    }
+
+    .carousel-control-prev:after {
+        content: '\203A';
+        color: #ffffff;
+        font-size: 25px;
+        opacity: 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        display: block;
+        position: absolute;
+        transform: rotate(175deg);
+    }
+
+    .carousel-control-next span,
+    .carousel-control-prev {
+        background-image: none;
+    }
+
+    /* Css changes- 25/02 */
+    .wizard>.steps a {
+        padding: .1rem 1rem !important;
+    }
+
+    .mobile-membership .card-header1 {
+        padding: 0px 20px !important;
+        font-size: 18px;
+    }
+
+    .mobile-membership .list-group-item {
+        padding: 0px 20px !important;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mobile-membership .list-group {
+        border-color: #cccccc;
+    }
+
+    .membership-options-cont .card-header h3 {
+        font-size: 38px;
+    }
+
+    .membership-options-cont .card-header h4 {
+        font-size: 32px;
+    }
+
+    .membership-options-cont.annual-plan .card-header h3 {
+        font-size: 42px;
+    }
+
+    .membership-options-cont {
+        margin: 10px;
+    }
+
+    .mobile-section-heading {
+        margin-bottom: 0px;
+    }
+
+    .mobile-media-slider {
+        margin-bottom: 0px;
+    }
+
+    .carousel-full {
+        padding: 0px;
+        overflow: hidden;
+    }
+
+    #results.owl-stage,
+    .owl-carousel .owl-stage-outer {
+        padding: 0px !important;
+    }
+
+    .carousel-full-slider {
+        padding: 0px;
+        /* margin-bottom: 10px; */
+    }
+
+    .popover-body img {
+        margin: 2px;
+    }
+
+    .list-mobile .othersgym-list .list-thumb-heading-right a {
+        margin-top: 0px;
+    }
+
+    .mobile-membership .card {
+        margin-top: 10px;
+    }
+
+    .mobile-membership button {
+        border-radius: 13px !important;
+    }
+
+    /* .owl-carousel.owl-loaded {
+        margin-bottom: -10px;
+    } */
+
+    .mobile-timetable {
+        margin-top: 20px;
+    }
+
+    .rating-star {
+        margin-top: 0px;
+    }
+
+    .comments .user-right {
+        align-items: unset;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .mobile-map {
+        height: 320px;
+        margin-top: 10px;
+    }
+
+    .carousel-control-next-icon,
+    .carousel-control-prev-icon {
+        display: none !important;
+    }
+
+    .mobile-features-list {
+        padding-top: 10px;
+    }
+
+    .mobile-features-list button {
+        background: transparent;
+        color: #222;
+        text-align: left;
+        box-shadow: none;
+        text-decoration: underline;
+    }
+
+    .mobile-features-list .btn2:hover {
+        background: transparent;
+        color: #222;
+        text-decoration: underline;
+    }
+
+    .mobile-features-list .btn:focus {
+        box-shadow: none;
+    }
+
+    .verfiy-page-cont {
+        margin-top: 120px;
+    }
+
+    .mobile-section .card-header h4 {
+        font-size: 20px;
+        margin-bottom: 0px;
+    }
+
+
+    /* ---------6-5-2020 -------------*/
+    .comments .user-left {
+        width: 70%;
+    }
+
+    .comments .user-right {
+        width: 30%;
+    }
+
+    .plan-selection-toggle {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+
+    .membership-options-cont {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .gym-benefits .card-header {
+        font-size: 30px;
+    }
+
+    .partner-thumb img {
+        width: 350px;
+    }
+
+    .footer {
+        display: unset;
+        font-size: 14px;
+    }
+
+    .map-view-loaded .footer {
+        display: none;
+    }
+
+    .verify-acc-btn {
+        width: 100%;
+    }
+
+    .StripeElement#card-number {
+        width: 80% !important;
+    }
+
+    .start {
+        align-items: flex-start !important;
+    }
+
+    .mar-top-80 {
+        margin-top: 80px;
+    }
+
+    .payment-right {
+        margin-top: 40px;
+        /* margin-left: 30px; */
+    }
+
+    .glass-borders {
+        padding: 0 !important;
+    }
+
+    .payment-left {
+        text-align: center;
+    }
+
+    .payment-left p {
+        font-size: 18px;
+        width: 70%;
+    }
+
+    /*.btn-change-plan {*/
+    /*    width: 70%;*/
+    /*}*/
+    .payment-left strong {
+        font-size: 20px;
+    }
+
+    .business-form .wizard .content-wrapper {
+        padding: 2rem !important;
+    }
+
+    .btn-change-plan {
+        text-align: center;
+    }
+
+    .business-option-video {
+        height: 100%;
+        padding: 0px;
+        position: relative;
+        padding-bottom: 41%;
+    }
+
+    .business-option-video iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .btn-next-width {
+        margin: 0px auto;
+        width: 92%;
+    }
+
+    .mobile-hours {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .category-container {
+        padding: 0px 10px;
+    }
+
+    .mobile-hours .time-hours {
+        padding-left: 10px;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    #offer-coupon .signup-heading h2 {
+        margin-bottom: 10px;
+        font-size: 12px !important;
+    }
+
+    .information-box br {
+        display: none;
+    }
+
+    .information-box {
+        padding: 50px 40px;
+        width: 80%;
+    }
+
+    .mentiony-popover {
+        width: 94% !important;
+        left: 3% !important;
+    }
+
+    .user-texts {
+        margin-top: 0px;
+    }
+
+    .mentiony-container .mentiony-content {
+        max-height: 260px;
+        overflow: scroll;
+    }
+
+    .pos-fixed {
+        position: fixed;
+        left: 5%;
+        transform: translate(-5%, 0%);
+        top: 30%;
+        width: 100%;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+    .h-86 {
+        height: 78% !important;
+    }
+
+    .searchby-name {
+        max-height: 150px;
+    }
+
+    .carousel-full-slider .owl-nav {
+        margin-top: 0px !important;
+    }
+
+    .custom-accordion.faq-video {
+        padding-top: 0px;
+    }
+
+    .faq-video iframe {
+        height: 230px;
+        margin-bottom: 10px;
+    }
+
+    /* .about-us-custom h2 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    } */
+    /* .about-us-custom span {
+        font-size: 14px;
+        font-weight: 400;
+    } */
+    .location-txt input {
+        margin-top: 0px;
+        padding: 22px 15px;
+    }
+
+    .video-about {
+        height: auto;
+        padding: 0px;
+        position: relative;
+        padding-bottom: 53%;
+    }
+
+    .video-about iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .video-custom {
+        padding: 0px 15px;
+    }
+
+    .faq_accordion a {
+        line-height: 20px;
+        font-size: 12px !important;
+        padding-right: 40px;
+        padding-left: 20px;
+    }
+
+    .custom-accordion.faq-video {
+        /* min-height: auto; */
+        /* margin-bottom: 5rem; */
+    }
+
+    .business-join-cont .pad-0 {
+        padding: 0px;
+    }
+
+    .business-join-cont .pad-0:first-child {
+        padding: 10px 0px;
+    }
+
+    div#listing-mapipad {
+        width: 100%;
+        float: left;
+        margin-bottom: 10px;
+    }
+
+    .h-85 {
+        height: 75% !important;
+    }
+
+    .footer p,
+    .footer ul li a {
+        font-size: 12px;
+    }
+
+    /* .pos-fixed {
+        margin-top: 50%;
+    } */
+    /* .topnav  {
+        position: fixed;
+    } */
+
+    /* Plan page css 14-10 */
+    .plan-payment {
+        width: 100%;
+    }
+
+    .payment-custom-pad {
+        padding: 1.5rem;
+        box-shadow: none !important;
+    }
+
+    .plan-payment ul li {
+        /* display: block; */
+        font-size: 12px;
+    }
+
+    .expire-cards {
+        margin-top: 20px;
+        /* display: block; */
+    }
+
+    .plan-payment ul li .fa-close {
+        float: right;
+    }
+
+    .card-close {
+        width: 20px;
+    }
+
+    /* Plan page css 14-10 */
+
+    .report-abuse a {
+        font-size: 12px !important;
+    }
+
+    .custom-replay a {
+        margin: 0px 5px;
+    }
+
+    .nice-select {
+        height: auto !important;
+    }
+
+    .pad-custom-15 {
+        padding: 0px 15px;
+    }
+
+    .pad-custom-0 {
+        padding: 0px;
+    }
+
+    .qualification-list
+    {
+        margin-top:10px;
+    }
+
+    .qualification-list li
+    {
+        font-weight:500;
+    }
+    .glass-borders 
+    {
+        box-shadow: none !important;
+    }
+    .list-thumb-heading {
+        width: 24em !important;
+    }
+    .list-mobile .list-thumb-heading-right {
+        width: 80% !important;
+    }
+    /* design fixes start */
+    .list-mobile .othersgym-list .list-thumb-heading {
+        width: 70% !important;
+    }
+    .list-mobile .othersgym-list .list-thumb-heading-right {
+        width: 25% !important;
+        padding-right: 5px;
+    }
+    .list-mobile .othersgym-list .view-location-block{
+        gap: 5px;
+    }
+    /* design fixes end */
+}
+
+
+@media (max-width: 320px) {
+    .business-option-video {
+        height: 100%;
+        /* padding: 0px; */
+        position: relative;
+        padding-bottom: 36%;
+    }
+
+
+    
+    .qualification-list
+    {
+        margin-top:10px;
+    }
+
+    .qualification-list li
+    {
+        font-weight:500;
+    }
+    .list-mobile .list-thumb-heading-right {
+        width: 80% !important;
+    }
+}
+
+@media (min-width: 321px) and (max-width: 410px) {
+    .business-option-video {
+        height: 100%;
+        /* padding: 0px; */
+        position: relative;
+        padding-bottom: 40%;
+    }
+
+    
+    .qualification-list
+    {
+        margin-top:10px;
+    }
+
+    .qualification-list li
+    {
+        font-weight:500;
+    }
+    .list-mobile .list-thumb-heading-right {
+        width: 80% !important;
+    }
+    /* design fixes start */
+    .payment-left{
+        text-align: center;
+    }
+    .payment-left .btn-change-plan{
+        text-align: center;
+    }
+    /* design fixes end */
+}
+
+
+
+
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .menu-left .menu-btn1 {
+        position: relative;
+        z-index: 99;
+    }
+
+    .topnav .dropdown-menu {
+        width: 80%;
+    }
+
+    .logo img {
+        height: 30px;
+        width: auto;
+    }
+
+    .logo {
+        position: relative;
+        top: -42px;
+        height: 40px;
+    }
+
+    .logo a {
+        position: relative;
+        z-index: 99;
+    }
+
+    .menu-btn2.dropdown-toggle {
+        padding: 0px !important;
+    }
+
+    .body-cont {
+        margin-top: 65px;
+    }
+
+    /* #step-form {
+        padding-left: 10px;
+        padding-right: 10px;
+    } */
+    .signup-heading {
+        padding: 10px 25px;
+        font-size: 18px;
+        /* margin: 0px 10px; */
+    }
+
+    .step-tab .nav-link,
+    .step-tab {
+        border-radius: 1rem;
+    }
+
+    .radio-toolbar label {
+        font-size: 17px;
+    }
+
+    .features-list ul li {
+        width: 100%;
+        margin-right: 1%;
+    }
+
+    .line-bar::before,
+    .line-bar::after {
+        display: none;
+    }
+
+    .line-bar {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #000;
+        line-height: 0.1em;
+        margin-top: -20px;
+    }
+
+    .line-bar span {
+        padding: 0 10px;
+        background: #ffffff;
+        line-height: 50px;
+        position: relative;
+        bottom: -14px;
+    }
+
+    .open-24 {
+        margin-top: 20px;
+    }
+
+    .wizard>.steps>ul>li {
+        font-size: 16px;
+    }
+
+    .wizard>.content {
+        padding: 5px !important;
+    }
+
+    .wizard .w-50 {
+        width: 100% !important;
+    }
+
+    .wizard>.steps>ul>li {
+        font-size: 15px !important;
+    }
+
+    #gym-step4 .custom-select,
+    #coach-step4 .custom-select,
+    #physio-step4 .custom-select {
+        width: 100% !important;
+    }
+
+    #step-form .btn2 {
+        min-width: auto;
+    }
+
+    .search-filter {
+        margin-bottom: 15px;
+    }
+
+    .search-cont {
+        width: 94%;
+    }
+
+    .location-select .nice-select {
+        font-size: 14px !important;
+    }
+
+    .home-logo {
+        width: auto;
+    }
+
+    .search-cont .nice-select {
+        padding: .8rem .75rem;
+    }
+
+    .nice-select .option {
+        padding-left: 6px;
+    }
+
+    .input-group.col-12.location-select {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .nice-select .option {
+        padding-left: 6px !important;
+    }
+
+    .home-screen .menu-right {
+        top: -93px;
+    }
+
+    /* .home-screen .menu-left .dropdown-menu.show {
+        margin-top: 13px;
+    } */
+    .home-screen .dropdown-menu-right {
+        top: -54px !important;
+    }
+
+    .loggedin .dropdown-menu-right {
+        top: -52px !important;
+    }
+
+    .home-screen .topnav .notification-dropdown {
+        top: -75px !important;
+    }
+
+    .list-mobile {
+        margin-top: 60px !important;
+    }
+
+    .loggedin .topnav .notification-dropdown {
+        top: -53px !important;
+    }
+
+    .loggedin .menu-right {
+        top: -93px;
+    }
+
+    .loggedin .logo img {
+        /* margin-left: -64px;
+        margin-top: 3px; */
+    }
+
+    .login-cont {
+        margin-top: 0px;
+    }
+
+    .contact-mob-pad {
+        padding: 10px 5px;
+    }
+
+    .contact-heading {
+        font-size: 16px;
+    }
+
+    .btn-radius {
+        font-size: 14px;
+    }
+
+    .contact-cont .form-control {
+        border: none;
+        height: 35px;
+        box-shadow: 1px 0px 10px 0px rgba(50, 50, 50, 0.25);
+        font-weight: normal;
+        border-radius: 10px;
+        font-size: 16px;
+        padding-left: 20px;
+    }
+
+    .business-join-cont {
+        margin-top: 0px !important;
+        box-shadow: none !important;
+    }
+
+    .business-join-cont .pl-4,
+    .business-join-cont .px-4 {
+        padding: 0px !important;
+    }
+
+    .nav-selection li {
+        padding: 10px 20px;
+        border-radius: 13px;
+        position: relative;
+    }
+
+    .nav-selection li::before {
+        content: '';
+        box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+        width: 100%;
+        /* height: 49px; */
+        display: block;
+        position: absolute;
+        border-radius: 13px;
+        top: 0px;
+        left: 0px;
+    }
+
+    .wizard>.content {
+        box-shadow: none !important;
+    }
+
+    .nav-selection.my-4 {
+        margin-bottom: 5px !important;
+    }
+
+    .list-group.list-group-flush.listing-options1,
+    .membership-options-cont ul {
+        border: none;
+    }
+
+    .card.membership-options-cont>.list-group:last-child .list-group-item:last-child {
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+
+    /* map */
+    .gm-style .gm-style-iw {
+        padding: 0px !important;
+        max-height: 300px !important;
+        max-width: 338px !important;
+    }
+
+    .gm-style .gm-style-iw-d {
+        max-height: 300px !important;
+        max-width: 338px !important;
+    }
+
+    .gm-style-iw-d .thumb-btn1 {
+        font-size: 12px;
+    }
+
+    .gm-style .gm-style-iw-t::after {
+        top: -1px;
+    }
+
+    .topnav.map-page .logo img {
+        width: 200px;
+        height: auto;
+    }
+
+    .topnav.map-page,
+    .topnav.map-page .row,
+    .topnav.map-page .container {
+        height: 65px;
+    }
+
+    .topnav,
+    .topnav .row,
+    .topnav .container {
+        height: 65px;
+    }
+
+    .media {
+        /* margin-right: 10px !important; */
+    }
+
+    .editlist-cont {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .editlist-cont .form-section {
+        border-radius: 0px;
+    }
+
+    .editlist-cont .signup-heading h2 {
+        font-size: 28px;
+        margin-bottom: 0px;
+    }
+
+    /* .editlist-cont .signup-heading {
+        border-radius: 0px;
+    } */
+    .editlist-cont .wizard>.content {
+        padding: 0px !important;
+        margin-top: 15px;
+    }
+
+    .login-heading {
+        font-size: 20px;
+    }
+
+    .list-thumb-heading-right {
+        padding-left: 0px;
+    }
+
+    .home-logo img {
+        height: 75px;
+    }
+
+    .menu-btn1 {
+        width: 35px;
+        height: 35px !important;
+        color: #9c9c9d;
+        font-size: 16px;
+        padding: 0px 0px !important;
+    }
+
+    .profile-avatar img {
+        width: 35px !important;
+        height: 35px !important;
+    }
+
+    #userMenuButton>img {
+        width: 45px !important;
+        height: 45px !important;
+        margin-top: 0px !important;
+        position: relative;
+        right: -4px;
+    }
+
+    .time-hours p {
+        width: 42%;
+    }
+
+    .list-comments ul li ul {
+        padding-left: 0px;
+    }
+
+    .comments::before,
+    .comments::after {
+        display: none;
+    }
+
+    .business-option {
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-top: 10px;
+    }
+
+    /* .list-popover {
+        max-width: 100% !important;
+        width: 90%;
+    } */
+    .list-popover {
+        max-width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .mob-none {
+        display: none;
+    }
+
+    .mob-trial {
+        display: block;
+    }
+
+    .gym-benefits {
+        margin-top: 30px;
+    }
+
+    .carousel-control-next:after {
+        content: '\203A';
+        color: #000;
+        font-size: 25px;
+        background: #ffffff;
+        opacity: 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        display: block;
+        position: absolute;
+    }
+
+    .carousel-control-prev:after {
+        content: '\203A';
+        color: #000;
+        font-size: 25px;
+        background: #ffffff;
+        opacity: 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        display: block;
+        position: absolute;
+        transform: rotate(175deg);
+    }
+
+    .carousel-control-next-icon,
+    .carousel-control-prev-icon {
+        display: none !important;
+    }
+
+    /* Css changes- 25/02 */
+    .wizard>.steps a {
+        padding: .1rem 1rem !important;
+    }
+
+    .mobile-membership .card-header1 {
+        padding: 0px 20px !important;
+        font-size: 18px;
+    }
+
+    .mobile-membership .list-group-item {
+        padding: 0px 20px !important;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mobile-membership .list-group {
+        border-color: #cccccc;
+    }
+
+    .membership-options-cont .card-header h3 {
+        font-size: 38px;
+    }
+
+    .membership-options-cont .card-header h4 {
+        font-size: 32px;
+    }
+
+    .membership-options-cont.annual-plan .card-header h3 {
+        font-size: 42px;
+    }
+
+    .carousel-full {
+        padding: 0px;
+        overflow: hidden;
+    }
+
+    #results.owl-stage,
+    .owl-carousel .owl-stage-outer {
+        padding: 0px !important;
+    }
+
+    .carousel-full-slider {
+        padding: 0px;
+        margin-bottom: 10px;
+    }
+
+    .popover-body img {
+        /* width: 37px; */
+        margin: 2px;
+    }
+
+    .owl-carousel img {
+        width: 100%;
+    }
+
+    .carousel-control-next-icon,
+    .carousel-control-prev-icon {
+        display: none !important;
+    }
+
+    .mobile-features-list {
+        padding-top: 10px;
+    }
+
+    .mobile-features-list button {
+        background: transparent;
+        color: #222;
+        text-align: left;
+        box-shadow: none;
+        text-decoration: underline;
+    }
+
+    .mobile-features-list .btn2:hover {
+        background: transparent;
+        color: #222;
+        text-decoration: underline;
+    }
+
+    .mobile-features-list .btn:focus {
+        box-shadow: none;
+    }
+
+    /* ---------6-5-2020 -------------*/
+    .comments .user-left {
+        width: 70%;
+    }
+
+    .comments .user-right {
+        width: 30%;
+    }
+
+    .plan-selection-toggle {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+
+    .membership-options-cont {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+    .gym-benefits .card-header {
+        font-size: 30px;
+    }
+
+    .partner-thumb img {
+        width: 350px;
+    }
+
+    .footer {
+        display: unset;
+    }
+
+    .verify-acc-btn {
+        width: 100%;
+    }
+
+    .StripeElement#card-number {
+        width: 80% !important;
+    }
+
+    .start {
+        align-items: flex-start !important;
+    }
+
+    .mar-top-80 {
+        margin-top: 80px;
+    }
+
+    .payment-right {
+        margin-top: 40px;
+    }
+
+    .payment-left p {
+        font-size: 18px;
+        width: 70%;
+    }
+
+    .btn-change-plan {
+        width: 70%;
+    }
+
+    .payment-left strong {
+        font-size: 20px;
+    }
+
+    .business-form .wizard .content-wrapper {
+        padding: 2rem !important;
+    }
+
+    .business-option iframe {
+        height: 330px;
+    }
+
+    #offer-coupon .signup-heading h2 {
+        margin-bottom: 10px;
+        font-size: 12px !important;
+    }
+
+    .mentiony-popover {
+        width: 94% !important;
+        left: 3% !important;
+    }
+
+    .user-texts {
+        margin-top: 0px;
+    }
+
+    .mentiony-container .mentiony-content {
+        max-height: 260px;
+        overflow: scroll;
+    }
+
+    .pos-fixed {
+        position: fixed;
+        left: 40%;
+        top: 40%;
+        transform: translate(-30%, 0);
+    }
+
+    .h-86 {
+        height: 78% !important;
+    }
+
+    .searchby-name {
+        max-height: 190px;
+    }
+
+    .carousel-full-slider .owl-nav {
+        margin-top: 0px !important;
+    }
+
+    .faq-video iframe {
+        height: 200px;
+        margin-bottom: 10px;
+    }
+
+    .about-us-custom h2 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    .about-us-custom span {
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .location-txt input {
+        margin-top: 0px;
+        padding: 22px 15px;
+    }
+
+    .video-about {
+        height: 35vh;
+        padding: 0px;
+        padding-top: 20px;
+    }
+
+    .video-custom {
+        padding: 0px 15px;
+    }
+
+    .faq_accordion a {
+        line-height: 20px;
+        font-size: 12px !important;
+        padding-right: 30px;
+    }
+
+    .custom-accordion.faq-video {
+        min-height: auto;
+    }
+
+
+    /* Custom ipad view */
+    .home-screen .pos-fixed {
+        left: 35%;
+        top: 35%;
+        transform: translate(-30%, 0);
+        width: 80%;
+    }
+
+    .home-screen .list-deatils .list-thumb-heading {
+        font-size: 16px;
+    }
+
+    .home-screen .verified {
+        font-size: 12px !important;
+    }
+
+    .home-screen .cgMainImage img {
+        height: 280px !important;
+    }
+
+    .home-screen .gym-features-list li img {
+        float: left;
+    }
+
+    .home-screen .gym-features-list li span {
+        display: block;
+        overflow: hidden;
+    }
+
+    .home-screen .gym-features-list li {
+        width: 49%;
+    }
+
+    .home-screen #myTab .nav-link {
+        padding: 0.5rem 1.8rem;
+        margin-bottom: 10px;
+    }
+
+    .home-screen .features-tab .nav-tabs .nav-item.show .nav-link,
+    .home-screen .features-tab .nav-tabs .nav-link.active {
+        box-shadow: 0px 2px 5px 0px rgba(50, 50, 50, 0.2);
+    }
+
+    .home-screen .othersgym-list {
+        display: none;
+    }
+
+    /* Custom ipad view */
+    .list-map {
+        display: none;
+    }
+
+    #listing-mapipad {
+        display: block;
+        width: 100%;
+        float: left;
+        margin-bottom: 20px;
+    }
+
+
+    /* Plan page css 14-10 */
+    .plan-payment {
+        width: 100%;
+    }
+
+    .payment-custom-pad {
+        padding: 1.5rem;
+
+    }
+
+    .plan-payment ul li {
+        /* display: block; */
+    }
+
+    .expire-cards {
+        margin-top: 20px;
+        /* display: block; */
+    }
+
+    .plan-payment ul li .fa-close {
+        float: right;
+    }
+
+    .location-select {
+        height: 44px;
+    }
+
+    .nice-select {
+        height: auto !important;
+    }
+
+    
+    .qualification-list
+    {
+        margin-top:10px;
+    }
+
+    .qualification-list li
+    {
+        font-weight:500;
+    }
+    .list-mobile .list-thumb-heading-right 
+    {
+        width: 80% !important;
+    }
+    /* design fixes start */
+    .payment-left{
+        text-align: center;
+    }
+    .payment-left .btn-change-plan{
+        text-align: center;
+    }
+    /* design fixes end */
+
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .features-list ul li {
+        width: 48%;
+        margin-right: 1%;
+    }
+
+    .line-bar::before,
+    .line-bar::after {
+        display: none;
+    }
+
+    .line-bar {
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #000;
+        line-height: 0.1em;
+        margin-top: -20px;
+    }
+
+    .line-bar span {
+        padding: 0 10px;
+        background: #ffffff;
+        line-height: 50px;
+        position: relative;
+        bottom: -14px;
+    }
+
+    .open-24 {
+        margin-top: 20px;
+    }
+
+    .contact-heading {
+        font-size: 20px;
+    }
+
+    .mob-none {
+        display: none;
+    }
+
+    .mob-trial {
+        display: block;
+    }
+
+    .gym-benefits {
+        margin-top: 30px;
+    }
+
+    .carousel-control-next:after {
+        content: '\203A';
+        color: #000;
+        font-size: 25px;
+        background: #ffffff;
+        opacity: 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        display: block;
+        position: absolute;
+    }
+
+    .carousel-control-prev:after {
+        content: '\203A';
+        color: #000;
+        font-size: 25px;
+        background: #ffffff;
+        opacity: 1;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        display: block;
+        position: absolute;
+        transform: rotate(175deg);
+    }
+
+    .carousel-control-next span,
+    .carousel-control-prev {
+        background-image: none;
+    }
+
+    .body-cont {
+        margin-top: 65px;
+    }
+
+    /* Css changes- 25/02 */
+    .wizard>.steps a {
+        padding: .1rem 1rem !important;
+    }
+
+    .mobile-membership .card-header1 {
+        padding: 0px 20px !important;
+        font-size: 18px;
+    }
+
+    .mobile-membership .list-group-item {
+        padding: 0px 20px !important;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .mobile-membership .list-group {
+        border-color: #cccccc;
+    }
+
+    .membership-options-cont .card-header h3 {
+        font-size: 38px;
+    }
+
+    .membership-options-cont .card-header h4 {
+        font-size: 32px;
+    }
+
+    .membership-options-cont.annual-plan .card-header h3 {
+        font-size: 42px;
+    }
+
+    .mobile-section-heading {
+        margin-bottom: 0px;
+    }
+
+    .mobile-section-heading {
+        margin-bottom: 10px;
+    }
+
+    .container,
+    .container-md,
+    .container-sm {
+        max-width: 750px;
+    }
+
+    .footer {
+        display: unset;
+    }
+
+    .verify-acc-btn {
+        width: 100%;
+    }
+
+    .StripeElement#card-number {
+        width: 80% !important;
+    }
+
+    .start {
+        align-items: flex-start !important;
+    }
+
+    .mar-top-80 {
+        margin-top: 80px;
+    }
+
+    #offer-coupon .signup-heading h2 {
+        margin-bottom: 10px;
+        font-size: 16px !important;
+    }
+
+    .h-86 {
+        height: 78% !important;
+    }
+
+    .searchby-name {
+        max-height: 190px;
+    }
+
+    .carousel-full-slider .owl-nav {
+        margin-top: 0px !important;
+    }
+
+    .location-txt input {
+        margin-top: 0px;
+        padding: 22px 15px;
+    }
+
+    .video-about {
+        height: 50vh;
+        padding: 0px;
+        padding-top: 20px;
+    }
+
+    .video-custom {
+        padding: 10px 30px;
+    }
+
+    .faq_accordion a {
+        line-height: 20px;
+        font-size: 12px !important;
+        padding-right: 30px;
+        padding: 10px 20px;
+    }
+
+    .faq_accordion {
+        max-width: 100%;
+    }
+
+    .custom-accordion.faq-video {
+        min-height: auto;
+    }
+
+    .list-deatils .list-thumb-heading {
+        font-weight: 600;
+        font-size: 20px;
+    }
+
+    .verified {
+        font-size: 12px !important;
+    }
+
+    .partner-collapse-content p {
+        font-size: 12px;
+    }
+
+    .partner-collapse-content .btn2 {
+        width: 80%;
+        margin: 0px auto;
+        font-size: 14px;
+    }
+
+    .partner-collapse-content h4 {
+        font-size: 16px;
+    }
+
+    .list-map {
+        width: 100%;
+        float: left;
+        margin: 1rem 0px;
+    }
+
+    .map-view {
+        display: none;
+    }
+
+    .list-map {
+        display: none;
+    }
+
+    #listing-mapipad {
+        display: block;
+    }
+
+    .right-col .othersgym-list {
+        display: none;
+    }
+
+    .left-col .othersgym-list {
+        display: block;
+    }
+
+    .nice-select {
+        height: auto !important;
+    }
+
+    .location-select {
+        height: 44px;
+    }
+    .list-thumb-heading 
+    {
+       width: 54em !important;
+    }
+    /* design fixes start */
+    .payment-left{
+        text-align: center;
+    }
+    .payment-left .btn-change-plan{
+        text-align: center;
+    }
+    /* design fixes end */
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .gym-features-list li {
+        width: 48%;
+    }
+
+    .othersgym-list .list-thumb-heading {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    .othersgym-list .list-thumb-heading-right {
+        padding: 0 !important;
+        padding-right: 15px !important;
+    }
+
+    .othersgym-list .list-thumb-heading-right a {
+        font-size: 17px;
+        margin-top: 0;
+    }
+
+    .product-slider #thumbcarousel .item .thumb {
+        width: 16%;
+    }
+
+    .product-slider #thumbcarouselResult .item .thumb {
+        width: 16%;
+    }
+
+    .othersgym-list .list-thumb-heading img {
+        width: 50px;
+        height: 50px;
+    }
+
+    #myTab .nav-link {
+        padding: 0.5rem 0.2rem;
+        font-size: 14px;
+    }
+
+    .searchby-name {
+        max-height: 190px;
+    }
+
+    .show-miles select {
+        padding: 0px 5px;
+    }
+
+    .video-about {
+        height: 300px;
+        padding: 25px 0px;
+    }
+
+    .video-custom {
+        padding: 20px;
+    }
+
+    .left-col .othersgym-list {
+        display: none;
+    }
+    .list-thumb-heading 
+    {
+       width: 30em !important;
+    }
+
+}
+
+@media (min-width: 1200px) {}
