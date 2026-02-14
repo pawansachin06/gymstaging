@@ -3,7 +3,7 @@
         <div class="form-group">
             <label> Name </label>
             <p>Enter the name of your facility. This will also be used to create your GymSelect profile url.</p>
-            {!! Form::text('listing[name]', old('listing.name', $listing->name), ['class' => 'form-control w-50']) !!}
+            {{ html()->text('listing[name]', old('listing.name', $listing->name))->class('form-control w-50') }}
         </div>
     </div>
     <div class="form-section text-center">
@@ -11,7 +11,7 @@
             <label>Business </label>
             <p>Choose your facilities category</p>
             <div class="col-12 col-md-6 offset-md-6 col-lg-4 offset-lg-4 col-xl-4 offset-xl-4">
-                {{ Form::select('listing[category_id]', $categories, old('listing.category_id', $listing->category_id), ['class' => 'niceselect w-100', 'placeholder' => 'Choose...']) }}
+                {{ html()->select('listing[category_id]', $categories, old('listing.category_id', $listing->category_id))->class('niceselect w-100')->placeholder('Choose...') }}
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
             <p>Upload logo or facility photo.</p>
             <div class="wrapper">
                 <div class="file-upload profilephoto" id="upload-holder">
-                    {{ Form::file('listing[profile_image]',['id'=>'profile_image'])}}
+                    {{ html()->file('listing[profile_image]')->id('profile_image') }}
                     <i class="fas fa-plus" aria-hidden="true"></i></div>
             </div>
         </div>
@@ -32,7 +32,7 @@
             <p>This image will show up in search results and at the top of your profile</p>
             <div class="wrapper">
                 <div class="file-upload coverphoto" id="upload-holder-cover">
-                    {{ Form::file('listing[cover_image]',['id'=>'cover_image'])}}
+                    {{ html()->file('listing[cover_image]')->id('cover_image') }}
                     <i class="fas fa-plus" aria-hidden="true"></i></div>
             </div>
         </div>
@@ -46,11 +46,11 @@
                 <div class="col-12 col-md-12 col-lg-6 col-xl-6">
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            {!! Form::hidden('listing[ctas][site][enabled]', 0) !!}
-                            {!! Form::checkbox('listing[ctas][site][enabled]', 1, @$listing->ctas->site->enabled, ['class' => 'custom-control-input','id'=>'cta_site']) !!}
+                            {{ html()->hidden('listing[ctas][site][enabled]', 0) }}
+                            {{ html()->checkbox('listing[ctas][site][enabled]', (bool)($listing->ctas->site->enabled ?? false), 1)->class('custom-control-input')->id('cta_site') }}
                             <label class="custom-control-label" for="cta_site">Visit Site (Website or funnel)</label>
                             <div class="hiddenfield">
-                                {!! Form::text('listing[ctas][site][value]', old('listing.ctas.site.value', @$listing->ctas->site->value), ['class' => 'form-control','placeholder'=>'Enter link']) !!}
+                                {{ html()->text('listing[ctas][site][value]', old('listing.ctas.site.value', $listing->ctas->site->value ?? ''))->class('form-control')->placeholder('Enter link') }}
                             </div>
                         </div>
                     </div>
@@ -58,11 +58,11 @@
                 <div class="col-12 col-md-12 col-lg-6 col-xl-6">
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            {!! Form::hidden('listing[ctas][enquire][enabled]', 0) !!}
-                            {!! Form::checkbox('listing[ctas][enquire][enabled]', 1, @$listing->ctas->enquire->enabled, ['class' => 'custom-control-input','id'=>'cta_enquire']) !!}
+                            {{ html()->hidden('listing[ctas][enquire][enabled]', 0) }}
+                            {{ html()->checkbox('listing[ctas][enquire][enabled]', (bool)($listing->ctas->enquire->enabled ?? false), 1)->class('custom-control-input')->id('cta_enquire') }}
                             <label class="custom-control-label" for="cta_enquire">Enquire (Send them to a form/ Typeform)</label>
                             <div class="hiddenfield">
-                                {!! Form::text('listing[ctas][enquire][value]', old('listing.ctas.enquire.website', @$listing->ctas->enquire->value), ['class' => 'form-control','placeholder'=>'Enter link']) !!}
+                                {{ html()->text('listing[ctas][enquire][value]', old('listing.ctas.enquire.value', $listing->ctas->enquire->value ?? ''))->class('form-control')->placeholder('Enter link') }}
                             </div>
                         </div>
                     </div>
@@ -70,11 +70,11 @@
                 <div class="col-12 col-md-12 col-lg-6 col-xl-6">
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            {!! Form::hidden('listing[ctas][call][enabled]', 0) !!}
-                            {!! Form::checkbox('listing[ctas][call][enabled]', 1, @$listing->ctas->call->enabled, ['class' => 'custom-control-input','id'=>'cta_call']) !!}
+                            {{ html()->hidden('listing[ctas][call][enabled]', 0) }}
+                            {{ html()->checkbox('listing[ctas][call][enabled]', (bool)($listing->ctas->call->enabled ?? false), 1)->class('custom-control-input')->id('cta_call') }}
                             <label class="custom-control-label" for="cta_call">Call</label>
                             <div class="hiddenfield">
-                                {!! Form::text('listing[ctas][call][value]', old('listing.ctas.call.value', @$listing->ctas->call->value), ['class' => 'form-control','placeholder'=>'Enter phone number']) !!}
+                                {{ html()->text('listing[ctas][call][value]', old('listing.ctas.call.value', $listing->ctas->call->value ?? ''))->class('form-control')->placeholder('Enter phone number') }}
                             </div>
                         </div>
                     </div>
@@ -82,11 +82,11 @@
                 <div class="col-12 col-md-12 col-lg-6 col-xl-6">
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            {!! Form::hidden('listing[ctas][email][enabled]', 0) !!}
-                            {!! Form::checkbox('listing[ctas][email][enabled]', 1, @$listing->ctas->email->enabled, ['class' => 'custom-control-input','id'=>'cta_email']) !!}
+                            {{ html()->hidden('listing[ctas][email][enabled]', 0) }}
+                            {{ html()->checkbox('listing[ctas][email][enabled]', (bool)($listing->ctas->email->enabled ?? false), 1)->class('custom-control-input')->id('cta_email') }}
                             <label class="custom-control-label" for="cta_email">Email</label>
                             <div class="hiddenfield">
-                                {!! Form::text('listing[ctas][email][value]', old('listing.ctas.email.value', @$listing->ctas->email->value), ['class' => 'form-control','placeholder'=>'Enter email']) !!}
+                                {{ html()->text('listing[ctas][email][value]', old('listing.ctas.email.value', $listing->ctas->email->value ?? ''))->class('form-control')->placeholder('Enter email') }}
                             </div>
                         </div>
                     </div>
@@ -94,12 +94,12 @@
                 <div class="col-12 col-md-12 col-lg-6 col-xl-6">
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            {!! Form::hidden('listing[ctas][whatsapp][enabled]', 0) !!}
-                            {!! Form::checkbox('listing[ctas][whatsapp][enabled]', 1, @$listing->ctas->whatsapp->enabled, ['class' => 'custom-control-input','id'=>'cta_whatsapp']) !!}
+                            {{ html()->hidden('listing[ctas][whatsapp][enabled]', 0) }}
+                            {{ html()->checkbox('listing[ctas][whatsapp][enabled]', (bool)($listing->ctas->whatsapp->enabled ?? false), 1)->class('custom-control-input')->id('cta_whatsapp') }}
                             <label class="custom-control-label" for="cta_whatsapp">Whatsapp</label>
                             <div class="hiddenfield">
-                                {!! Form::select('listing[ctas][whatsapp][code]', \App\Http\Helpers\AppHelper::CountryCode(), old('listing.ctas.whatsapp.code', @$listing->ctas->whatsapp->code), ['class' => 'form-control country-selector float-left']) !!}
-                                {!! Form::text('listing[ctas][whatsapp][value]', old('listing.ctas.whatsapp.value', @$listing->ctas->whatsapp->value), ['class' => 'form-control w-70','placeholder'=>'Enter whatsapp']) !!}
+                                {{ html()->select('listing[ctas][whatsapp][code]', \App\Http\Helpers\AppHelper::CountryCode(), old('listing.ctas.whatsapp.code', $listing->ctas->whatsapp->code ?? ''))->class('form-control country-selector float-left') }}
+                                {{ html()->text('listing[ctas][whatsapp][value]', old('listing.ctas.whatsapp.value', $listing->ctas->whatsapp->value ?? ''))->class('form-control w-70')->placeholder('Enter whatsapp') }}
                             </div>
                         </div>
                     </div>
@@ -107,13 +107,13 @@
                 <div class="col-12 col-md-12 col-lg-6 col-xl-6">
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
-                            {!! Form::hidden('listing[ctas][custom][enabled]', 0) !!}
-                            {!! Form::checkbox('listing[ctas][custom][enabled]', 1, @$listing->ctas->custom->enabled, ['class' => 'custom-control-input','id'=>'cta_custom']) !!}
+                            {{ html()->hidden('listing[ctas][custom][enabled]', 0) }}
+                            {{ html()->checkbox('listing[ctas][custom][enabled]', (bool)($listing->ctas->custom->enabled ?? false), 1)->class('custom-control-input')->id('cta_custom') }}
                             <label class="custom-control-label w-100" for="cta_custom">
-                                {!! Form::text('listing[ctas][custom][label]', old('listing.ctas.custom.label', @$listing->ctas->custom->label), ['class' => 'form-control','placeholder'=>'Other / Custom']) !!}
+                                {{ html()->text('listing[ctas][custom][label]', old('listing.ctas.custom.label', $listing->ctas->custom->label ?? ''))->class('form-control')->placeholder('Other / Custom') }}
                             </label>
                             <div class="hiddenfield">
-                                {!! Form::text('listing[ctas][custom][value]', old('listing.ctas.custom.value', @$listing->ctas->custom->value), ['class' => 'form-control','placeholder'=>'Enter Link']) !!}
+                                {{ html()->text('listing[ctas][custom][value]', old('listing.ctas.custom.value', $listing->ctas->custom->value ?? ''))->class('form-control')->placeholder('Enter Link') }}
                             </div>
                         </div>
                     </div>
@@ -231,17 +231,17 @@
             <div class="row">
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon1.jpg') }}">
-                        {!! Form::text('links[website]', old('links.website', @$links->website), ['class' => 'form-control','placeholder'=>'Website url']) !!}
+                        {{ html()->text('links[website]', old('links.website', $links->website ?? ''))->class('form-control')->placeholder('Website url') }}
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon2.jpg') }}">
-                        {!! Form::text('links[facebook]', old('links.facebook', @$links->facebook), ['class' => 'form-control','placeholder'=>'Facebook url']) !!}
+                        {{ html()->text('links[facebook]', old('links.facebook', $links->facebook ?? ''))->class('form-control')->placeholder('Facebook url') }}
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon3.jpg') }}">
-                        {!! Form::text('links[phone]', old('links.phone', @$links->phone), ['class' => 'form-control','placeholder'=>'Phone number']) !!}
+                        {{ html()->text('links[phone]', old('links.phone', $links->phone ?? ''))->class('form-control')->placeholder('Phone number') }}
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
@@ -249,35 +249,35 @@
                         <div class="input-group-prepend">
                             <img src="{{ asset('gymselect\images\icon9.png') }}">
                         </div>
-                        {!! Form::select('links[whatsapp_code]', \App\Http\Helpers\AppHelper::CountryCode(), old('links.whatsapp_code', @$links->whatsapp_code), ['class' => 'form-control country-selector']) !!}
+                        {{ html()->select('links[whatsapp_code]', \App\Http\Helpers\AppHelper::CountryCode(), old('links.whatsapp_code', $links->whatsapp_code ?? ''))->class('form-control country-selector') }}
                         <div class="input-group-append col px-0">
-                            {!! Form::text('links[whatsapp]', old('links.whatsapp', @$links->whatsapp), ['class' => 'form-control pl-3','placeholder'=>'Whatsapp number']) !!}
+                            {{ html()->text('links[whatsapp]', old('links.whatsapp', $links->whatsapp ?? ''))->class('form-control pl-3')->placeholder('Whatsapp number') }}
                         </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon4.jpg') }}">
-                        {!! Form::text('links[instagram]', old('links.instagram', @$links->instagram), ['class' => 'form-control','placeholder'=>'Instagram url']) !!}
+                        {{ html()->text('links[instagram]', old('links.instagram', $links->instagram ?? ''))->class('form-control')->placeholder('Instagram url') }}
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon5.jpg') }}">
-                        {!! Form::text('links[email]', old('links.email', @$links->email), ['class' => 'form-control','placeholder'=>'Email']) !!}
+                        {{ html()->text('links[email]', old('links.email', $links->email ?? ''))->class('form-control')->placeholder('Email') }}
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon6.jpg') }}">
-                        {!! Form::text('links[twitter]', old('links.twitter', @$links->twitter), ['class' => 'form-control','placeholder'=>'Twitter url']) !!}
+                        {{ html()->text('links[twitter]', old('links.twitter', $links->twitter ?? ''))->class('form-control')->placeholder('Twitter url') }}
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon8.png') }}">
-                        {!! Form::text('links[linkedin]', old('links.linkedin', @$links->linkedin), ['class' => 'form-control','placeholder'=>'Linkedin url']) !!}
+                        {{ html()->text('links[linkedin]', old('links.linkedin', $links->linkedin ?? ''))->class('form-control')->placeholder('Linkedin url') }}
                     </div>
                 </div>
                 <div class="col-12 col-md-12  col-lg-6 col-xl-6">
                     <div class="form-group icons-field"><img src="{{ asset('gymselect\images\icon7.png') }}">
-                        {!! Form::text('links[youtube]', old('links.youtube', @$links->youtube), ['class' => 'form-control','placeholder'=>'Youtube url']) !!}
+                        {{ html()->text('links[youtube]', old('links.youtube', $links->youtube ?? ''))->class('form-control')->placeholder('Youtube url') }}
                     </div>
                 </div>
             </div>
@@ -307,19 +307,19 @@
                     </div>
 
                     <div class="form-group">
-                        {!! Form::text('address[name]', old('address.name',@$address->name), ['class' => 'form-control','placeholder'=>'Name / Number', 'id'=> 'street-number']) !!}
+                        {{ html()->text('address[name]', old('address.name', $address->name ?? ''))->class('form-control')->id('street-number')->placeholder('Name / Number') }}
                     </div>
                     <div class="form-group">
-                        {!! Form::text('address[street]', old('address.street',@$address->street), ['class' => 'form-control','placeholder'=>'Street', 'id'=> 'street']) !!}
+                        {{ html()->text('address[street]', old('address.street', $address->street ?? ''))->class('form-control')->id('street')->placeholder('Street') }}
                     </div>
                     <div class="form-group">
-                        {!! Form::text('address[city]', old('address.city',@$address->city), ['class' => 'form-control','placeholder'=>'City', 'id'=> 'city']) !!}
+                        {{ html()->text('address[city]', old('address.city', $address->city ?? ''))->class('form-control')->id('city')->placeholder('City') }}
                     </div>
                     <div class="form-group">
-                        {!! Form::text('address[country]', old('address.country',@$address->country), ['class' => 'form-control','placeholder'=>'Country', 'id'=> 'country']) !!}
+                        {{ html()->text('address[country]', old('address.country', $address->country ?? ''))->class('form-control')->id('country')->placeholder('Country') }}
                     </div>
                     <div class="form-group">
-                        {!! Form::text('address[postcode]', old('address.postcode',@$address->postcode), ['class' => 'form-control','placeholder'=>'Postcode', 'id'=> 'postcode']) !!}
+                        {{ html()->text('address[postcode]', old('address.postcode', $address->postcode ?? ''))->class('form-control')->id('postcode')->placeholder('Postcode') }}
                     </div>
                 </div>
             </div>
@@ -333,7 +333,7 @@
                 @foreach($amenities as $feature)
                     <li>
                         <div class="custom-control custom-checkbox">
-                            {!! Form::checkbox('amenities[]', $feature->id, in_array($feature->id, $amenityIds), ['class' => 'custom-control-input','id'=>"f_{$feature->id}"]) !!}
+                            {{ html()->checkbox('amenities[]', in_array($feature->id, $amenityIds), $feature->id)->class('custom-control-input')->id("f_{$feature->id}") }}
                             <label class="custom-control-label" for="f_{{$feature->id}}"> {{$feature->name}}</label>
                         </div>
                     </li>
@@ -358,7 +358,7 @@
             <label>About </label>
             <p>Tell us about your facility, what makes it great and why people should come to you.</p>
             <div class="form-group">
-                {!! Form::textarea('listing[about]', old('listing.about', $listing->about), ['row'=>3,'class' => 'form-control']) !!}
+                {{ html()->textarea('listing[about]', old('listing.about', $listing->about))->rows(3)->class('form-control') }}
             </div>
         </div>
     </div>
@@ -381,12 +381,12 @@
                                 <div class="time-hours">
                                     <p>{{$day}}</p>
                                     <div class="time-hours1">
-                                        <span>{!! Form::text("listing[timings][{$key}][start]", old("listing.timings.{$key}.start",@$listing->timings[$key]['start']), ['class' => 'form-control time-picker', 'placeholder' => 'time']) !!} </span>
+                                        <span>{{ html()->text("listing[timings][$key][start]", old("listing.timings.$key.start", $listing->timings[$key]['start'] ?? ''))->class('form-control time-picker')->placeholder('time') }} </span>
                                         <span>-</span>
-                                        <span>{!! Form::text("listing[timings][{$key}][end]", old("listing.timings.{$key}.end",@$listing->timings[$key]['end']), ['class' => 'form-control time-picker', 'placeholder' => 'time']) !!} </span>
+                                        <span>{{ html()->text("listing[timings][$key][end]", old("listing.timings.$key.end", $listing->timings[$key]['end'] ?? ''))->class('form-control time-picker')->placeholder('time') }} </span>
                                     </div>
                                     <div class="custom-control custom-checkbox">
-                                        {!! Form::checkbox("listing[timings][{$key}][closed]", old("listing.timings.{$key}.closed"), @$listing->timings[$key]['closed'] ? true :false, ['class' => 'custom-control-input timing-checkbox','id'=>$key]) !!}
+                                        {{ html()->checkbox("listing[timings][$key][closed]", (bool)($listing->timings[$key]['closed'] ?? false), 1)->class('custom-control-input timing-checkbox')->id($key) }}
                                         <label class="custom-control-label" for="{{$key}}"></label>
                                     </div>
                                 </div>
@@ -402,7 +402,7 @@
                 <div class="col-12 col-md-12 col-lg-6 col-xl-6 ">
                     <div class="open-24">
                         <div class="custom-control custom-checkbox">
-                            {!! Form::checkbox("listing[timings][]", 'ALL', (@$listing->timings[0]=='ALL')?true:false, ['class' => 'custom-control-input','id'=>'all_hrs']) !!}
+                            {{ html()->checkbox("listing[timings][]", ($listing->timings[0] ?? '') == 'ALL', 'ALL')->class('custom-control-input')->id('all_hrs') }}
                             <label class="custom-control-label" for="all_hrs">We are Open 24/7</label>
                         </div>
                     </div>
@@ -460,7 +460,7 @@
                     </div>
                     <div class="col-12 col-md-12 col-lg-7 col-xl-7">
                         <div class="form-group mt-4">
-                            {!! Form::text('listing[signup_url]', old('listing.signup_url',$listing->signup_url), ['class' => 'form-control', 'placeholder' => 'Website Page URL']) !!}
+                            {{ html()->text('listing[signup_url]', old('listing.signup_url', $listing->signup_url))->class('form-control')->placeholder('Website Page URL') }}
                         </div>
                     </div>
                 </div>
@@ -514,7 +514,7 @@
                 <div class="col-12 col-md-12 col-lg-10 col-xl-6 offset-xl-3">
                   <span class="file-input btn btn2 btn-block btn-file">
                   <i class="fas fa-upload"></i>
-                      {{ Form::file('listing[timetable]',['class'=>'btn btn2 btn-block','id'=>'timetable','multiple'=>false])}}
+                    {{ html()->file('listing[timetable]')->class('btn btn2 btn-block')->id('timetable') }}
                   </span>
                 </div>
             </div>
@@ -523,7 +523,7 @@
             </div>
             <div class="row row-eq-height">
                 <div class="col-12 col-md-12 col-lg-10 col-xl-6 offset-xl-3">
-                    {{ Form::text('listing[timetable_link]', @$listing->timetable_link,['class'=>'form-control','placeholder'=>'Timetable External Link'])}}
+                    {{ html()->text('listing[timetable_link]', $listing->timetable_link)->class('form-control')->placeholder('Timetable External Link') }}
                 </div>
             </div>
         </div>

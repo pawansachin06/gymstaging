@@ -111,8 +111,8 @@
     @endif
 </ul>
 
-{!! Form::open(['method' => 'POST', 'id'=>'reportForm', 'route' => ['report.abuse']]) !!}
-{!! Form::hidden('table_id', old('table_id') , ['id' => 'table_id']) !!}
+{{ html()->form('POST', route('report.abuse'))->id('reportForm')->open() }}
+{{ html()->hidden('table_id', old('table_id'))->id('table_id') }}
 <div class="modal fade" id="report_abuse" tabindex="-1" role="dialog" aria-labelledby="report_abuseLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -129,4 +129,4 @@
         </div>
     </div>
 </div>
-{!! Form::close() !!}
+{{ html()->form()->close() }}

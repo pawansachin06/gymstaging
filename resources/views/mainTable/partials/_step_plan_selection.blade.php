@@ -27,7 +27,7 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="radio-toolbar mt-0 custom-bar">
-                        {{ Form::radio('frequency','yearly' ,true,['id'=>'frequency-y','class'=>"btn btn-dark mx-auto rounded",'data-amount'=> $y_plan_amt,'data-trial-days'=>$y_plan_freetrial,'data-period'=>'yearly','data-offer'=>$y_plan_offer_price]) }}
+                        {{ html()->radio('frequency', 'yearly', true, ['id' => 'frequency-y', 'class' => "btn btn-dark mx-auto rounded", 'data-amount' => $y_plan_amt, 'data-trial-days' => $y_plan_freetrial, 'data-period' => 'yearly', 'data-offer' => $y_plan_offer_price]) }}
                         <label for="frequency-y"></label>
                     </div>
                     <!-- <p class="require-text">*Credit card required upon signup to avoid service interruption</p> -->
@@ -51,7 +51,7 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class=" radio-toolbar mt-0 custom-bar">
-                        {{ Form::radio('frequency','monthly',false,['id'=>'frequency-m','class'=>"btn btn-dark mx-auto rounded",'data-amount'=>$m_plan_amt,'data-trial-days'=>$m_plan_freetrial,'data-period'=>'monthly','data-offer'=>$m_plan_offer_price]) }}
+                        {{ html()->radio('frequency', 'monthly', false, ['id' => 'frequency-m', 'class' => "btn btn-dark mx-auto rounded", 'data-amount' => $m_plan_amt, 'data-trial-days' => $m_plan_freetrial, 'data-period' => 'monthly', 'data-offer' => $m_plan_offer_price]) }}
                         <label for="frequency-m"></label>
                     </div>
                     <!-- <p class="require-text">*Credit card required upon signup to avoid service interruption</p> -->
@@ -125,7 +125,7 @@
         <h4>Pay with card</h4>
         <div class="form-group">
             <label for="stripe-email">Name on card</label>
-            {!! Form::text('stripe[name]', old('stripe.name'), ['class' => 'form-control']) !!}
+            {{ html()->text('stripe[name]', old('stripe.name'))->class('form-control') }}
         </div>
         <div class="form-row mb-3">
             <label for="stripe-card" class="">Card Information</label>
@@ -140,23 +140,23 @@
             <label for="stripe-card" class="">Address</label>
             <div class="custom-billing-address">
                 <div class="col-12 country-name">
-                    {!! Form::text('address_line_1', old('address_line_1y'), ['class' => 'form-control' , 'placeholder' => 'Address line 1']) !!}
+                    {{ html()->text('address_line_1', old('address_line_1y'))->class('form-control')->placeholder('Address line 1') }}
                 </div>
                 <div class="col-12 country-name">
-                    {!! Form::text('address_line_2', old('address_line_1'), ['class' => 'form-control' , 'placeholder' => 'Address line 2']) !!}
+                    {{ html()->text('address_line_2', old('address_line_1'))->class('form-control')->placeholder('Address line 2') }}
                 </div>
                 <div class="col-12 country-name">
-                    {!! Form::text('city', old('city'), ['class' => 'form-control', 'placeholder' => 'Town or City']) !!}
+                    {{ html()->text('city', old('city'))->class('form-control')->placeholder('Town or City') }}
                 </div>
                 <div class="col-12 country-zip">
-                    {!! Form::text('postal_code', old('postal_code'), ['class' => 'form-control', 'placeholder' => 'Postal Code']) !!}
+                    {{ html()->text('postal_code', old('postal_code'))->class('form-control')->placeholder('Postal Code') }}
                 </div>
             </div>
         </div>
         <div class="form-group" id="coupon-section">
             <label for="c_code">Coupon</label>
             <div class="input-group mb-3">
-                {!! Form::hidden('coupon_code') !!}
+                {{ html()->hidden('coupon_code') }}
                 <input class="form-control" placeholder="Coupon code" id="c_code"/>
                 <div class="input-group-append">
                     <button class="btn btn2" type="button" id="apply-coupon">Apply</button>
