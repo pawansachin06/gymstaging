@@ -8,11 +8,11 @@
 			<div class="col-md-12">
 				<!-- Advance Search -->
 				<div class="advance-search">
-                    {!! Form::open([ 'action' => 'HomePageController@table', 'method' => 'get']) !!}
+                    {{ html()->form('GET', action([App\Http\Controllers\HomePageController::class, 'table']))->open() }}
 
                         <div class="form-row">
                             <div class="form-group col-md-4">
-                                {!! Form::text('search', old('search'), ['class' => 'form-control', 'placeholder' => 'Search list']) !!}
+                                {{ html()->text('search', old('search'))->class('form-control')->placeholder('Search list') }}
                                 <p class="help-block"></p>
                                 @if($errors->has('name'))
                                     <p class="help-block">
@@ -21,7 +21,7 @@
                                 @endif
                             </div>
                             <div class="form-group col-md-3">
-                                {!! Form::select('businesses', $search_businesses, null , ['placeholder' => 'Business', 'class' => 'form-control form-control-lg']) !!}
+                                {{ html()->select('businesses', $search_businesses, null)->class('form-control form-control-lg')->placeholder('Business') }}
                                 <p class="help-block"></p>
                                 @if($errors->has('businesses'))
                                     <p class="help-block">
@@ -30,7 +30,7 @@
                                 @endif
                             </div>
                             <div class="form-group col-md-3">
-                                {!! Form::select('city_id', $search_cities, null, ['placeholder' => 'City', 'class' => 'form-control form-control-lg']) !!}
+                                {{ html()->select('city_id', $search_cities, null)->class('form-control form-control-lg')->placeholder('City') }}
                                 <p class="help-block"></p>
                                 @if($errors->has('city_id'))
                                     <p class="help-block">
@@ -46,7 +46,7 @@
                             </div>
                         </div>
 
-                    {!! Form::close() !!}
+                    {{ html()->form()->close() }}
 				</div>
 			</div>
 		</div>

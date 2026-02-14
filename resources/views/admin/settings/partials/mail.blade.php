@@ -1,34 +1,35 @@
 <div class="form-group row">
-    {{ Form::label('value.REPLYTO', 'Reply To Email Address',['class'=>'col-sm-2 col-form-label']) }}
+    {{ html()->label('Reply To Email Address', 'value.REPLYTO')->class('col-sm-2 col-form-label') }}
     <div class="col-sm-10">
-        {{ Form::text('value[REPLYTO]', old('value.REPLYTO', @$modelval['REPLYTO']), ['class' => 'form-control']) }}
+        {{ html()->email('value[REPLYTO]', old('value.REPLYTO', $modelval['REPLYTO'] ?? ''))->class('form-control') }}
     </div>
 </div>
 <div class="form-group row">
-    {{ Form::label('value.CONFIRM_MAIL_BOTTOM', 'Confirm Mail Bottom',['class'=>'col-sm-2 col-form-label']) }}
+    {{ html()->label('Confirm Mail Bottom', 'value.CONFIRM_MAIL_BOTTOM')->class('col-sm-2 col-form-label') }}
     <div class="col-sm-10">
-        {{ Form::textarea('value[CONFIRM_MAIL_BOTTOM]', old('value.CONFIRM_MAIL_BOTTOM', @$modelval['CONFIRM_MAIL_BOTTOM']), ['class' => 'form-control summernote']) }}
+        {{ html()->textarea('value[CONFIRM_MAIL_BOTTOM]', old('value.CONFIRM_MAIL_BOTTOM', $modelval['CONFIRM_MAIL_BOTTOM'] ?? ''))->class('form-control summernote') }}
     </div>
 </div>
 
 <div class="form-group row" id="after_play_row">
     <div class="col-sm-2">
-        {{ Form::label('value.AFTER_PLAYED_MAIL', 'After Play Automatic Email',['class'=>'col-form-label']) }}
+        {{ html()->label('After Play Automatic Email', 'value.AFTER_PLAYED_MAIL')->class('col-form-label') }}
         <button type="button" id="preview_mail" class="btn btn-sm btn-primary">Send Preview Mail</button>
     </div>
     <div class="col-sm-10">
-        {{ Form::textarea('value[AFTER_PLAYED_MAIL]', old('value.AFTER_PLAYED_MAIL', @$modelval['AFTER_PLAYED_MAIL']), ['class' => 'form-control summernote']) }}
+        {{ html()->textarea('value[AFTER_PLAYED_MAIL]', old('value.AFTER_PLAYED_MAIL', $modelval['AFTER_PLAYED_MAIL'] ?? ''))->class('form-control summernote') }}
         <small class="form-text text-muted">Available Tags: <code>{TEAM_NAME}</code> <code>{ROOM_NAME}</code> <code>{BOOKING_TIME}</code> <code>{TEAM_PHOTO}</code> <code>{FB_PHOTO_BUTTON}</code></small>
     </div>
 </div>
 
 <div class="form-group row">
-    {{ Form::label('value.NOTIFY_AFTER_PLAY', 'Enable After Play Automatic Email',['class'=>'col-sm-2 col-form-label']) }}
+    {{ html()->label('Enable After Play Automatic Email', 'value.NOTIFY_AFTER_PLAY')->class('col-sm-2 col-form-label') }}
     <div class="col-sm-10 mt-1">
         <div class="switch">
             <label>
-                {{ Form::hidden('value[NOTIFY_AFTER_PLAY]', 0) }}
-                {{ Form::checkbox('value[NOTIFY_AFTER_PLAY]', 1,  @$modelval['NOTIFY_AFTER_PLAY']) }}<span class="lever switch-col-blue"></span>
+                {{ html()->hidden('value[NOTIFY_AFTER_PLAY]', 0) }}
+                {{ html()->checkbox('value[NOTIFY_AFTER_PLAY]', (bool)($modelval['NOTIFY_AFTER_PLAY'] ?? false), 1) }}
+                <span class="lever switch-col-blue"></span>
             </label>
         </div>
     </div>
@@ -39,24 +40,26 @@
 <h2>SMS Settings</h2>
 
 <div class="form-group row">
-    {{ Form::label('value.SMS_CONFIRMATION', 'Enable SMS Confirmation',['class'=>'col-sm-2 col-form-label']) }}
+    {{ html()->label('Enable SMS Confirmation', 'value.SMS_CONFIRMATION')->class('col-sm-2 col-form-label') }}
     <div class="col-sm-10 mt-1">
         <div class="switch">
             <label>
-                {{ Form::hidden('value[SMS_CONFIRMATION]', 0) }}
-                {{ Form::checkbox('value[SMS_CONFIRMATION]', 1,  @$modelval['SMS_CONFIRMATION']) }}<span class="lever switch-col-blue"></span>
+                {{ html()->hidden('value[SMS_CONFIRMATION]', 0) }}
+                {{ html()->checkbox('value[SMS_CONFIRMATION]', (bool)($modelval['SMS_CONFIRMATION'] ?? false), 1) }}
+                <span class="lever switch-col-blue"></span>
             </label>
         </div>
     </div>
 </div>
 
 <div class="form-group row">
-    {{ Form::label('value.SMS_REMINDER', 'Enable SMS Reminder (24 hours before)',['class'=>'col-sm-2 col-form-label']) }}
+    {{ html()->label('Enable SMS Reminder (24 hours before)', 'value.SMS_REMINDER')->class('col-sm-2 col-form-label') }}
     <div class="col-sm-10 mt-1">
         <div class="switch">
             <label>
-                {{ Form::hidden('value[SMS_REMINDER]', 0) }}
-                {{ Form::checkbox('value[SMS_REMINDER]', 1,  @$modelval['SMS_REMINDER']) }}<span class="lever switch-col-blue"></span>
+                {{ html()->hidden('value[SMS_REMINDER]', 0) }}
+                {{ html()->checkbox('value[SMS_REMINDER]', (bool)($modelval['SMS_REMINDER'] ?? false), 1) }}
+                <span class="lever switch-col-blue"></span>
             </label>
         </div>
     </div>

@@ -14,10 +14,10 @@
     @endphp
     <section class="innerpage-cont body-cont list-thumbs-container">
         <div class="container category-container overflow-hidden">
-            {!! Form::open(['route' => 'search', 'method' => 'GET', 'class' => 'map-select', 'id' => 'filterForm']) !!}
-            {{ Form::hidden('b', request('b')) }}
-            {{ Form::hidden('s', request('s')) }}
-            {{ Form::hidden('pos', $searchLatLong) }}
+            {{ html()->form('GET', route('search'))->class('map-select')->id('filterForm')->open() }}
+            {{ html()->hidden('b', request('b')) }}
+            {{ html()->hidden('s', request('s')) }}
+            {{ html()->hidden('pos', $searchLatLong) }}
             <div class="row">
                 <div class="col-12 offset-md-3 col-md-6 offset-lg-4 col-lg-4 offset-xl-4 col-xl-4 mt-2">
                     <div class="dropdown">
@@ -27,17 +27,14 @@
                         </button>
                         <div class="dropdown-menu dropdown-custom" aria-labelledby="dropdownMenuButton">
                             <div class="dropdown-item show-miles">Show locations within
-                                <span>{!! Form::select(
-                                    'r',
-                                    App\Models\ListingAddress::RADIUS_LIST,
-                                    old('r', \App\Models\ListingAddress::RADIUS_DEFAULT),
-                                    ['class' => 'form-control'],
-                                ) !!}</span>
+                                <span>
+                                    {{ html()->select('r', App\Models\ListingAddress::RADIUS_LIST, old('r', \App\Models\ListingAddress::RADIUS_DEFAULT))->class('form-control') }}
+                                </span>
                                 miles
                             </div>
                             <div class="dropdown-item show-miles typeheading">
                                 Category
-                                {{ Form::select('c[]', $categories, old('c'), ['class' => 'd-none', 'multiple', 'id' => 'catDropdown']) }}
+                                {{ html()->select('c[]', $categories, old('c'))->class('d-none')->id('catDropdown')->multiple() }}
                             </div>
                            
                             <div class="dropdown-item drop-custom-items" id="filter-categories">
@@ -60,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            {!! Form::close() !!}
+            {{ html()->form()->close() }}
             <div class="row map-list-tab">
                 <div class="col-12 col-md-6 offset-md-3 col-lg-4 col-xl-4 offset-lg-4 offset-xl-4 mt-3 toggle-links">
                     <ul class="nav">

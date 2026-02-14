@@ -18,26 +18,26 @@
                                     </ul>
                                 </div>
                             @endif
-                            {!! Form::open(['method' => 'POST', 'route' => ['auth.password.reset']]) !!}
+                            {{ html()->form('POST', route('auth.password.reset'))->open() }}
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="token" value="{{ $token }}">
                             <div class="form-group">
                                 <label>@lang('quickadmin.qa_email')</label>
-                                {!! Form::email('email','', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                {{ html()->email('email')->class('form-control')->placeholder(trans('quickadmin.qa_email'))->required() }}
                             </div>
                             <div class="form-group">
                                 <label>@lang('quickadmin.qa_password')</label>
-                                {!! Form::password('password', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                {{ html()->password('password')->class('form-control')->placeholder('')->required() }}
                             </div>
                             <div class="form-group">
                                 <label>@lang('quickadmin.qa_confirm_password')</label>
-                                {!! Form::password('password_confirmation', ['class' => 'form-control', 'placeholder' => '']) !!}
+                                {{ html()->password('password_confirmation')->class('form-control')->placeholder('')->required() }}
                             </div>
                             <p>
                                 <button type="submit"
                                         class="btn btn-block btn1">@lang('quickadmin.qa_reset_password')</button>
                             </p>
-                            {!! Form::close() !!}
+                            {{ html()->form()->close() }}
                         </div>
                     </div>
                 </div>

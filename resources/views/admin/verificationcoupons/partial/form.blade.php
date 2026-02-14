@@ -6,8 +6,8 @@
 <div class="panel-body">
     <div class="row">
         <div class="col-xs-4 form-group">
-            {!! Form::label('code', trans('quickadmin.verificationcoupons.fields.code').'', ['class' => 'control-label']) !!}
-            {!! Form::text('code', old('code'),['class' => 'form-control', 'placeholder' => '']) !!}
+            {{ html()->label(trans('quickadmin.verificationcoupons.fields.code'), 'code')->class('control-label') }}
+            {{ html()->text('code', old('code'))->class('form-control')->placeholder('') }}
             <p class="help-block"></p>
             @if($errors->has('code'))
                 <p class="help-block">
@@ -16,8 +16,8 @@
             @endif
         </div>
         <div class="col-xs-4 form-group">
-            {!! Form::label('Business', trans('quickadmin.verificationcoupons.fields.business').'', ['class' => 'control-label']) !!}
-            {!! Form::select('business[]',$businesses, old('business'), ['class' => 'form-control select2' , 'multiple' => "multiple"]) !!}
+            {{ html()->label(trans('quickadmin.verificationcoupons.fields.business'), 'business')->class('control-label') }}
+            {{ html()->select('business[]', $businesses, old('business'))->class('form-control select2')->multiple() }}
             <p class="help-block"></p>
             @if($errors->has('business'))
                 <p class="help-block">
@@ -26,8 +26,8 @@
             @endif
         </div>
         <div class="col-xs-4 form-group">
-            {!! Form::label('type', trans('quickadmin.verificationcoupons.fields.type').'', ['class' => 'control-label']) !!}
-            {!! Form::select('type', \App\Models\Coupon::$types, old('type'), ['class' => 'form-control']) !!}
+            {{ html()->label(trans('quickadmin.verificationcoupons.fields.type'), 'type')->class('control-label') }}
+            {{ html()->select('type', \App\Models\Coupon::$types, old('type'))->class('form-control') }}
             <p class="help-block"></p>
             @if($errors->has('type'))
                 <p class="help-block">
@@ -38,8 +38,8 @@
     </div>
     <div class="row">
         <div class="col-xs-4 form-group">
-            {!! Form::label('value', trans('quickadmin.verificationcoupons.fields.value').'', ['class' => 'control-label']) !!}
-            {!! Form::text('value', old('value'), ['class' => 'form-control', 'placeholder' => '']) !!}
+            {{ html()->label(trans('quickadmin.verificationcoupons.fields.value'), 'value')->class('control-label') }}
+            {{ html()->text('value', old('value'))->class('form-control')->placeholder('') }}
             <p class="help-block"></p>
             @if($errors->has('value'))
                 <p class="help-block">
@@ -48,7 +48,7 @@
             @endif
         </div>
         <div class="col-xs-4 form-group">
-            {!! Form::label('Status', trans('quickadmin.verificationcoupons.fields.status').'', ['class' => 'control-label']) !!}
+            {{ html()->label(trans('quickadmin.verificationcoupons.fields.status'), 'Status')->class('control-label') }}
             <br>
             <label class="switch">
                 <input type="hidden" name="status" value="0">
@@ -69,8 +69,8 @@
     @if(@!$coupon->id)
         <div class="row">
             <div class="col-xs-4 form-group">
-                {!! Form::label('description', trans('quickadmin.listings.fields.description').'', ['class' => 'control-label']) !!}
-                {!! Form::textarea('description', old('description'), ['class' => 'form-control ', 'placeholder' => '', 'rows' => "4"]) !!}
+                {{ html()->label(trans('quickadmin.listings.fields.description'), 'description')->class('control-label') }}
+                {{ html()->textarea('description', old('description'))->class('form-control')->rows(4)->placeholder('') }}
             </div>
         </div>
     @endif
@@ -83,7 +83,7 @@
             </div>
         </div>
     @endif
-    {!! Form::submit(trans('quickadmin.qa_save'), ['class' => 'btn btn-danger']) !!}
+    {{ html()->submit(trans('quickadmin.qa_save'))->class('btn btn-danger') }}
 </div>
 
 @push('scripts')

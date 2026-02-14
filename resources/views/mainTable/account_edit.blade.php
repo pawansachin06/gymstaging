@@ -4,8 +4,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 col-xl-12 mb-5">
-                    {!! Form::open(['method' => 'POST', 'route' => ['user.updateprofile'],'files'=>true,'onsubmit' => 'return validateForm();','id'=>'account_form']) !!}
-                    {!! Form::hidden('type',$type) !!}
+                    {{ html()->form('POST', route('user.updateprofile'))->id('account_form')->acceptsFiles()->onsubmit('return validateForm();')->open() }}
+                    {{ html()->hidden('type', $type) }}
                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="signup-heading about-us-custom">
                         <H2>Account Info</H2>
@@ -40,21 +40,21 @@
                             <div class="col-12 col-md-12 col-lg-6 col-xl-5 offset-xl-4">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Name *</label>
-                                    {!! Form::text('name', old('name' , @$user->name), ['class' => 'form-control', 'placeholder' => 'Name' ]) !!}
+                                    {{ html()->text('name', old('name', $user->name ?? ''))->class('form-control')->placeholder('Name') }}
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Email *</label>
-                                    {!! Form::email('email', old('email' ,@$user->email), ['class' => 'form-control', 'placeholder' => 'Email' ]) !!}
+                                    {{ html()->email('email', old('email', $user->email ?? ''))->class('form-control')->placeholder('Email') }}
                                 </div>
                             </div>
                             <div class="col-12 col-md-12 col-lg-6 col-xl-5 offset-xl-4">
                                 <div class="form-group">
                                     <label for="password">Change password</label>
-                                    {{ Form::password('password',  ['class' => 'form-control', 'placeholder' => 'New password','id'=>'password']) }}
+                                    {{ html()->password('password')->id('password')->class('form-control')->placeholder('New password') }}
                                 </div>
                                 <div class="form-group">
                                     <label for="password_confirmation">Confirm New Password</label>
-                                    {{ Form::password('',  ['class' => 'form-control', 'placeholder' => 'Confirm New Password','id'=>'password_confirmation']) }}
+                                    {{ html()->password('password_confirmation')->id('password_confirmation')->class('form-control')->placeholder('Confirm New Password') }}
                                     <div class="field_error text-danger"></div>
                                 </div>
                                 <div class="form-group">
@@ -70,7 +70,7 @@
                     </div>
                    
                     
-                    {!! Form::close() !!}
+                    {{ html()->form()->close() }}
                 </div>
             </div>
         </div>
