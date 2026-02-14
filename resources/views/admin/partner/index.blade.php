@@ -35,7 +35,7 @@
                                     <a href="{{ route('admin.partner.edit',[$partner->id]) }}" class="btn btn-xs btn-info">@lang('quickadmin.qa_edit')</a>
                                     {{ html()->form('DELETE', route('admin.partner.destroy', $partner->id))
                                         ->style('display: inline-block;')
-                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->attribute('onsubmit', "return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
                                         ->open() }}
                                         {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
                                     {{ html()->form()->close() }}

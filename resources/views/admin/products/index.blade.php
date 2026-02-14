@@ -51,7 +51,7 @@
                                     @can('products_delete')
                                     {{ html()->form('POST', route('admin.products.restore', $product->id))
                                         ->style('display: inline-block;')
-                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->attribute('onsubmit', "return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
                                         ->open() }}
                                         {{ html()->submit(trans('quickadmin.qa_restore'))->class('btn btn-xs btn-success') }}
                                     {{ html()->form()->close() }}
@@ -59,7 +59,7 @@
                                     @can('products_delete')
                                     {{ html()->form('DELETE', route('admin.products.perma_del', $product->id))
                                         ->style('display: inline-block;')
-                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->attribute('onsubmit', "return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
                                         ->open() }}
                                         {{ html()->submit(trans('quickadmin.qa_permadel'))->class('btn btn-xs btn-danger') }}
                                     {{ html()->form()->close() }}
@@ -76,7 +76,7 @@
                                     @can('products_delete')
                                     {{ html()->form('DELETE', route('admin.products.destroy', $product->id))
                                         ->style('display: inline-block;')
-                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->attribute('onsubmit', "return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
                                         ->open() }}
                                         {{ html()->submit(trans('quickadmin.qa_delete'))->class('btn btn-xs btn-danger') }}
                                     {{ html()->form()->close() }}

@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 col-xl-12 mb-5">
-                    {{ html()->form('POST', route('user.updateprofile'))->id('account_form')->acceptsFiles()->onsubmit('return validateForm();')->open() }}
+                    {{ html()->form('POST', route('user.updateprofile'))->id('account_form')->acceptsFiles()->attribute('onsubmit', 'return validateForm();')->open() }}
                     {{ html()->hidden('type', $type) }}
                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
                     <div class="signup-heading about-us-custom">

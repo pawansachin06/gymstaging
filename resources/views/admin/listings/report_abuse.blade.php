@@ -29,14 +29,14 @@
                                 @can('listing_delete')
                                     {{ html()->form('DELETE', route('admin.report.delete', [$report->id, 'review']))
                                         ->style('display: inline-block;')
-                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->attribute('onsubmit', "return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
                                         ->open() }}
                                         {{ html()->submit('Delete Review')->class('btn btn-xs btn-danger') }}
                                     {{ html()->form()->close() }}
 
                                     {{ html()->form('DELETE', route('admin.report.delete', [$report->id, 'report']))
                                         ->style('display: inline-block;')
-                                        ->onsubmit("return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
+                                        ->attribute('onsubmit', "return confirm('" . trans('quickadmin.qa_are_you_sure') . "');")
                                         ->open() }}
                                         {{ html()->submit('Close Report')->class('btn btn-xs btn-primary') }}
                                     {{ html()->form()->close() }}
