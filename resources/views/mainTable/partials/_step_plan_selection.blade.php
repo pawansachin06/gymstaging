@@ -27,7 +27,16 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="radio-toolbar mt-0 custom-bar">
-                        {{ html()->radio('frequency', 'yearly', true, ['id' => 'frequency-y', 'class' => "btn btn-dark mx-auto rounded", 'data-amount' => $y_plan_amt, 'data-trial-days' => $y_plan_freetrial, 'data-period' => 'yearly', 'data-offer' => $y_plan_offer_price]) }}
+                        {{-- html()->radio('frequency', 'yearly', true, ['id' => 'frequency-y', 'class' => "btn btn-dark mx-auto rounded", 'data-amount' => $y_plan_amt, 'data-trial-days' => $y_plan_freetrial, 'data-period' => 'yearly', 'data-offer' => $y_plan_offer_price]) --}}
+                        {{ html()->radio('frequency', true, 'yearly')
+                            ->id('frequency-y')
+                            ->class('btn btn-dark mx-auto rounded')
+                            ->attributes([
+                                'data-amount'     => $y_plan_amt,
+                                'data-trial-days' => $y_plan_freetrial,
+                                'data-period'     => 'yearly',
+                                'data-offer'      => $y_plan_offer_price
+                            ]) }}
                         <label for="frequency-y"></label>
                     </div>
                     <!-- <p class="require-text">*Credit card required upon signup to avoid service interruption</p> -->
@@ -51,7 +60,16 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class=" radio-toolbar mt-0 custom-bar">
-                        {{ html()->radio('frequency', 'monthly', false, ['id' => 'frequency-m', 'class' => "btn btn-dark mx-auto rounded", 'data-amount' => $m_plan_amt, 'data-trial-days' => $m_plan_freetrial, 'data-period' => 'monthly', 'data-offer' => $m_plan_offer_price]) }}
+                        {{-- html()->radio('frequency', 'monthly', false, ['id' => 'frequency-m', 'class' => "btn btn-dark mx-auto rounded", 'data-amount' => $m_plan_amt, 'data-trial-days' => $m_plan_freetrial, 'data-period' => 'monthly', 'data-offer' => $m_plan_offer_price]) --}}
+                        {{ html()->radio('frequency', false, 'monthly')
+                            ->id('frequency-m')
+                            ->class('btn btn-dark mx-auto rounded')
+                            ->attributes([
+                                'data-amount'     => $m_plan_amt,
+                                'data-trial-days' => $m_plan_freetrial,
+                                'data-period'     => 'monthly',
+                                'data-offer'      => $m_plan_offer_price
+                            ]) }}
                         <label for="frequency-m"></label>
                     </div>
                     <!-- <p class="require-text">*Credit card required upon signup to avoid service interruption</p> -->

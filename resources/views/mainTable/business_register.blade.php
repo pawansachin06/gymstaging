@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12 col-md-12 col-lg-12 col-xl-12 mx-auto business-form editlist-cont">
                     @include('partials.heading',['title'=> $titles[1]['title'],'subtitle'=> $titles[1]['subtitle']])
-                    {{ html()->form('POST', $saveRoute)->id('step-form')->acceptsFiles()->class($editBiz ? 'edit-business hide-border' : '')->open() }}
+                    {{ html()->form('POST', route(...$saveRoute))->id('step-form')->acceptsFiles()->class($editBiz ? 'edit-business hide-border' : '')->open() }}
                     <h3
                         data-title="{{ $titles[1]['title'] }}"
                         data-subtitle="{{ $titles[1]['subtitle'] }}">

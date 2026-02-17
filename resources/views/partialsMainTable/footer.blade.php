@@ -8,7 +8,11 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.6/jsrender.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {{--<script src="{{ mix('/js/mainTable.js')  }}"></script>--}}
+<script type="text/javascript">
+    window.swal = function() { return Swal.fire(...arguments); };
+</script>
 @include('sweetalert::alert')
 <script type="text/javascript">
     $.views.settings.delimiters("[%", "%]");

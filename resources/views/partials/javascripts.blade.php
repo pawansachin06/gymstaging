@@ -26,9 +26,13 @@
 <script src="{{ url('adminlte/plugins/slimScroll/jquery.slimscroll.min.js') }}"></script>
 <script src="{{ url('adminlte/plugins/fastclick/fastclick.js') }}"></script>
 <script src="{{ url('adminlte/js/app.min.js') }}"></script>
-<script src="{{ asset('assets/css/sweetalert.css') }}"></script>
+<!--<script src="{{ asset('assets/css/sweetalert.css') }}"></script>-->
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @include('sweetalert::alert')
+<script type="text/javascript">
+    window.swal = function() { return Swal.fire(...arguments); };
+</script>
 <script>
     window._token = '{{ csrf_token() }}';
 </script>

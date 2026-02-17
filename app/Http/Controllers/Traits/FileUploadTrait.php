@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Traits;
 
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
+// use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Exception;
 
 trait FileUploadTrait
 {
@@ -19,7 +22,7 @@ trait FileUploadTrait
         $this->uploadPath = storage_path('app/public');
         $this->thumbPath = storage_path('app/public') . "/thumb"; // upload path
         if (!file_exists($this->thumbPath)) {
-            mkdir($this->thumbPath, 0775);
+            mkdir($this->thumbPath, 0775, true);
         }
 
         $finalRequest = $request->all();
@@ -66,17 +69,24 @@ trait FileUploadTrait
     private function saveImage($file, $filename, $thumb = true)
     {
         try {
-            $image = Image::make($file);
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($file->getRealPath());
+            // $image = Image::make($file);
             if ($thumb) {
-                $image->backup();
-                $image->fit(200);
-                $image->save("{$this->thumbPath}/{$filename}");
-                $image->reset();
+                // $image->backup();
+                // $image->fit(200);
+                // $image->save("{$this->thumbPath}/{$filename}");
+                // $image->reset();
+                $thumbnail = clone $image;
+                $thumbnail->cover(200, 200);
+                $thumbnail->save("{$this->thumbPath}/{$filename}");
             }
-            $image->resize(800, 400, function ($constraint) {
-                $constraint->aspectRatio();
-            })->save("{$this->uploadPath}/{$filename}");
-        } catch (\Exception $e) {
+            $image->scale(800, 400); 
+            $image->save("{$this->uploadPath}/{$filename}");
+            // $image->resize(800, 400, function ($constraint) {
+            //     $constraint->aspectRatio();
+            // })->save("{$this->uploadPath}/{$filename}");
+        } catch (Exception $e) {
             return false;
         }
 
@@ -89,18 +99,31 @@ trait FileUploadTrait
             $this->uploadPath = storage_path('app/public');
             $this->thumbPath = storage_path('app/public') . "/thumb"; // upload path
 
+            $manager = new ImageManager(new Driver());
             $files = $request->file('file');
             $res = [];
+
+            $files = is_array($files) ? $files : [$files];
+
             foreach ($files as $file) {
                 $filename = $file->getClientOriginalName();
-                $image = Image::make($file);
-                $image->backup();
-                $image->fit(200);
-                $image->save("{$this->thumbPath}/{$filename}");
-                $image->reset();
-                $image->resize(800, 400, function ($constraint) {
-                    $constraint->aspectRatio();
-                })->save("{$this->uploadPath}/{$filename}");
+                $image = $manager->read($file->getRealPath());
+                // $image = Image::make($file);
+
+                $thumbnail = clone $image;
+                $thumbnail->cover(200, 200);
+                $thumbnail->save("{$this->thumbPath}/{$filename}");
+
+                $image->scale(800, 400);
+                $image->save("{$this->uploadPath}/{$filename}");
+
+                // $image->backup();
+                // $image->fit(200);
+                // $image->save("{$this->thumbPath}/{$filename}");
+                // $image->reset();
+                // $image->resize(800, 400, function ($constraint) {
+                //     $constraint->aspectRatio();
+                // })->save("{$this->uploadPath}/{$filename}");
 
                 $res[] = [
                     'name' => url("storage/thumb/{$filename}"),
@@ -109,7 +132,7 @@ trait FileUploadTrait
             }
 
             return response()->json($res);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
