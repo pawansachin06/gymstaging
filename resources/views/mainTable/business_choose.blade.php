@@ -15,7 +15,8 @@
                             @if($type)
                                 <div class="col-12 col-md-12 col-lg-7 col-xl-7 mx-auto business-option pad-custom-0">
                                     <div class="business-option-video">
-                                        <iframe src="{{ $videoURL }}?autoplay=1" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                                        <video src="/storage/static/intro.mp4" controls autoplay loop class="w-100 h-100 border-0" style="border-radius:8px;" />
+                                        <!--<iframe src="{{ $videoURL }}?autoplay=1" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>-->
                                     </div>
                                     <button type="button" class="btn btn2 btn-block btn-next-width" id="gotoform">Next</button>
                                 </div>

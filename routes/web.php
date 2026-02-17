@@ -9,12 +9,15 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\CitiesController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BusinessesController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\ListingsController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\AmenityController;
 use App\Http\Controllers\Admin\VerificationController;
 use App\Http\Controllers\Admin\BoostController;
 use App\Http\Controllers\Admin\SeoMetaController;
+use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\CouponproductController;
 use App\Http\Controllers\Admin\VerificationCouponController;
 use App\Http\Controllers\Admin\SponsorController;
@@ -74,6 +77,7 @@ Route::post('dropzone/upload', [HomePageController::class, 'dropzoneUpload'])->n
 Route::impersonate();
 
 // Authentication Routes...
+Route::get('login-now', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('auth.login');
 Route::get('web-admin', [LoginController::class, 'showLoginForm'])->name('auth.admin-login');
 Route::post('login', [LoginController::class, 'login'])->name('auth.login');

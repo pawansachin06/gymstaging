@@ -318,6 +318,7 @@ class Listing extends Model
     public function getTimingsAttribute($value)
     {
         try {
+            if (empty($value)) return [];
             return array_filter(array_map(function ($v) {
                 if (is_array($v)) {
                     return array_filter($v);
