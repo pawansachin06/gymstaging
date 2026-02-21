@@ -238,12 +238,16 @@ class HomePageController extends Controller
             }
 
             try {
-                $subscriptionBuilder->create($request->paymentMethod);
+                $newSub = $subscriptionBuilder->create($request->paymentMethod);
                 if ($coupon) {
                     $user->coupon_id = $coupon->id;
                     $user->save();
                     $coupon->increment('redemptions');
                 }
+                $newSub->update([
+                    'name' => $newSub->type,
+                    'stripe_plan' => $newSub->stripe_price,
+                ]);
                 \Auth::login($user);
                 $returnUrl = route('join.business', [$type, 'success']);
                 return response()->json(['message' => 'User registration completed successfully!', 'returnUrl' => $returnUrl], 200);
@@ -731,6 +735,7 @@ public function load_google_rev(Request $request)
             Session()->put('google_load_data', ['remaining_reviews'=>$remaining, 'listing_id' => $listing[0]["id"],'google_acc_rating' => $res->totals->average_rating, 'user_id' => $listing[0]["user_id"],'place_id' => $place_id, 'result' => $reviews]);
            return response("Loaded");
     } else {
+        logger('google-reviews', ['res' => $res]);
         return response("Error");
     }
 
@@ -1105,7 +1110,8 @@ public function get_google_reviews()
         $defaultPaymentMethod = null;
 
         try {
-            $paymentMethods = $user->paymentMethods(['type' => 'card']);
+            // $paymentMethods = $user->paymentMethods(['type' => 'card']);
+            $paymentMethods = $user->paymentMethods('card');
             $defaultPaymentMethod = $user->defaultPaymentMethod();
         } catch (\Exception $e) {
             alert()->error($e->getMessage());
@@ -1478,6 +1484,10 @@ public function get_google_reviews()
                     'subscription_id' => $newSub->id
                 ]);
             }
+            $newSub->update([
+                'name' => $newSub->type,
+                'stripe_plan' => $newSub->stripe_price,
+            ]);
             $returnUrl = route('business.businesslocationboostcity');
             return response()->json(['message' => 'Location boost purchased successfully!', 'returnUrl' => $returnUrl], 200);
         } catch (\Exception $e) {
@@ -1522,13 +1532,11 @@ public function get_google_reviews()
     
     public function businessLocationBoostCityFast()
     {
-        // $usrt = User::where('id', 739)->first();
-        // $st = Auth::user()->impersonate($usrt);
-        // dd($st);
+        $user = auth()->user();
         $setting = Setting::select('value')->where('name', 'ORGANIZATION')->first();
         $subscriptionPlans = LocationBoostPlan::where(['status' => 'active'])->get();
 
-        $activeSubscriptions = Subscription::where(['user_id' => auth()->user()->id,'stripe_status'=>'active','name'=>'business_location_boost'])->get();
+        $activeSubscriptions = Subscription::where(['user_id' => $user->id,'stripe_status'=>'active','name'=>'business_location_boost'])->get();
 
         $locationBoostCities = LocationBoostCity::whereIn('subscription_id', $activeSubscriptions->pluck('id'))->get();
 
@@ -1545,9 +1553,7 @@ public function get_google_reviews()
                 $cities[$_country] = ['latitude' => $_town['lat'], 'longitude' => $_town['lng'], 'city' => $_town['name']];
             }
         }
-        
-        // dd($simpleCities);
-
+        // dd($activeSubscriptions, $user->id, $simpleCities, $cities, $locationBoostCities);
         return view('mainTable.business_location_boost_cities_fast', compact('subscriptionPlans', 'setting', 'simpleCities', 'countries','cities','locationBoostCities','listing'));
     }
 
@@ -1665,7 +1671,9 @@ public function get_google_reviews()
                     try {
                         $user->addPaymentMethod($request->paymentMethod);
                         $payment = $user->charge((int)($price * 100), $request->paymentMethod, [
-                            'description' => "{$listing->name} payment for verification"
+                            'description' => "{$listing->name} payment for verification",
+                            'return_url' => route('business.verify'),
+                            'off_session' => false,
                         ]);
                     } catch (\Exception $e) {
                         alert()->error("Payment Error: {$e->getMessage()}");

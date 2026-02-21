@@ -1,11 +1,9 @@
 @extends('layouts.mainTable',['bodyClass'=>'home-screen'])
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<link rel="stylesheet" href="{{ asset('css/sweetalert.css') }}">
+
 @section('content')
     @php
         $iconClass = ['visa' => 'visa','amex'=>'amex','discover'=>'discover','mastercard'=>'mastercard'];
     @endphp
-    @include('sweet::alert')
     <section class="innerpage-cont body-cont list-deatils">
         <div class="container mob-hed-radius">
             <div class="contact-cont acc-deatils-cont">
@@ -78,10 +76,11 @@
         </div>
          
     </section>
-     
+
 @endsection
 
 @push('footer_scripts')
+
     <script src="https://js.stripe.com/v3/"></script>
     <script type="text/javascript">
         const $invoiceCard = $('.invoice-card'),
@@ -118,7 +117,7 @@
             stripeCard.mount('#add-new-card');
         }
 
-        async function stripeResponseHandler(result) {
+        async function stripeResponseHandler() {
             const { paymentMethod, error } = await stripe.createPaymentMethod(
                 'card', stripeCard
             );
@@ -155,7 +154,8 @@
                 e.preventDefault();
 
                 $cardForm.find(':submit').text('Please wait...').attr('disabled', 'disabled');
-                stripe.createToken(stripeCard).then(stripeResponseHandler);
+                // stripe.createToken(stripeCard).then(stripeResponseHandler);
+                stripeResponseHandler();
             });
 
             $(".add-paymethod a").on('click', function () {

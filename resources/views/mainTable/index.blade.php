@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="search-cont" id="location-form">
-                        {{ html()->form('GET', route('home'))->id('search-form')->open() }}
+                        {{ html()->form('GET', route('search'))->id('search-form')->open() }}
                         {{ html()->hidden('pos', old('pos'))->id('position') }}
                         {{ html()->hidden('r', old('r', 150)) }}
                         <div class="form-row">

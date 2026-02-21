@@ -1,5 +1,5 @@
 <ul>
-    @if($reviews) <!-- $listing->reviews -->
+    @if(!empty($reviews)) <!-- $listing->reviews -->
         @foreach($reviews as $review)
             @php
             $user = $review->user;
@@ -110,7 +110,9 @@
         @endforeach
     @endif
 </ul>
-{{ $reviews->links() }}
+@if(!empty($reviews))
+    {{ $reviews->links() }}
+@endif
 <style type="text/css">.comments{float:none}</style>
 {{ html()->form('POST', route('report.abuse'))->id('reportForm')->open() }}
 {{ html()->hidden('table_id', old('table_id'))->id('table_id') }}
