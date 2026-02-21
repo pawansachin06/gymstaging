@@ -70,8 +70,8 @@ class RoundImage extends Command
             try {
                 $marker = $this->manager->read(public_path('gymselect/images/bubble.png'));
                 $image  = $this->manager->read($file->getRealPath());
-                $image = $image->cover(36, 36);
-                
+                $image = $this->makeCircular($image, 36);
+
                 $canvas = $this->manager->create($marker->width(), $marker->height());
                 $canvas = $canvas->place($image, 'top-left', 14, 7);
                 $canvas = $canvas->place($marker, 'top-left');
@@ -79,9 +79,41 @@ class RoundImage extends Command
 
                 $outputPath = "{$markerFolder}/{$info['filename']}.png";
                 $marker->toPng()->save($outputPath);
+                $this->info('Saved');
             } catch (Exception $e) {
                 $this->info("ERROR: {$e->getMessage()} for {$file->getFileName()}");
             }
         }
+    }
+    
+    private function makeCircular($img, int $size = 36)
+    {
+        // ensure square
+        $img = $img->cover($size, $size);
+
+        $gd = $img->core()->native(); // underlying GD resource
+
+        $circle = imagecreatetruecolor($size, $size);
+        imagesavealpha($circle, true);
+        imagealphablending($circle, false);
+
+        $transparent = imagecolorallocatealpha($circle, 0, 0, 0, 127);
+        imagefill($circle, 0, 0, $transparent);
+
+        $white = imagecolorallocate($circle, 255, 255, 255);
+
+        imagefilledellipse(
+            $circle,
+            $size / 2,
+            $size / 2,
+            $size,
+            $size,
+            $white
+        );
+
+        imagecolortransparent($circle, $transparent);
+        imagecopymerge($circle, $gd, 0, 0, 0, 0, $size, $size, 100);
+
+        return $this->manager->read($circle);
     }
 }
