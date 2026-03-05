@@ -10,13 +10,13 @@
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
       integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<link href="{{ asset('/gymselect/styles/style.css?v='.File::lastModified('gymselect/styles/style.css')) }}" rel="stylesheet" type="text/css">
-<link href="{{ asset('/gymselect/styles/responsive.css?v='.File::lastModified('gymselect/styles/responsive.css')) }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('/gymselect/styles/style.css?v='.File::lastModified('public/gymselect/styles/style.css')) }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('/gymselect/styles/responsive.css?v='.File::lastModified('public/gymselect/styles/responsive.css')) }}" rel="stylesheet" type="text/css">
 {{--<link rel="stylesheet" href="{{ mix('/css/mainTablestyles.css') }}">--}}
 <!--<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="732ae0d1-e324-4ba8-99e0-e3255eefa447" data-blockingmode="auto" type="text/javascript"></script>-->
 @stack('head_scripts')
 <!-- Latest compiled and minified CSS -->
-<link href="{{ asset('/gymselect/styles/custom.css?v='.File::lastModified('gymselect/styles/custom.css')) }}" rel="stylesheet" type="text/css">
+<link href="{{ asset('/gymselect/styles/custom.css?v='.File::lastModified('public/gymselect/styles/custom.css')) }}" rel="stylesheet" type="text/css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet"/>
 
 @php

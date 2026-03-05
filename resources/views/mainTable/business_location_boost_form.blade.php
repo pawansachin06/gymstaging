@@ -224,7 +224,7 @@ $offerPrice = $stripePrice = $setting->value['BOOST_OFFER_PRICE'] ?: 0;
         );
 
         if (error) {
-            boostForm.find(':submit').text('Boost').removeAttr('disabled');
+            locationBoostForm.find(':submit').text('Boost').removeAttr('disabled');
             swal("Error", error.message, "error");
         } else {
             stripeCard.clear();

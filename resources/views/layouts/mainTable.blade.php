@@ -3,12 +3,12 @@
 <head>
     @include('partialsMainTable.head')
 
-    <script src="/gymselectme.com/public/js/toastify.min.js?v=1.1"></script>
-    <script src="/gymselectme.com/public/js/helpers.js?v=1.1"></script>
+    <script src="/js/toastify.min.js?v=1.1"></script>
+    <script src="/js/helpers.js?v=1.1"></script>
     @stack('header_scripts')
 
-    <link rel="stylesheet" href="/gymselectme.com/public/css/toastify.min.css?v=1.1" />
-    <link rel="stylesheet" href="/gymselectme.com/public/css/global.css?v=1.1" />
+    <link rel="stylesheet" href="/css/toastify.min.css?v=1.1" />
+    <link rel="stylesheet" href="/css/global.css?v=1.1" />
 </head>
 @php
     $agentClass = 'is-desktop';
@@ -30,9 +30,9 @@
     
     <ul>
         <li><a href="{{ route('home') }}"> Search </a></li>
-        <li><a href="https://gymselectme.com/about">About</a></li>
+        <li><a href="/about">About</a></li>
         <li><a href="{{ route('select.business') }}"> List Your Business </a></li>
-        <li><a href="https://gymselectme.com/products">Products</a></li>
+        <li><a href="/products">Products</a></li>
         <li><a href="{{ route('legals') }}"> Legals </a></li>
         <p>Copyright © {{date('Y')}} GymSelect Limited.</p>
         

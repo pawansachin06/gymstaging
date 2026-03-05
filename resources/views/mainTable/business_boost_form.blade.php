@@ -258,7 +258,7 @@
 
                                     <td class='table-data'>
 
-                                        <img src="https://gymselectme.com/images/google.png" width="24">
+                                        <img src="/images/google.png" width="24">
 
                                     </td>
                                     <td><p>{{$listing->avg_google_rating}} ({{$google_reviews_count}}) </p></td>
