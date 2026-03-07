@@ -14,6 +14,12 @@ return [
     |
     */
 
+    'google' => [
+        'maps' => [
+            'key' => env('GOOGLE_MAPS_API_KEY', env('GOOGLE_MAPS_GEOCODING_API_KEY', '')),
+        ],
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

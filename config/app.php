@@ -238,6 +238,6 @@ return [
         'GoogleReCaptchaV3'=> TimeHunter\LaravelGoogleReCaptchaV3\Facades\GoogleReCaptchaV3::class
     ])->toArray(),
 
-
+    'version' => date('Y-m-d-h-i-a'),
 
 ];

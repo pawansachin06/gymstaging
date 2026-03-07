@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use App\Http\Helpers\AppHelper;
 
 class LocationBoostCity extends Model
@@ -17,6 +19,7 @@ class LocationBoostCity extends Model
         'subscription_id',
         'country',
         'city',
+        'postcode',
         'latitude',
         'longitude'
     ];
@@ -43,5 +46,20 @@ class LocationBoostCity extends Model
             //     ) * " . self::MILES_VARIANT . " < " . $radiusSearch
             // );
         }
+    }
+
+    public static function createTable()
+    {
+        $messages = [];
+        $tableName = 'location_boost_cities';
+
+        if (!Schema::hasColumn($tableName, 'postcode')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->string('postcode', 16)->nullable()->after('city');
+            });
+            $messages[] = "$tableName postcode added.";
+        }
+
+        return $messages;
     }
 }

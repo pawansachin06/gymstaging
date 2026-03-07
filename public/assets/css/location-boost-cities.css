@@ -1,0 +1,33 @@
+[data-css="benefit-card-icon-box"] {
+    padding: 4px;
+    background: linear-gradient(135deg, #18a7a7, #6a7bd0, #e12ad7);
+}
+
+[data-css="faq-btn"]:focus {
+    outline: none;
+}
+
+[data-css="map-input-example"] {
+    color: #777777;
+    font-size: 14px;
+    line-height: 1.25;
+}
+[data-css="map-input-example"]::before {
+    content: "";
+    width: 16px;
+    height: 15px;
+    display: inline-block;
+    vertical-align: middle;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' stroke='%23777777' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+}
+
+[data-css="map-place-suggestion"]:hover {
+    background-color: #f0feff;
+}
+
+#my-map-container {
+    height: 400px;
+}
