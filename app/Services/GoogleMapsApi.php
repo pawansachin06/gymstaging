@@ -52,7 +52,7 @@ class GoogleMapsApi
                     // 'raw' => $cached,
                     'success' => true,
                     'source' => 'cache',
-                    'item' => $this->formatGeocodeData($cached),
+                    'items' => $this->formatGeocodeData($cached),
                 ];
             }
         }
@@ -88,7 +88,7 @@ class GoogleMapsApi
                 // 'raw' => $data,
                 'success' => true,
                 'source' => 'api',
-                'item' => $this->formatGeocodeData($data),
+                'items' => $this->formatGeocodeData($data),
             ];
         } catch (Exception $e) {
             Log::error('GoogleMapsApi: Exception', [
@@ -104,50 +104,66 @@ class GoogleMapsApi
         }
     }
 
-    private function formatGeocodeData(array $data): array
+    private function formatGeocodeData(array $data)
     {
-        $result = $data['results'][0] ?? [];
-        $components = $result['address_components'] ?? [];
-
-        $address = $result['formatted_address']
-            ?? $result['plus_code']['compound_code']
-            ?? '';
-
-        $city = ['code' => '', 'name' => ''];
-        $state = ['code' => '', 'name' => ''];
-        $country = ['code' => '', 'name' => ''];
-        $postcode = ['code' => '', 'name' => ''];
-
-        foreach ($components as $component) {
-            $types = $component['types'] ?? [];
-
-            if (in_array('locality', $types)) {
-                $city['code'] = $component['short_name'] ?? '';
-                $city['name'] = $component['long_name'] ?? '';
-            }
-
-            if (in_array('administrative_area_level_1', $types)) {
-                $state['code'] = $component['short_name'] ?? '';
-                $state['name'] = $component['long_name'] ?? '';
-            }
-
-            if (in_array('country', $types)) {
-                $country['code'] = $component['short_name'] ?? '';
-                $country['name'] = $component['long_name'] ?? '';
-            }
-
-            if (in_array('postal_code', $types)) {
-                $postcode['code'] = $component['short_name'] ?? '';
-                $postcode['name'] = $component['long_name'] ?? '';
-            }
+        $results = $data['results'] ?? [];
+        if (empty($results)) {
+            return [];
         }
 
-        return [
-            'address' => $address,
-            'city' => $city,
-            'state' => $state,
-            'country' => $country,
-            'postcode' => $postcode,
-        ];
+        $items = [];
+        foreach ($results as $result) {
+            $components = $result['address_components'] ?? [];
+            $address = $result['formatted_address']
+                ?? $result['plus_code']['compound_code']
+                ?? '';
+            $location = ['latitude' => 0, 'longitude' => 0];
+            if (!empty($result['geometry']['location'])) {
+                $location = [
+                    'latitude' => $result['geometry']['location']['lat'],
+                    'longitude' => $result['geometry']['location']['lng'],
+                ];
+            }
+
+            $city = ['code' => '', 'name' => ''];
+            $state = ['code' => '', 'name' => ''];
+            $country = ['code' => '', 'name' => ''];
+            $postcode = ['code' => '', 'name' => ''];
+
+            foreach ($components as $component) {
+                $types = $component['types'] ?? [];
+                $shortText = $component['short_name'] ?? '';
+                $longText = $component['long_name'] ?? '';
+
+                if (in_array('locality', $types)) {
+                    $city['code'] = $shortText;
+                    $city['name'] = $longText;
+                }
+                if (in_array('country', $types)) {
+                    $country['code'] = $shortText;
+                    $country['name'] = $longText;
+                }
+                if (in_array('postal_code', $types)) {
+                    $postcode['code'] = $shortText;
+                    $postcode['name'] = $longText;
+                }
+                if (in_array('administrative_area_level_1', $types)) {
+                    $state['code'] = $shortText;
+                    $state['name'] = $longText;
+                }
+            }
+            $items[] = [
+                'id' => $result['place_id'],
+                'address' => $address,
+                'city' => $city,
+                'state' => $state,
+                'country' => $country,
+                'postcode' => $postcode,
+                'latitude' => $location['latitude'],
+                'longitude' => $location['longitude'],
+                'place' => $result,
+            ];
+        }
+        return $items;
     }
 }

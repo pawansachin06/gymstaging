@@ -6,14 +6,21 @@ use App\Events\ListingCreated;
 use App\Http\Helpers\AppHelper;
 use App\Models\Traits\StorageurlTrait;
 use Artisan;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Class Listing
@@ -29,7 +36,7 @@ class Listing extends Model
 {
     use SoftDeletes, StorageurlTrait, HasSlug;
 
-    protected $fillable = ['name', 'about', 'profile_image', 'cover_image', 'business_id', 'category_id', 'user_id', 'timetable', 'timetable_link', 'signup_url', 'timings', 'title', 'keyword', 'description', 'published', 'verified', 'coupon_id', 'ctas','boosted'];
+    protected $fillable = ['name', 'about', 'profile_image', 'cover_image', 'marker_image', 'business_id', 'category_id', 'user_id', 'timetable', 'timetable_link', 'signup_url', 'timings', 'title', 'keyword', 'description', 'published', 'verified', 'coupon_id', 'ctas', 'boosted'];
 
     protected $casts = ['timings' => 'array', 'ctas' => 'object'];
 
@@ -42,7 +49,8 @@ class Listing extends Model
 
         self::saving(function ($model) {
             if ($model->isDirty('profile_image')) {
-                Artisan::call('image:marker', ['--file' => $model->profile_image]);
+                // Artisan::call('image:marker', ['--file' => $model->profile_image]);
+                $this->generateMarkerImage();
             }
             if ($model->isDirty('name')) {
                 $dispatcher = User::getEventDispatcher();
@@ -183,25 +191,17 @@ class Listing extends Model
 
     public function reviews()
     {
-    if(isset($this->filter_val))
-    {
-        if($this->filter_val=="All")
-        {
+        if (isset($this->filter_val)) {
+            if ($this->filter_val == "All") {
+                return $this->hasMany(ListingReview::class)->reply(false);
+            } else if ($this->filter_val == "Four&Five") {
+                return $this->hasMany(ListingReview::class)->where("rating", ">=", "4")->reply(false);
+            } else if ($this->filter_val == "Five") {
+                return $this->hasMany(ListingReview::class)->where("rating", "5")->reply(false);
+            } else
+                return $this->hasMany(ListingReview::class)->reply(false);
+        } else
             return $this->hasMany(ListingReview::class)->reply(false);
-        }
-        else if($this->filter_val=="Four&Five")
-        {
-            return $this->hasMany(ListingReview::class)->where("rating",">=","4")->reply(false);
-        }
-        else if($this->filter_val=="Five")
-        {
-            return $this->hasMany(ListingReview::class)->where("rating","5")->reply(false);
-        }
-        else
-        return $this->hasMany(ListingReview::class)->reply(false);
-    }
-    else
-          return $this->hasMany(ListingReview::class)->reply(false);
     }
 
     public function getFullAddressAttribute()
@@ -318,7 +318,8 @@ class Listing extends Model
     public function getTimingsAttribute($value)
     {
         try {
-            if (empty($value)) return [];
+            if (empty($value))
+                return [];
             return array_filter(array_map(function ($v) {
                 if (is_array($v)) {
                     return array_filter($v);
@@ -345,5 +346,86 @@ class Listing extends Model
         }
 
         return $value;
+    }
+
+    public function generateMarkerImage()
+    {
+        $markerFolder = storage_path("app/public/markers");
+        try {
+            if (!Storage::disk('public')->exists('markers')) {
+                Storage::disk('public')->makeDirectory('markers');
+            }
+
+            $absolutePath = Storage::path("thumb/{$this->profile_image}");
+            if (!file_exists($absolutePath)) {
+                return;
+            }
+
+            $file = new File($absolutePath);
+            $ext = strtolower($file->getExtension());
+            $info = pathinfo($file->getRealPath());
+            if (!in_array($ext, ['png', 'jpg', 'jpeg', 'gif'])) {
+                return;
+            }
+
+            $manager = new ImageManager(new Driver());
+
+            $marker = $manager->read(public_path('gymselect/images/bubble.png'));
+            $image  = $manager->read($file->getRealPath());
+            $image = $this->makeCircular($manager, $image, 36);
+
+            $canvas = $manager->create($marker->width(), $marker->height());
+            $canvas = $canvas->place($image, 'top-left', 14, 7);
+            $canvas = $canvas->place($marker, 'top-left');
+            $marker = $canvas;
+
+            $timestamp = date('m-d-H-i-s');
+            $filename = "{$this->id}-{$timestamp}.png";
+            $outputPath = "{$markerFolder}/{$filename}";
+            $marker->toPng()->save($outputPath);
+            if (!empty($this->marker_image)) {
+                $path = "markers/{$this->marker_image}";
+                Storage::disk('public')->delete($path);
+            }
+            $this->update(['marker_image' => $filename]);
+        } catch (Exception $e) {
+            Log::error('Listing Marker Image', ['msg' => $e->getMessage()]);
+        }
+    }
+
+    private function makeCircular($manager, $img, int $size = 36)
+    {
+        $img = $img->cover($size, $size);
+        $gd = $img->core()->native(); // underlying GD resource
+
+        $circle = imagecreatetruecolor($size, $size);
+        imagesavealpha($circle, true);
+        imagealphablending($circle, false);
+
+        $transparent = imagecolorallocatealpha($circle, 0, 0, 0, 127);
+        imagefill($circle, 0, 0, $transparent);
+
+        $white = imagecolorallocate($circle, 255, 255, 255);
+
+        imagefilledellipse($circle, $size / 2, $size / 2, $size, $size, $white);
+
+        imagecolortransparent($circle, $transparent);
+        imagecopymerge($circle, $gd, 0, 0, 0, 0, $size, $size, 100);
+        return $manager->read($circle);
+    }
+
+    public static function createTable()
+    {
+        $messages = [];
+        $tableName = 'listings';
+
+        if (!Schema::hasColumn($tableName, 'marker_image')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->string('marker_image', 100)->nullable()->after('cover_image');
+            });
+            $messages[] = "$tableName marker_image added.";
+        }
+
+        return $messages;
     }
 }

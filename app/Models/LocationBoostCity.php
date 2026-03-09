@@ -20,8 +20,10 @@ class LocationBoostCity extends Model
         'country',
         'city',
         'postcode',
+        'place_id',
         'latitude',
-        'longitude'
+        'longitude',
+        'status',
     ];
 
     public function scopeFilterByRequest($query, $radius)
@@ -56,8 +58,10 @@ class LocationBoostCity extends Model
         if (!Schema::hasColumn($tableName, 'postcode')) {
             Schema::table($tableName, function (Blueprint $table) {
                 $table->string('postcode', 16)->nullable()->after('city');
+                $table->enum('status', ['draft', 'active', 'inactive'])->nullable()->after('longitude');
+                $table->string('place_id')->nullable()->after('postcode');
             });
-            $messages[] = "$tableName postcode added.";
+            $messages[] = "$tableName postcode, status, place_id added.";
         }
 
         return $messages;

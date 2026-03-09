@@ -20,6 +20,24 @@ return [
         ],
     ],
 
+    'stripe' => [
+        'model' => App\Models\User::class,
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'live' => [
+            'account_id' => env('STRIPE_ACCOUNT_ID', ''),
+            'client_id' => env('STRIPE_KEY', ''),
+            'client_secret' => env('STRIPE_SECRET'),
+            'webhook_secret' => env('STRIPE_WEBHOOK_SECRET', ''),
+        ],
+        'sandbox' => [
+            'account_id' => env('STRIPE_ACCOUNT_ID_SANDBOX', ''),
+            'client_id' => env('STRIPE_CLIENT_ID_SANDBOX', ''),
+            'client_secret' => env('STRIPE_CLIENT_SECRET_SANDBOX', ''),
+            'webhook_secret' => env('STRIPE_WEBHOOK_SECRET_SANDBOX', ''),
+        ],
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
@@ -36,11 +54,6 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'stripe' => [
-        'model' => App\Models\User::class,
-        'key' => env('STRIPE_KEY'),
-        'secret' => env('STRIPE_SECRET'),
-    ],
     'setting' =>  [
         [
               'action' => 'contact_us', // Google reCAPTCHA required paramater

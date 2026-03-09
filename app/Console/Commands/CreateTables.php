@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Listing;
 use App\Models\LocationBoostCity;
+use App\Models\LocationBoostPrice;
 use Illuminate\Console\Command;
 
 class CreateTables extends Command
@@ -15,7 +17,9 @@ class CreateTables extends Command
     {
         $msgs = [];
 
+        $msgs[] = Listing::createTable();
         $msgs[] = LocationBoostCity::createTable();
+        $msgs[] = LocationBoostPrice::createTable();
 
         foreach ($msgs as $msg) {
             if (is_string($msg) && !empty($msg)) {

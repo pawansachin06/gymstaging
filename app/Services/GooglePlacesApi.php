@@ -90,7 +90,7 @@ class GooglePlacesApi
                 $cachedData = json_decode(Storage::disk('public')->get($cacheFileName), true);
                 return [
                     'success' => true,
-                    'item' => $this->formatPlaceData($cachedData), // Format cached data
+                    'item' => $this->formatPlaceData($cachedData, $placeId), // Format cached data
                     'place' => $cachedData, // Return raw cached data too
                     'source' => 'cache', // Indicate data came from cache
                 ];
@@ -121,7 +121,7 @@ class GooglePlacesApi
                 Storage::disk('public')->put($cacheFileName, json_encode($placeData));
                 return [
                     'success' => true,
-                    'item' => $this->formatPlaceData($placeData),
+                    'item' => $this->formatPlaceData($placeData, $placeId),
                     'place' => $placeData,
                     'source' => 'api', // Indicate data came from API
                 ];
@@ -151,13 +151,14 @@ class GooglePlacesApi
      * Helper method to format the place data from Google API response.
      * This keeps the formatting logic separate and reusable for both cached and fresh data.
      */
-    private function formatPlaceData(array $placeData): array
+    private function formatPlaceData(array $placeData, $placeId): array
     {
         $location = $placeData['location'] ?? ['latitude' => 0, 'longitude' => 0];
         $addressComponents = $placeData['addressComponents'] ?? [];
-        // $formattedAddress = $placeData['formattedAddress'] ?? '';
+        $formattedAddress = $placeData['formattedAddress'] ?? '';
 
         $city = ['code' => '', 'name' => ''];
+        $state = ['code' => '', 'name' => ''];
         $country = ['code' => '', 'name' => ''];
         $postcode = ['code' => '', 'name' => ''];
 
@@ -169,17 +170,24 @@ class GooglePlacesApi
             if (in_array('locality', $types)) {
                 $city['code'] = $shortText;
                 $city['name'] = $longText;
-            } elseif (in_array('country', $types)) {
+            }
+            if (in_array('country', $types)) {
                 $country['code'] = $shortText;
                 $country['name'] = $longText;
-            } elseif (in_array('postal_code', $types)) {
+            }
+            if (in_array('postal_code', $types)) {
                 $postcode['code'] = $shortText;
                 $postcode['name'] = $longText;
+            }
+            if (in_array('administrative_area_level_1', $types)) {
+                $state['code'] = $shortText;
+                $state['name'] = $longText;
             }
         }
 
         return [
-            // 'formatted_address' => $formattedAddress,
+            'address' => $formattedAddress,
+            'id' => $placeId,
             'latitude' => $location['latitude'],
             'longitude' => $location['longitude'],
             'city' => $city,

@@ -1,3 +1,12 @@
+#my-map-container {
+    height: 400px;
+}
+
+#my-data-container {
+    min-height: 225px;
+    max-height: 400px;
+}
+
 [data-css="benefit-card-icon-box"] {
     padding: 4px;
     background: linear-gradient(135deg, #18a7a7, #6a7bd0, #e12ad7);
@@ -28,6 +37,35 @@
     background-color: #f0feff;
 }
 
-#my-map-container {
-    height: 400px;
+[data-css="slots-container"] {
+    background:
+    /* Shadow Cover TOP */
+    linear-gradient(
+      white 30%,
+      rgba(255, 255, 255, 0)
+    ) center top,
+
+    /* Shadow Cover BOTTOM */
+    linear-gradient(
+      rgba(255, 255, 255, 0),
+      white 70%
+    ) center bottom,
+
+    /* Shadow TOP */
+    radial-gradient(
+      farthest-side at 50% 0,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0)
+    ) center top,
+
+    /* Shadow BOTTOM */
+    radial-gradient(
+      farthest-side at 50% 100%,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0)
+    ) center bottom;
+    overflow-y: auto;
+    background-repeat: no-repeat;
+    background-attachment: local, local, scroll, scroll;
+    background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
 }
