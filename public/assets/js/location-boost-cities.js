@@ -22,9 +22,14 @@ document.addEventListener('alpine:init', function () {
                 mapTypeControl: false,
                 streetViewControl: false,
                 fullscreenControl: false,
-                // mapId: 'DEMO_MAP_ID',
+                mapId: '3090fde3d7f90191d556c527',
             });
-            // postcodeLayer = myMap.getFeatureLayer('POSTAL_CODE');
+            google.maps.event.addListenerOnce(myMap, 'idle', function () {
+                postcodeLayer = myMap.getFeatureLayer('POSTAL_CODE');
+                if (!postcodeLayer) {
+                    console.warn('POSTAL_CODE layer not available');
+                }
+            });
         });
     });
 
@@ -32,12 +37,14 @@ document.addEventListener('alpine:init', function () {
     Alpine.data('page', function () {
         return {
             keyword: '',
+            activeTab: 'map',
             placeSuggestions: [],
 
             slots: [],
             slotsLoading: false,
 
             drafts: [],
+            markers: {},
             isCheckingOut: false,
 
             keywordChange(el) {
@@ -59,6 +66,7 @@ document.addEventListener('alpine:init', function () {
                             var placeId = suggestion.placePrediction.placeId;
                             self.placeSuggestions.push({ id: placeId, name: mainText });
                         });
+                        self.activeTab = 'list';
                     }
                 }).catch(function (err) {
                     console.error(err);
@@ -81,20 +89,26 @@ document.addEventListener('alpine:init', function () {
                     self.keyword = '';
                     self.slots = res.slots;
                     self.placeSuggestions = [];
+                    if (res.zoom) {
+                        myMap.setZoom(res.zoom);
+                    }
                     myMap.setCenter({ lat: res.data[0].latitude, lng: res.data[0].longitude });
-
-                    // var postcodesToHighlight = res.data.map(slot => slot.postcode.code);
-                    // postcodeLayer.style = (options) => {
-                    //     // 'options.feature.displayName' would be "PR1"
-                    //     if (postcodesToHighlight.includes(options.feature.displayName)) {
-                    //         return {
-                    //             fillColor: '#8106ef', // Purple like your image
-                    //             fillOpacity: 0.1,
-                    //             strokeColor: '#8106ef',
-                    //             strokeWeight: 2,
-                    //         };
-                    //     }
-                    // };
+                    var postcodesToHighlight = res.data.map(function (slot) {
+                        return slot.postcode.code.split(' ')[0];
+                    });
+                    console.log({ postcodesToHighlight });
+                    postcodeLayer.style = (options) => {
+                        console.log('MAP POSTCODE:', options.feature.displayName);
+                        if (postcodesToHighlight.includes(options.feature.displayName)) {
+                            return {
+                                fillColor: '#8106ef',
+                                fillOpacity: 0.1,
+                                strokeColor: '#8106ef',
+                                strokeWeight: 2,
+                            };
+                        }
+                        return null;
+                    };
                 }).fail(function (err) {
                     toast.error(getErrorMessage(err));
                 }).always(function () {
@@ -137,13 +151,14 @@ document.addEventListener('alpine:init', function () {
 
                 var draft = slot;
                 draft.place_id = slot.id;
-                // var marker = new google.maps.marker.AdvancedMarkerElement({
-                //     map: myMap,
-                //     position: { lat: slot.latitude, lng: slot.longitude },
-                //     title: slot.postcode,
-                //     content: self.buildMapMarker(),
-                // });
-                // draft.marker = marker;
+                myMap.setCenter({ lat: slot.latitude, lng: slot.longitude });
+                var marker = new google.maps.marker.AdvancedMarkerElement({
+                    map: myMap,
+                    position: { lat: slot.latitude, lng: slot.longitude },
+                    title: slot.postcode,
+                    content: self.buildMapMarker(),
+                });
+                self.markers[draft.id] = marker;
                 self.drafts.push(draft);
                 toast.success('Added featured spot');
                 setTimeout(function () {
@@ -156,6 +171,9 @@ document.addEventListener('alpine:init', function () {
             handleDraftRemove(btn, draft) {
                 var self = this;
                 btn.disabled = true;
+                if (self.markers[draft.id]) {
+                    self.markers[draft.id].map = null;
+                }
                 self.drafts = self.drafts.filter(function (item) {
                     return item.id != draft.id;
                 });
@@ -201,7 +219,7 @@ document.addEventListener('alpine:init', function () {
                 self.keyword = '';
                 var keywordInput = document.querySelector('[data-js="keyword-input"]');
                 keywordInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(function() {
+                setTimeout(function () {
                     keywordInput?.focus();
                 }, 1000);
             },
@@ -225,6 +243,9 @@ document.addEventListener('alpine:init', function () {
                 if (val?.country?.length) {
                     return val.country;
                 }
+                if (val?.country?.name?.length) {
+                    return val.country.name;
+                }
                 return val.postcode;
             },
 
@@ -244,14 +265,29 @@ document.addEventListener('alpine:init', function () {
                     dataType: 'json',
                 }).done(function (res) {
                     self.total = res.total;
-                    self.drafts = res.items;
+                    self.drafts = res.items.map(function (draft) {
+                        var marker = new google.maps.marker.AdvancedMarkerElement({
+                            map: myMap,
+                            title: draft.postcode,
+                            position: { lat: draft.latitude, lng: draft.longitude },
+                            content: self.buildMapMarker(),
+                        });
+                        self.markers[draft.id] = marker;
+                        return draft;
+                    });
+                    if (res.items?.length) {
+                        myMap.setCenter({ lat: res.items[0].latitude, lng: res.items[0].longitude });
+                    }
                 }).fail(function (err) {
                     console.log(getErrorMessage(err));
                 });
             },
 
             init() {
-                this.getDrafts();
+                var self = this;
+                setTimeout(function () {
+                    self.getDrafts();
+                }, 5000);
             },
         }
     });

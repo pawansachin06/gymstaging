@@ -1,5 +1,9 @@
 [x-cloak] {display:none !important}
 
+.top-0 {top:0}
+.left-0 {left:0}
+.right-0 {right:0}
+.bottom-0 {bottom:0}
 .cursor-pointer {cursor:pointer}
 .font-weight-semibold {font-weight:600}
 .rounded-3 {border-radius:0.5rem !important}

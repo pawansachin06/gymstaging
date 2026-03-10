@@ -1,10 +1,11 @@
 (function () {
     var stripe = null;
+    var elements = null;
     var btnCheckout = document.getElementById('btn-checkout');
 
-    function initStripe(stripe) {
+    function initStripe() {
         stripe = Stripe(STRIPE_KEY);
-        var elements = stripe.elements({
+        elements = stripe.elements({
             appearance: {
                 inputs: 'condensed',
                 variables: {
@@ -21,22 +22,20 @@
         });
         var paymentElement = elements.create('payment', {
             fields: {
-                billingDetails: {
-                    name: 'never',
-                    phone: 'never',
-                },
+                billingDetails: { },
             },
         });
         paymentElement.mount('#payment-element');
         setTimeout(function () {
             btnCheckout.parentElement.classList.remove('d-none');
-        }, 4000);
+        }, 5000);
     }
 
-    function handleSubmit() {
+    btnCheckout.addEventListener('click', function(){
         btnCheckout.disabled = true;
         stripe.confirmPayment({
             elements: elements,
+            redirect: 'always',
             confirmParams: { return_url: RETURN_URL }
         }).then(function (result) {
             if (result.error) {
@@ -46,9 +45,7 @@
             // If no error, Stripe will redirect automatically
             // to return_url after authentication if required.
         });
-    }
-
-    btnCheckout.addEventListener('click', handleSubmit);
+    });
 
     initStripe();
 })();

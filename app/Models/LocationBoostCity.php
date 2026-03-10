@@ -26,6 +26,11 @@ class LocationBoostCity extends Model
         'status',
     ];
 
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
+    ];
+
     public function scopeFilterByRequest($query, $radius)
     {
         list($latitude, $longtitude) = explode(',', AppHelper::getLatLong());

@@ -152,6 +152,7 @@ class LocationBoostCityController extends Controller
             }
 
             return response()->json([
+                'zoom' => 12,
                 'slots' => $slots,
                 'data' => $places,
                 'message' => '',
@@ -248,6 +249,11 @@ class LocationBoostCityController extends Controller
         $data = $this->getDrafts($user);
         $total = $data['total'];
         $items = $data['items'];
+
+        if (empty($total)) {
+            return redirect()->route('location-boost-cities.index');
+        }
+
         $user->createOrGetStripeCustomer([
             'name' => $user->name,
             'address' => [

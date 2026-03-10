@@ -78,7 +78,7 @@
 
 @push('scripts')
 <script type="text/javascript">
-    var RETURN_URL = '';
+    var RETURN_URL = '{{ url('location-boost-cities-confirmation') }}';
     var STRIPE_KEY = '{{ $stripeKey }}';
     var CLIENT_SECRET = '{{ $clientSecret }}';
 </script>
