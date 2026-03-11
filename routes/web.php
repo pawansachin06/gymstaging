@@ -127,6 +127,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('location-boost-cities/-/add-drafts', [LocationBoostCityController::class, 'addDrafts'])->name('location-boost-cities.add-drafts');
     Route::get('location-boost-cities-checkout', [LocationBoostCityController::class, 'checkout'])->name('location-boost-cities.checkout');
     Route::post('location-boost-cities-checkout', [LocationBoostCityController::class, 'checkout']);
+    Route::get('location-boost-cities/{locationBoostCity}/show', [LocationBoostCityController::class, 'show']);
+    Route::delete('location-boost-cities/{locationBoostCity}/delete', [LocationBoostCityController::class, 'destroy']);
 
     Route::get('business/location-boost', [HomePageController::class, 'businessLocationBoost'])->name('business.locationboost');
     Route::post('business/save-locations', [HomePageController::class, 'saveLocations'])->name('business.saveLocations');

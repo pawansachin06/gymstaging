@@ -8,8 +8,10 @@ use App\Models\Payment;
 use App\Services\GoogleMapsApi;
 use App\Services\GooglePlacesApi;
 use Exception;
+use Carbon\Carbon;
 use Stripe\StripeClient;
 use Illuminate\Http\Request;
+use Laravel\Cashier\Subscription;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -368,6 +370,10 @@ class LocationBoostCityController extends Controller
                         'type' => 'location_boost',
                     ],
                 ]);
+                $currentPeriodEnd = $stripeSubscription->current_period_end;
+                $ends_at = $currentPeriodEnd
+                    ? Carbon::createFromTimestamp($currentPeriodEnd)
+                    : null;
                 $subscription = $user->subscriptions()->create([
                     'type' => 'location_boost',
                     'stripe_id' => $stripeSubscription->id,
@@ -375,7 +381,7 @@ class LocationBoostCityController extends Controller
                     'stripe_price' => null, // since multiple prices
                     'quantity' => 0,
                     'trial_ends_at' => null,
-                    'ends_at' => null,
+                    'ends_at' => $ends_at,
                 ]);
                 $stripeItems = collect($stripeSubscription->items->data)->keyBy('price.id');
 
@@ -462,9 +468,22 @@ class LocationBoostCityController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(LocationBoostCity $locationBoostCity)
+    public function show(Request $request, LocationBoostCity $locationBoostCity)
     {
-        //
+        if ($request->input('ajax')) {
+            $subscription_id = $locationBoostCity->subscription_id;
+            $subscription = Subscription::find($subscription_id);
+            $message = 'After this date the featured spot will become available to other listings. ';
+            $message .= 'Once slots are taken, you may not be able to secure this placement again.';
+            if (!empty($locationBoostCity->ends_at)) {
+                $message = 'Subscription already cancelled.';
+            }
+            return response()->json([
+                'ends_at' => optional($subscription->ends_at)->toIso8601String(),
+                'item' => $locationBoostCity,
+                'message' => $message,
+            ]);
+        }
     }
 
     /**
@@ -486,8 +505,46 @@ class LocationBoostCityController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(LocationBoostCity $locationBoostCity)
+    public function destroy(Request $request, LocationBoostCity $locationBoostCity)
     {
-        //
+        try {
+            $user = $request->user();
+            if ($user->id != $locationBoostCity->user_id) {
+                return response()->json([
+                    'message' => 'Slot not owned',
+                ], 422);
+            }
+            if (!empty($locationBoostCity->ends_at)) {
+                return response()->json([
+                    'message' => 'Already cancelled',
+                ], 422);
+            }
+
+            $subscription_id = $locationBoostCity->subscription_id;
+            $subscription = Subscription::find($subscription_id);
+
+            $apiSecret = config('services.stripe.secret');
+            $stripe = new StripeClient(['api_key' => $apiSecret]);
+
+            $stripeItemId = $locationBoostCity->stripe_subscription_item_id;
+            $stripeItem = $stripe->subscriptionItems->retrieve($stripeItemId);
+            if ($stripeItem->quantity > 1) {
+                $stripe->subscriptionItems->update($stripeItemId, [
+                    'quantity' => $stripeItem->quantity - 1,
+                    'proration_behavior' => 'none'
+                ]);
+            } else {
+                $stripe->subscriptions->update($subscription->stripe_id, [
+                    'cancel_at_period_end' => true
+                ]);
+            }
+
+            $locationBoostCity->update([
+                'ends_at' => $subscription->ends_at,
+            ]);
+            return response()->json(['message' => 'Subscription cancelled']);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 }

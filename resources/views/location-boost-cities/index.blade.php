@@ -173,7 +173,7 @@
                                         </div>
                                     </div>
                                     <div x-show="slot.status == 'active'">
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center mb-1">
                                             <a x-bind:href="getSearchQuery(slot)" target="_blank" rel="noopener noreferrer nofollow"
                                                 class="btn w-100 py-2 rounded-3 btn-dark font-weight-semibold">
                                                 <span>View in Search</span>
@@ -182,6 +182,12 @@
                                             <button type="button" x-on:click="goToCenter(slot)" class="btn btn-outline-dark py-2 rounded-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
                                             </button>
+                                        </div>
+                                        <div class="text-center">
+                                            <a x-on:click.prevent="handleCancelSlotClick(slot)"
+                                                href="#cancelBoostModal" class="text-danger small font-weight-semibold">
+                                                Cancel Boost
+                                            </a>
                                         </div>
                                     </div>
                                     <div x-show="slot.status != 'active'">
@@ -322,34 +328,55 @@
         </div>
     </section>
 
-</article>
-
-<div class="modal fade" id="cancelBoostModal" tabindex="-1" aria-labelledby="cancelBoostModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="cancelBoostModalLabel">
-
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-dark rounded-3" data-dismiss="modal">
-            Keep Boost
-        </button>
-        <button type="button" class="btn btn-outline-danger">
-            Cancel Boost
-        </button>
+    <div class="modal fade" id="cancelBoostModal" tabindex="-1" aria-labelledby="cancelBoostModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content rounded-3">
+          <div class="modal-header py-2">
+            <h5 class="modal-title" id="cancelBoostModalLabel">
+                <span x-show="cancelSlot?.loading">Please wait...</span>
+                <span x-show="!cancelSlot?.loading">
+                    Cancel Boost for <span x-text="cancelSlot?.postcode"></span> &mdash; <span x-text="getName(cancelSlot)"></span>
+                </span>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div x-show="cancelSlot?.loading" class="py-5 text-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <div x-show="!cancelSlot?.loading">
+                <p class="mb-2">
+                    Your subscription will end.
+                    Your boost will remain active until <span x-text="cancelSlot?.ends_at" class="text-info font-weight-semibold"></span>
+                </p>
+                <p class="mb-0" x-text="cancelSlot?.message"></p>
+            </div>
+          </div>
+          <div class="modal-footer px-1 py-1" x-show="!cancelSlot?.loading">
+            <div class="row w-100 justify-content-center">
+                <div class="col-12 col-md-6 my-1">
+                    <button type="button" class="btn btn-dark py-2 w-100 rounded-3" data-dismiss="modal">
+                        Keep Boost
+                    </button>
+                </div>
+                <div class="col-12 col-md-6 my-1"
+                    x-show="!cancelSlot?.ends_at?.length">
+                    <button x-on:click="handleCancelSlot()" x-disabled="cancelSlot?.deleting" type="button" class="btn btn-outline-danger py-2 w-100 rounded-3">
+                        <span x-show="cancelSlot?.deleting">Please wait...</span>
+                        <span x-show="!cancelSlot?.deleting">Cancel Boost</span>
+                    </button>
+                </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
+</article>
 @endsection
 
 @push('scripts')

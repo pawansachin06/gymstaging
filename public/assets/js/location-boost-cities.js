@@ -56,6 +56,8 @@ document.addEventListener('alpine:init', function () {
             isCheckingOut: false,
             hasActiveSlots: false,
 
+            cancelSlot: null,
+
             keywordChange(el) {
                 var self = this;
                 var keyword = el.value;
@@ -261,7 +263,7 @@ document.addEventListener('alpine:init', function () {
                 if (val?.country?.name?.length) {
                     return val.country.name;
                 }
-                return val.postcode;
+                return val?.postcode;
             },
 
             getSearchQuery(val) {
@@ -286,6 +288,59 @@ document.addEventListener('alpine:init', function () {
                 setTimeout(function () {
                     myMap.setZoom(12);
                 }, 750);
+            },
+
+            handleCancelSlotClick(val) {
+                var self = this;
+                self.cancelSlot = val;
+                self.cancelSlot.deleting = false;
+                self.cancelSlot.loading = true;
+                self.cancelSlot.message = '';
+                jQuery('#cancelBoostModal').modal('show');
+                jQuery.ajax({
+                    method: 'GET',
+                    dataType: 'json',
+                    data: { ajax: 1 },
+                    url: '/location-boost-cities/' + val.id + '/show',
+                }).done(function (res) {
+                    if (res.item) {
+                        self.cancelSlot = res.item;
+                        if (res.ends_at?.length) {
+                            var endsAt = new Date(res.ends_at);
+                            var endsAtFormatted = endsAt.toLocaleDateString('en-GB', {
+                                day: 'numeric',
+                                month: 'long',
+                                year: 'numeric'
+                            });
+                            self.cancelSlot.ends_at = endsAtFormatted;
+                        }
+                        self.cancelSlot.loading = false;
+                        self.cancelSlot.message = res.message;
+                    }
+                }).fail(function (err) {
+                    self.cancelSlot = null;
+                    toast.error(getErrorMessage(err));
+                    jQuery('#cancelBoostModal').modal('hide');
+                });
+            },
+
+            handleCancelSlot() {
+                var self = this;
+                if (!self.cancelSlot) return;
+                self.cancelSlot.deleting = true;
+                jQuery.ajax({
+                    method: 'POST',
+                    dataType: 'json',
+                    data: { _method: 'DELETE' },
+                    url: '/location-boost-cities/' + self.cancelSlot.id + '/delete',
+                }).done(function (res) {
+                    window.location.reload();
+                    toast.success(res.message);
+                }).fail(function (err) {
+                    self.cancelSlot.deleting = false;
+                    toast.error(getErrorMessage(err));
+                    jQuery('#cancelBoostModal').modal('hide');
+                });
             },
 
             getDrafts() {

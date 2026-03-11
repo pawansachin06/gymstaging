@@ -26,6 +26,7 @@ class LocationBoostCity extends Model
         'latitude',
         'longitude',
         'status',
+        'ends_at',
         'stripe_subscription_item_id',
     ];
 
@@ -82,8 +83,9 @@ class LocationBoostCity extends Model
         if (!Schema::hasColumn($tableName, 'stripe_subscription_item_id')) {
             Schema::table($tableName, function (Blueprint $table) {
                 $table->string('stripe_subscription_item_id')->nullable()->after('status');
+                $table->dateTime('ends_at')->nullable()->after('stripe_subscription_item_id');
             });
-            $messages[] = "$tableName stripe_subscription_item_id added.";
+            $messages[] = "$tableName stripe_subscription_item_id, ends_at added.";
         }
         return $messages;
     }
