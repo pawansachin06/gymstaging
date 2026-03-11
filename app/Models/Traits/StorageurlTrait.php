@@ -64,6 +64,9 @@ trait StorageurlTrait
 
     public function getMarkerUrl($prop)
     {
+        if (!empty($this->marker_image)) {
+            return url("storage/markers/{$this->marker_image}");
+        }
         if (!$this->{$prop}) {
             return url('gymselect/images/bubble.png');
         }

@@ -17,6 +17,7 @@
             {{ html()->form('GET', route('search'))->class('map-select')->id('filterForm')->open() }}
             {{ html()->hidden('b', request('b')) }}
             {{ html()->hidden('s', request('s')) }}
+            {{ html()->hidden('postcode', request('postcode')) }}
             {{ html()->hidden('pos', $searchLatLong) }}
             <div class="row">
                 <div class="col-12 offset-md-3 col-md-6 offset-lg-4 col-lg-4 offset-xl-4 col-xl-4 mt-2">
@@ -105,11 +106,10 @@
                                         </div>
                                     </div>
                                     <div class="list-thumb-img">
-    <a href="{{ route('listing.view', $queryAdsList->slug) }}">
-        <img src="{{ $queryAdsList->getCoverImageUrl() }}" alt=" ">
-    </a>
-</div>
-
+                                        <a href="{{ route('listing.view', $queryAdsList->slug) }}">
+                                            <img src="{{ $queryAdsList->getCoverImageUrl() }}" alt=" ">
+                                        </a>
+                                    </div>
                                     <div class="btn-group w-100">
                                         <button type="button" class="btn thumb-btn1 features-btn" data-toggle="popover"
                                             data-placement="bottom" title="Viewing Features"

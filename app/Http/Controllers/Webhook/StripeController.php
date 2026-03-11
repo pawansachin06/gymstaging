@@ -92,6 +92,7 @@ class StripeController extends CashierController
                 'stripe_customer_id' => $customerId,
             ],
         );
+        $payment->process();
 
         return $this->successMethod();
     }

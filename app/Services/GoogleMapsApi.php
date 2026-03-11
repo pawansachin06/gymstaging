@@ -30,7 +30,7 @@ class GoogleMapsApi
     public function reverseGeocode(float $lat, float $lng): array
     {
         $dir = self::CACHE_DIR;
-        $filename = round($lat, 3) . '_' . round($lng, 3);
+        $filename = round($lat, 10) . '_' . round($lng, 10);
         $cacheKey =  "$dir/$filename.json";
 
         if (Storage::disk('public')->exists($cacheKey)) {

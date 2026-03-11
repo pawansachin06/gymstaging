@@ -13,22 +13,28 @@ document.addEventListener('alpine:init', function () {
         google.maps.importLibrary('places').then(function (places) {
             autocompleteService = places.AutocompleteSuggestion;
             sessionToken = new google.maps.places.AutocompleteSessionToken();
+            autocompleteRequest = {
+                includedRegionCodes: ['gb'], // United Kingdom only
+                sessionToken: sessionToken
+            };
         });
 
         google.maps.importLibrary('maps').then(function (maps) {
             myMap = new maps.Map(myMapContainer, {
-                zoom: 8, zoomControl: true,
+                zoom: 10, zoomControl: true,
                 center: myMapCenter,
                 mapTypeControl: false,
                 streetViewControl: false,
                 fullscreenControl: false,
                 mapId: '3090fde3d7f90191d556c527',
+
             });
             google.maps.event.addListenerOnce(myMap, 'idle', function () {
                 postcodeLayer = myMap.getFeatureLayer('POSTAL_CODE');
                 if (!postcodeLayer) {
                     console.warn('POSTAL_CODE layer not available');
                 }
+                window.dispatchEvent(new Event('google-maps-ready'));
             });
         });
     });
@@ -37,6 +43,7 @@ document.addEventListener('alpine:init', function () {
     Alpine.data('page', function () {
         return {
             keyword: '',
+            editing: false,
             activeTab: 'map',
             placeSuggestions: [],
 
@@ -45,7 +52,9 @@ document.addEventListener('alpine:init', function () {
 
             drafts: [],
             markers: {},
+            businessId: 0,
             isCheckingOut: false,
+            hasActiveSlots: false,
 
             keywordChange(el) {
                 var self = this;
@@ -57,6 +66,7 @@ document.addEventListener('alpine:init', function () {
                 autocompleteService?.fetchAutocompleteSuggestions({
                     input: keyword,
                     sessionToken: sessionToken,
+                    includedRegionCodes: ['gb'],
                 }).then(function (response) {
                     const suggestions = response.suggestions;
                     self.placeSuggestions = [];
@@ -84,7 +94,7 @@ document.addEventListener('alpine:init', function () {
                     method: 'GET',
                     dataType: 'json',
                     url: AVAILABLE_SLOTS_URL,
-                    data: { 'place-id': placeSuggestion.id },
+                    data: { 'place-id': placeSuggestion.id, ajax: 1 },
                 }).done(function (res) {
                     self.keyword = '';
                     self.slots = res.slots;
@@ -129,6 +139,8 @@ document.addEventListener('alpine:init', function () {
                 var div = document.createElement('div');
                 var img = document.createElement('img');
                 img.src = MARKER_IMAGE_URL;
+                img.setAttribute('width', 54);
+                img.setAttribute('height', 54);
                 div.appendChild(img);
                 return div;
             },
@@ -217,8 +229,11 @@ document.addEventListener('alpine:init', function () {
             handleBoostReset() {
                 var self = this;
                 self.keyword = '';
+                self.hasActiveSlots = false;
                 var keywordInput = document.querySelector('[data-js="keyword-input"]');
-                keywordInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                var keywordInputMobile = document.querySelector('[data-js="keyword-input-mobile"]');
+                keywordInputMobile?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // keywordInput?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 setTimeout(function () {
                     keywordInput?.focus();
                 }, 1000);
@@ -228,7 +243,7 @@ document.addEventListener('alpine:init', function () {
                 var self = this;
                 var total = 0;
                 for (var i = self.drafts.length - 1; i >= 0; i--) {
-                    total += self.drafts[i].price;
+                    total += self.drafts[i].amount;
                 }
                 return total;
             },
@@ -249,6 +264,12 @@ document.addEventListener('alpine:init', function () {
                 return val.postcode;
             },
 
+            getSearchQuery(val) {
+                var businessId = this.businessId;
+                var q = '/search?b=' + businessId + '&pos=' + val.latitude + ',' + val.longitude + '&s=' + val.postcode + '&r=50';
+                return q;
+            },
+
             toPrice(val) {
                 if (!val) return '0.00';
                 const num = typeof val === 'number' ? val : parseFloat(val);
@@ -258,14 +279,35 @@ document.addEventListener('alpine:init', function () {
                 return num.toFixed(2);
             },
 
+            goToCenter(item) {
+                myMap.setZoom(8);
+                this.activeTab = 'map';
+                myMap.setCenter({ lat: item.latitude, lng: item.longitude });
+                setTimeout(function () {
+                    myMap.setZoom(12);
+                }, 750);
+            },
+
             getDrafts() {
                 var self = this;
                 jQuery.ajax({
                     method: 'GET',
                     dataType: 'json',
+                    data: { ajax: 1 },
                 }).done(function (res) {
                     self.total = res.total;
-                    self.drafts = res.items.map(function (draft) {
+                    self.businessId = res.business_id;
+                    self.slots = res.slots.map(function (slot) {
+                        var marker = new google.maps.marker.AdvancedMarkerElement({
+                            map: myMap,
+                            title: slot.postcode,
+                            position: { lat: slot.latitude, lng: slot.longitude },
+                            content: self.buildMapMarker(),
+                        });
+                        self.markers[slot.id] = marker;
+                        return slot;
+                    });
+                    self.drafts = res.drafts.map(function (draft) {
                         var marker = new google.maps.marker.AdvancedMarkerElement({
                             map: myMap,
                             title: draft.postcode,
@@ -275,8 +317,12 @@ document.addEventListener('alpine:init', function () {
                         self.markers[draft.id] = marker;
                         return draft;
                     });
-                    if (res.items?.length) {
-                        myMap.setCenter({ lat: res.items[0].latitude, lng: res.items[0].longitude });
+                    if (res.slots?.length) {
+                        self.editing = true;
+                        self.hasActiveSlots = true;
+                        myMap.setCenter({ lat: res.slots[0].latitude, lng: res.slots[0].longitude });
+                    } else if (res.drafts?.length) {
+                        myMap.setCenter({ lat: res.drafts[0].latitude, lng: res.drafts[0].longitude });
                     }
                 }).fail(function (err) {
                     console.log(getErrorMessage(err));
@@ -285,9 +331,9 @@ document.addEventListener('alpine:init', function () {
 
             init() {
                 var self = this;
-                setTimeout(function () {
+                window.addEventListener('google-maps-ready', function () {
                     self.getDrafts();
-                }, 5000);
+                });
             },
         }
     });

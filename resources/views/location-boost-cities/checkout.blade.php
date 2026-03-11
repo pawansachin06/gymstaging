@@ -38,7 +38,7 @@
                             {{ !empty($item->city) ? $item->city : $item->country }}
                         </div>
                         <div class="py-1">
-                            &pound;{{ number_format($item->price, 2) }} / month
+                            &pound;{{ number_format($item->amount, 2) }} / month
                         </div>
                     </div>
                 @endforeach
@@ -61,6 +61,9 @@
             </div>
             <div class="d-none">
                 <button id="btn-checkout" type="button" class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
+                    <span class="spinner-border spinner-border-sm mx-1 d-none" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </span>
                     <span>Subscribe</span>
                 </button>
                 <div class="my-2">
@@ -78,9 +81,9 @@
 
 @push('scripts')
 <script type="text/javascript">
-    var RETURN_URL = '{{ url('location-boost-cities-confirmation') }}';
+    var TOTAL = {{ $total * 100 }};
+    var USER_EMAIL = '{{ $email }}';
     var STRIPE_KEY = '{{ $stripeKey }}';
-    var CLIENT_SECRET = '{{ $clientSecret }}';
 </script>
 <script src="https://js.stripe.com/v3/"></script>
 <script defer src="/assets/js/location-boost-cities-checkout.js?v={{ config('app.version') }}"></script>

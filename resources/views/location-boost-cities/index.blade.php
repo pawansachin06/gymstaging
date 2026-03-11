@@ -8,10 +8,20 @@
 <article x-data="page" class="container">
     <section class="my-4 text-center">
         <div class="px-3 py-4 rounded-3 bg-white shadow-md">
-            <h1 class="h4 font-weight-bold">Location Boost</h1>
+            <h1 class="h4 font-weight-bold">
+                @if(!empty($locations))
+                    Your Boosted Locations
+                @else
+                    Location Boost
+                @endif
+            </h1>
             <p class="mb-0">
-                Dominate your local area or expand into new locations.
-                Limited featured spots per area.
+                @if(!empty($locations))
+                    Manage your featured placements.
+                @else
+                    Dominate your local area or expand into new locations.
+                    Limited featured spots per area.
+                @endif
             </p>
         </div>
     </section>
@@ -20,7 +30,7 @@
         <div class="d-sm-none mb-3">
             <div class="d-flex align-items-center">
                 <div class="flex-grow-1">
-                    <input type="text" data-js="keyword-input" x-model="keyword"
+                    <input type="text" data-js="keyword-input-mobile" x-model="keyword"
                         name="keyword" autocomplete="off" spellcheck="false"
                         x-on:input.debounce.500ms="keywordChange($el)"
                         placeholder="Search a city, street or postcode..."
@@ -72,22 +82,29 @@
                 </div>
                 <div data-css="data-col" x-cloak x-show="activeTab == 'list'"
                     x-transition.opacity.duration.400ms class="col-12 col-md-5 px-0 bg-white d-sm-block top-0 left-0 right-0 bottom-0">
-                    <div id="my-data-container" class="d-flex flex-column flex-grow-1">
+                    <div id="my-data-container" class="h-100 d-flex flex-column flex-grow-1">
                         <div class="px-2">
                             <div class="d-none d-sm-block">
-                                <div class="d-flex pt-2 mb-2 align-items-center">
-                                    <div class="flex-grow-1">
-                                        <input type="text" data-js="keyword-input" x-model="keyword"
-                                            name="keyword" autocomplete="off" spellcheck="false"
-                                            x-on:input.debounce.500ms="keywordChange($el)"
-                                            placeholder="Search a city, street or postcode..."
-                                            class="form-control rounded-3"
-                                        />
-                                    </div>
-                                    <div class="px-2" x-cloak x-show="slotsLoading">
-                                        <div class="spinner-border text-secondary" role="status">
-                                            <span class="sr-only">Loading...</span>
+                                <div x-show="!hasActiveSlots">
+                                    <div class="d-flex pt-2 mb-2 align-items-center">
+                                        <div class="flex-grow-1">
+                                            <input type="text" data-js="keyword-input" x-model="keyword"
+                                                name="keyword" autocomplete="off" spellcheck="false"
+                                                x-on:input.debounce.500ms="keywordChange($el)"
+                                                placeholder="Search a city, street or postcode..."
+                                                class="form-control rounded-3"
+                                            />
                                         </div>
+                                        <div class="px-2" x-cloak x-show="slotsLoading">
+                                            <div class="spinner-border text-secondary" role="status">
+                                                <span class="sr-only">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div x-show="placeSuggestions.length == 0 && (slots.length == 0 || editing)">
+                                        <p data-css="map-input-example" class="mt-2 mb-0">
+                                            <span>Example: Manchester, UK</span>
+                                        </p>
                                     </div>
                                 </div>
                                 <div x-cloak x-show="placeSuggestions.length > 0">
@@ -102,45 +119,72 @@
                                         </template>
                                     </ul>
                                 </div>
-                                <div x-show="placeSuggestions.length == 0 && slots.length == 0">
-                                    <p data-css="map-input-example" class="mt-2 mb-0">
-                                        <span>Example: Manchester, UK</span>
-                                    </p>
-                                </div>
                             </div>
                         </div>
                         <div data-css="slots-container" class="px-2 py-2 rounded-3 flex-grow-1">
                             <template x-for="(slot, slotInx) in slots" x-bind:key="slot.id">
                                 <div class="mb-3 px-2 py-2 rounded-3 border shadow-sm">
-                                    <p class="mb-1 font-weight-semibold text-truncate">
-                                        <span x-text="slot.postcode"></span>
-                                        &mdash;
-                                        <span x-text="getName(slot)"></span>
-                                    </p>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="font-weight-semibold">Featured Spots</div>
-                                        <div class="font-weight-semibold">
-                                            <span x-text="slot.taken + '/'+ slot.available"></span>
-                                            taken
+                                    <div class="mb-1 d-flex justify-content-between align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <p class="mb-0 font-weight-semibold text-truncate">
+                                                <span x-text="slot.postcode"></span>
+                                                &mdash;
+                                                <span x-text="getName(slot)"></span>
+                                            </p>
                                         </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <div class="d-flex align-items-center">
-                                            <template x-for="i in 3" x-bind:key="i">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14"
-                                                    class="d-inline-block mr-1" x-bind:fill="[i <= slot.taken ? '#9c9c9c' : '#18b9b5']">
-                                                    <path d="M480-80q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80"/>
-                                                </svg>
-                                            </template>
-                                        </div>
-                                        <div>
+                                        <div x-show="slot.status == 'active'" class="flex-shrink-0">
                                             <span class="font-weight-bold">
-                                                &pound;<span x-text="slot.price"></span>
-                                            </span>
-                                            / month
+                                                &pound;<span x-text="slot.amount"></span>
+                                            </span> / month
                                         </div>
                                     </div>
-                                    <div>
+                                    <div x-show="slot.status != 'active'">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="font-weight-semibold">Featured Spots</div>
+                                            <div class="font-weight-semibold">
+                                                <span x-text="slot.taken + '/'+ slot.available"></span>
+                                                taken
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="d-flex align-items-center">
+                                                <template x-for="i in 3" x-bind:key="i">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14"
+                                                        class="d-inline-block mr-1" x-bind:fill="[i <= slot.taken ? '#9c9c9c' : '#18b9b5']">
+                                                        <path d="M480-80q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80"/>
+                                                    </svg>
+                                                </template>
+                                            </div>
+                                            <div>
+                                                <span class="font-weight-bold">
+                                                    &pound;<span x-text="slot.amount"></span>
+                                                </span>
+                                                / month
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div x-show="slot.status == 'active'">
+                                        <div class="py-1 mb-2 border-top border-bottom">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14"
+                                                class="d-inline-block mr-1" fill="#4cd20f">
+                                                <path d="M480-80q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80"/>
+                                            </svg>
+                                            <span class="small font-weight-semibold text-secondary">Active</span>
+                                        </div>
+                                    </div>
+                                    <div x-show="slot.status == 'active'">
+                                        <div class="d-flex align-items-center">
+                                            <a x-bind:href="getSearchQuery(slot)" target="_blank" rel="noopener noreferrer nofollow"
+                                                class="btn w-100 py-2 rounded-3 btn-dark font-weight-semibold">
+                                                <span>View in Search</span>
+                                            </a>
+                                            <div class="mx-1"></div>
+                                            <button type="button" x-on:click="goToCenter(slot)" class="btn btn-outline-dark py-2 rounded-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div x-show="slot.status != 'active'">
                                         <template x-if="isPlaceAdded(slot)">
                                             <button x-on:click="handlePlaceClick($el, slot)" x-bind:disabled="slot.disabled" type="button"
                                                 class="btn w-100 py-2 rounded-3 btn-dark font-weight-semibold">
@@ -159,6 +203,14 @@
                                     </div>
                                 </div>
                             </template>
+                        </div>
+                        <div x-cloak x-show="hasActiveSlots" class="px-2 py-2">
+                            <button x-on:click="handleBoostReset()" type="button" class="btn btn-outline-info w-100 py-2 rounded-3 font-weight-semibold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 12h14"/><path d="M12 5v14"/>
+                                </svg>
+                                <span class="align-middle">Boost Another Area</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -185,7 +237,7 @@
                         <div class="d-flex align-items-center flex-shrink-0">
                             <div>
                                 <span class="">
-                                    &pound;<span x-text="toPrice(draft.price)"></span>
+                                    &pound;<span x-text="toPrice(draft.amount)"></span>
                                 </span> / month
                             </div>
                             <button x-on:click="handleDraftRemove($el, draft)" type="button" class="btn px-1 py-1 text-secondary shadow-none">
@@ -210,19 +262,21 @@
                     </div>
                 </div>
             </div>
-            <div class="row px-1">
+            <div class="row px-1 flex-md-row-reverse">
+                <div class="col-12 col-md-6 mb-2">
+                    <button x-on:click="handleDraftAdd()" x-bind:disabled="isCheckingOut" type="button" class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
+                        <span x-show="isCheckingOut" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="align-middle">
+                            Continue to Checkout
+                        </span>
+                    </button>
+                </div>
                 <div class="col-12 col-md-6 mb-2">
                     <button x-on:click="handleBoostReset()" type="button" class="btn btn-dark w-100 py-2 rounded-3 font-weight-semibold">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5 12h14"/><path d="M12 5v14"/>
                         </svg>
                         <span class="align-middle">Boost Another Area</span>
-                    </button>
-                </div>
-                <div class="col-12 col-md-6 mb-2">
-                    <button x-on:click="handleDraftAdd()" x-bind:disabled="isCheckingOut" type="button" class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
-                        <span x-show="isCheckingOut" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                        <span class="align-middle">Continue</span>
                     </button>
                 </div>
             </div>
@@ -269,6 +323,33 @@
     </section>
 
 </article>
+
+<div class="modal fade" id="cancelBoostModal" tabindex="-1" aria-labelledby="cancelBoostModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelBoostModalLabel">
+
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark rounded-3" data-dismiss="modal">
+            Keep Boost
+        </button>
+        <button type="button" class="btn btn-outline-danger">
+            Cancel Boost
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 @push('scripts')

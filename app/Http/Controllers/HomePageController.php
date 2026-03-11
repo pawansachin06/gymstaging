@@ -56,6 +56,7 @@ use Facebook\FacebookResponse;
 use App\Models\Sponsors;
 use App\Models\Subscription;
 use App\Models\Towns;
+use App\Services\GoogleMapsApi;
 
 class HomePageController extends Controller
 {
@@ -984,6 +985,7 @@ public function get_google_reviews()
         $bizID = $request->b;
         $keyword = $request->s;
         $radius = $request->r;
+        $postcode = $request->postcode;
 
         $siteService = new \App\Services\Site();
 
@@ -1005,18 +1007,36 @@ public function get_google_reviews()
             )
         ]);
 
-        $queryAds = LocationBoostCity::whereRaw('subscription_id in (select id from subscriptions where stripe_status="active" and name="business_location_boost")');
-
-        $boundsMi = $siteService->getCoordinatesWithinRadius($latitude, $longtitude, $radius, 'mi');
-        $queryAds->where('latitude', '>', $boundsMi['min']['lat'])
+        // $queryAds = LocationBoostCity::whereRaw('subscription_id in (select id from subscriptions where stripe_status="active" and name="business_location_boost")');
+        $queryAds = LocationBoostCity::where('status', 'active');
+        if (!empty($postcode)) {
+            // 2 miles radius for postcode district
+            $boundsMi = $siteService->getCoordinatesWithinRadius($latitude, $longtitude, 2, 'mi');
+            $mapsApi = GoogleMapsApi::getInstance();
+            $placesData = $mapsApi->reverseGeocode($latitude, $longtitude);
+            if (!empty($placesData['items'])) {
+                $postcodes = collect($placesData['items'])
+                    ->pluck('postcode.code')->filter()->values()->all();
+                $queryAds->whereIn('postcode', $postcodes);
+            } else {
+                $queryAds->where('postcode', $postcode);
+            }
+            $queryAds->orWhere(function ($q) use ($boundsMi) {
+                $q->where('latitude', '>', $boundsMi['min']['lat'])
+                  ->where('latitude', '<', $boundsMi['max']['lat'])
+                  ->where('longitude', '>', $boundsMi['min']['lng'])
+                  ->where('longitude', '<', $boundsMi['max']['lng']);
+            });
+        } else {
+            $boundsMi = $siteService->getCoordinatesWithinRadius($latitude, $longtitude, $radius, 'mi');
+            $queryAds->where('latitude', '>', $boundsMi['min']['lat'])
                 ->where('latitude', '<', $boundsMi['max']['lat'])
                 ->where('longitude', '>', $boundsMi['min']['lng'])
                 ->where('longitude', '<', $boundsMi['max']['lng']);
+        }
 
-
-        if( !empty($_GET['dev']) ) {
+        if( !empty($_GET['dd']) ) {
             echo $queryAdsListing->toSql();
-            dd('');
             dd($queryAds->pluck('user_id'));
         }
         $queryAdsListing = $queryAdsListing->whereIn('user_id', $queryAds->pluck('user_id'));
@@ -1034,7 +1054,7 @@ public function get_google_reviews()
 
         $data['allListings'] = $query->orderBy('distance')->get();
 
-        $data['queryAdsListing'] = $queryAdsListing->get();
+        $data['queryAdsListing'] = $queryAdsListing->inRandomOrder()->limit(3)->get();
         $data['listings'] = $query->orderBy('distance')->paginate();
         $data['categories'] = Category::where('business_id', $bizID)->orderBy('name')->get()->pluck("name", "id")->toArray();
 

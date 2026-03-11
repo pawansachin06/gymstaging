@@ -13,6 +13,7 @@
                     <div class="search-cont" id="location-form">
                         {{ html()->form('GET', route('search'))->id('search-form')->open() }}
                         {{ html()->hidden('pos', old('pos'))->id('position') }}
+                        {{ html()->hidden('postcode', old('postcode'))->id('postcode') }}
                         {{ html()->hidden('r', old('r', 150)) }}
                         <div class="form-row">
                             <div class="input-group col-12 mb-3 location-txt" id="loc-field">
@@ -72,30 +73,31 @@
 @push('footer_scripts')
     @include('partials.script-niceselect')
     <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_GEOLOCATION_API') }}&libraries=places"></script>
+            src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google.maps.key') }}&libraries=places"></script>
     <script type="text/javascript">
-        var seacrhField = $('#searchTextField'),
-            posField = $('#position'),
-            businessField = $('#businessField');
+        var seacrhField = jQuery('#searchTextField'),
+            posField = jQuery('#position'),
+            postcodeField = jQuery('#postcode'),
+            businessField = jQuery('#businessField');
 
-        $('body').on('click','.select-form',function(){
-            let searchBy = $(this).data('search');
-            $('.location-txt, .select-form').toggle();
-            $('.location-select').toggleClass('hide-out');
+        jQuery('body').on('click','.select-form',function(){
+            let searchBy = jQuery(this).data('search');
+            jQuery('.location-txt, .select-form').toggle();
+            jQuery('.location-select').toggleClass('hide-out');
             if(searchBy =='name') {
-                $('.location-select').addClass('overflow');
+                jQuery('.location-select').addClass('overflow');
             } else{
                 setTimeout(function() {
-                    $('.location-select').removeClass('overflow');
+                    jQuery('.location-select').removeClass('overflow');
                 }, 500);
             }
         });
 
-        $('#searchname').on('keyup',function(){
-            $.get("{{ route('searchname') }}",{ term: $(this).val() }, function (res) {
-                $('#searchResult').empty();
-                $.each(res,function(k,v) {
-                    $("#searchResult").append(`<li class="list-thumb"><div class="list-thumb-heading"><img src="${v.image}"/>${v.name}<br/><span>${v.category}</span></div><div class="list-thumb-heading-right"><a href="${v.slug}" class="btn btn-primary">View</a></div></li>`);
+        jQuery('#searchname').on('keyup',function(){
+            jQuery.get("{{ route('searchname') }}",{ term: jQuery(this).val() }, function (res) {
+                jQuery('#searchResult').empty();
+                jQuery.each(res,function(k,v) {
+                    jQuery("#searchResult").append(`<li class="list-thumb"><div class="list-thumb-heading"><img src="${v.image}"/>${v.name}<br/><span>${v.category}</span></div><div class="list-thumb-heading-right"><a href="${v.slug}" class="btn btn-primary">View</a></div></li>`);
                 });
             });
         }).on('focus',function() {
@@ -133,6 +135,13 @@
                         // }
                        // city = city.replace(', ' + country, '');
                         seacrhField.val(results[0].formatted_address);
+                        var postcode = '';
+                        results[0].address_components.forEach(function(component) {
+                            if (component.types.includes('postal_code')) {
+                                postcode = component.long_name;
+                            }
+                        });
+                        postcodeField.val(postcode);
                     }
                 }
             });
@@ -162,15 +171,31 @@
             });
         }
 
-        $(document).ready(function () {
+        jQuery(document).ready(function () {
             var searchAutoComplete = new google.maps.places.Autocomplete(seacrhField.get(0), {
                 types: ['geocode'],
+                componentRestrictions: { country: 'gb' } // UK only
             });
             google.maps.event.addListener(searchAutoComplete, 'place_changed', function() {
-                getLatLng(seacrhField.val());
+                // getLatLng(seacrhField.val());
+                var place = searchAutoComplete.getPlace();
+                if (!place.place_id) return;
+
+                jQuery.get('/api/v1/google/places', {
+                    'place-id': place.place_id
+                }, function (res) {
+                    if (!res.item) return;
+                    var item = res.item;
+                    // set fields
+                    seacrhField.val(place.formatted_address);
+                    posField.val(item.latitude + ',' + item.longitude);
+                    if (item.postcode) {
+                        postcodeField.val(item.postcode.code);
+                    }
+                });
             });
 
-            $('#search-form').on('submit', function (e) {
+            jQuery('#search-form').on('submit', function (e) {
                 if(!seacrhField.val()){
                     swal('','Please enter location or postcode', 'error');
                     return false;

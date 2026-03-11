@@ -35,7 +35,7 @@
         <li><a href="{{ route('select.business') }}"> List Your Business </a></li>
         <li><a href="/products">Products</a></li>
         <li><a href="{{ route('legals') }}"> Legals </a></li>
-        <p>Copyright © {{date('Y')}} GymSelect Limited.</p>
+        <p>Copyright &copy; {{date('Y')}} GymSelect Limited.</p>
     </ul>
 </footer>
 <div class="modal fade" id="cookieModal" tabindex="-1" role="dialog">

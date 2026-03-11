@@ -20,13 +20,17 @@ class LocationBoostCity extends Model
         'country',
         'city',
         'postcode',
+        'amount',
+        'currency_code',
         'place_id',
         'latitude',
         'longitude',
         'status',
+        'stripe_subscription_item_id',
     ];
 
     protected $casts = [
+        'amount' => 'float',
         'latitude' => 'float',
         'longitude' => 'float',
     ];
@@ -68,7 +72,19 @@ class LocationBoostCity extends Model
             });
             $messages[] = "$tableName postcode, status, place_id added.";
         }
-
+        if (!Schema::hasColumn($tableName, 'amount')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->decimal('amount')->nullable()->after('postcode');
+                $table->string('currency_code', 5)->nullable()->after('amount');
+            });
+            $messages[] = "$tableName amount, currency_code added.";
+        }
+        if (!Schema::hasColumn($tableName, 'stripe_subscription_item_id')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->string('stripe_subscription_item_id')->nullable()->after('status');
+            });
+            $messages[] = "$tableName stripe_subscription_item_id added.";
+        }
         return $messages;
     }
 }

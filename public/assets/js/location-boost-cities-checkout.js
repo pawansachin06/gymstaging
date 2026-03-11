@@ -2,6 +2,7 @@
     var stripe = null;
     var elements = null;
     var btnCheckout = document.getElementById('btn-checkout');
+    var btnCheckoutLoader = btnCheckout.querySelector('.spinner-border');
 
     function initStripe() {
         stripe = Stripe(STRIPE_KEY);
@@ -18,32 +19,66 @@
             fonts: [{
                 cssSrc: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap'
             }],
-            clientSecret: CLIENT_SECRET,
+            amount: TOTAL,
+            currency: 'usd',
+            mode: 'subscription',
+            paymentMethodCreation: 'manual',
         });
         var paymentElement = elements.create('payment', {
             fields: {
-                billingDetails: { },
+                billingDetails: {
+                    email: 'auto',
+                },
             },
         });
         paymentElement.mount('#payment-element');
-        setTimeout(function () {
+        paymentElement.on('ready', function () {
             btnCheckout.parentElement.classList.remove('d-none');
-        }, 5000);
+        });
     }
 
-    btnCheckout.addEventListener('click', function(){
+    btnCheckout.addEventListener('click', function () {
         btnCheckout.disabled = true;
-        stripe.confirmPayment({
-            elements: elements,
-            redirect: 'always',
-            confirmParams: { return_url: RETURN_URL }
-        }).then(function (result) {
+        btnCheckoutLoader.classList.remove('d-none');
+        elements.submit().then(function (result) {
             if (result.error) {
-                btnCheckout.disabled = false;
+                btnCheckoutLoader.classList.add('d-none');
                 toast.error(result.error.message);
+                btnCheckout.disabled = false;
+                return;
             }
-            // If no error, Stripe will redirect automatically
-            // to return_url after authentication if required.
+            stripe.createPaymentMethod({
+                elements: elements,
+                params: {
+                    billing_details: {
+                        email: USER_EMAIL
+                    }
+                }
+            }).then(function (res) {
+                if (res.error) {
+                    btnCheckoutLoader.classList.add('d-none');
+                    toast.error(res.error.message);
+                    btnCheckout.disabled = false;
+                    return;
+                }
+                var paymentMethod = res.paymentMethod;
+                jQuery.ajax({
+                    method: 'POST',
+                    data: {
+                        ajax: 1,
+                        id: paymentMethod.id
+                    },
+                    dataType: 'json',
+                }).done(function (res) {
+                    if (res.redirect) {
+                        window.location.href = res.redirect;
+                    }
+                }).fail(function (err) {
+                    btnCheckout.disabled = false;
+                    toast.error(getErrorMessage(err));
+                    btnCheckoutLoader.classList.add('d-none');
+                });
+            });
         });
     });
 

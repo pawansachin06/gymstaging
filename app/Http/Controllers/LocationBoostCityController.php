@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\LocationBoostCity;
 use App\Models\LocationBoostPrice;
+use App\Models\Payment;
 use App\Services\GoogleMapsApi;
 use App\Services\GooglePlacesApi;
 use Exception;
+use Stripe\StripeClient;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LocationBoostCityController extends Controller
 {
@@ -15,18 +19,36 @@ class LocationBoostCityController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $listing = $user->listing()->select(['id', 'marker_image'])->first();
+        $listing = $user->listing()->select([
+            'id',
+            'business_id',
+            'marker_image',
+        ])->first();
 
-        if ($request->ajax()) {
+        if (!empty($request->input('ajax'))) {
+            $businessId = $listing->business_id;
             $data = $this->getDrafts($user);
+            $drafts = $data['items'];
             $total = $data['total'];
-            $items = $data['items'];
+
+            $slots = LocationBoostCity::query()
+                ->where('status', 'active')
+                ->where('user_id', $user->id)
+                ->get();
+
             return response()->json([
                 'message' => '',
+                'slots' => $slots,
                 'total' => $total,
-                'items' => $items,
+                'drafts' => $drafts,
+                'business_id' => $businessId,
             ]);
         }
+
+        $locations = LocationBoostCity::query()
+            ->where('status', 'active')
+            ->where('user_id', $user->id)
+            ->pluck('id')->toArray();
 
         $benefits = [[
             'icon' => 'https://placehold.co/64.png',
@@ -58,6 +80,7 @@ class LocationBoostCityController extends Controller
             'faqs' => $faqs,
             'listing' => $listing,
             'benefits' => $benefits,
+            'locations' => $locations,
         ]);
     }
 
@@ -76,6 +99,13 @@ class LocationBoostCityController extends Controller
             $place = $placeData['item'];
             $places = [$place]; // array of places
             $postcodes = [$place['postcode']['code']];
+
+            $isFull = strpos($place['postcode']['code'], ' ') >= 2;
+            if ($isFull) {
+                return response()->json([
+                    'message' => 'Address is not of district',
+                ], 422);
+            }
 
             if (empty($place['postcode']['code'])) {
                 $latitude = $place['latitude'];
@@ -100,8 +130,13 @@ class LocationBoostCityController extends Controller
                 foreach ($placesData['items'] as $value) {
                     if (!empty($value['postcode']['code'])) {
                         if (!in_array($value['postcode']['code'], $postcodes)) {
-                            $places[] = $value;
-                            $postcodes[] = $value['postcode']['code'];
+                            $isFull = strpos($value['postcode']['code'], ' ') >= 2;
+                            if ($isFull) {
+                                // full postcodes are not used, only districts
+                            } else {
+                                $places[] = $value;
+                                $postcodes[] = $value['postcode']['code'];
+                            }
                         }
                     }
                 }
@@ -113,13 +148,18 @@ class LocationBoostCityController extends Controller
                 ], 422);
             }
 
+            $user = $request->user();
+
             $counts = LocationBoostCity::query()
-                ->join('subscriptions', 'subscriptions.id', '=', 'location_boost_cities.subscription_id')
+                ->where('status', 'active')
                 ->whereIn('postcode', $postcodes)
-                ->where('subscriptions.stripe_status', 'active')
                 ->selectRaw('postcode, COUNT(*) as total')
                 ->groupBy('postcode')
                 ->pluck('total', 'postcode');
+            $takenLocations = LocationBoostCity::query()
+                ->where('status', 'active')
+                ->where('user_id', $user->id)
+                ->pluck('postcode')->toArray();
 
             $prices = LocationBoostPrice::query()
                 ->whereIn('postcode', $postcodes)->pluck('amount', 'postcode');
@@ -134,11 +174,14 @@ class LocationBoostCityController extends Controller
                 $available = max(0, 3 - $taken);
                 $disabled = !($taken < 3);
 
-                $price = $prices[$postcode] ?? $defaultPrice->amount;
+                $amount = $prices[$postcode] ?? $defaultPrice->amount;
+                if (in_array($postcode, $takenLocations)) {
+                    $disabled = true;
+                }
 
                 $slots[] = [
                     'taken' => $taken,
-                    'price' => $price,
+                    'amount' => $amount,
                     'id' => $place['id'],
                     'address' => $address,
                     'postcode' => $postcode,
@@ -197,6 +240,12 @@ class LocationBoostCityController extends Controller
             $user = $request->user();
             $userId = $user->id;
 
+            $postcodes = collect($drafts)->pluck('postcode')->filter()->unique();
+            $prices = LocationBoostPrice::query()
+                ->whereIn('postcode', $postcodes)->pluck('amount', 'postcode');
+            $defaultPrice = LocationBoostPrice::query()
+                ->whereNull('postcode')->value('amount');
+
             foreach ($drafts as $draft) {
                 $placeId = $draft['place_id'];
                 $postcode = $draft['postcode'];
@@ -204,6 +253,8 @@ class LocationBoostCityController extends Controller
                     $draft['city'] : $draft['city']['name'] ?? '';
                 $country = is_string($draft['country']) ?
                     $draft['country'] : $draft['country']['name'] ?? '';
+
+                $amount = $prices[$postcode] ?? $defaultPrice;
 
                 $exists = LocationBoostCity::query()
                     ->where('user_id', $userId)
@@ -213,6 +264,7 @@ class LocationBoostCityController extends Controller
                 if ($exists) {
                     $exists->update([
                         'city' => $city,
+                        'amount' => $amount,
                         'country' => $country,
                         'place_id' => $placeId,
                         'latitude' => $draft['latitude'],
@@ -223,6 +275,7 @@ class LocationBoostCityController extends Controller
                         'city' => $city,
                         'status' => 'draft',
                         'user_id' => $userId,
+                        'amount' => $amount,
                         'country' => $country,
                         'subscription_id' => 0,
                         'place_id' => $placeId,
@@ -254,32 +307,106 @@ class LocationBoostCityController extends Controller
             return redirect()->route('location-boost-cities.index');
         }
 
-        $user->createOrGetStripeCustomer([
-            'name' => $user->name,
-            'address' => [
-                'line1' => $user->address_line_1,
-                'line2' => $user->address_line_2,
-                'city' => $user->city,
-                'postal_code' => $user->postal_code,
-            ]
-        ]);
-        $draftIds = implode(',', $items->pluck('id')->toArray());
-        $intent = $user->createPayment(
-            $data['total'] * 100, [
-                'payment_method_types' => ['card'],
-                'metadata' => [
-                    'user_id' => $user->id,
-                    'draft_ids' => $draftIds,
-                    'type' => 'location_boost',
+        try {
+            $user->createOrGetStripeCustomer([
+                'name' => $user->name,
+                'address' => [
+                    'line1' => $user->address_line_1,
+                    'line2' => $user->address_line_2,
+                    'city' => $user->city,
+                    'postal_code' => $user->postal_code,
                 ]
-            ],
-        );
+            ]);
+        } catch (Exception $e) {
+            abort(500, $e->getMessage());
+        }
+
+        if ($request->input('ajax')) {
+            $paymentMethodId = $request->input('id');
+            if (empty($paymentMethodId)) {
+                return response()->json([
+                    'message' => 'Payment method id missing',
+                ], 422);
+            }
+
+            $apiSecret = config('services.stripe.secret');
+            $stripe = new StripeClient(['api_key' => $apiSecret]);
+
+            $stripe->paymentMethods->attach(
+                $paymentMethodId,
+                ['customer' => $user->stripe_id]
+            );
+            $stripe->customers->update(
+                $user->stripe_id,
+                [
+                    'invoice_settings' => [
+                        'default_payment_method' => $paymentMethodId
+                    ]
+                ]
+            );
+
+            DB::transaction(function () use ($stripe, $user, $items, $paymentMethodId) {
+                $itemsPayload = [];
+                $items = $items->values()->sortBy('id');
+                $grouped = $items->groupBy('stripe_price_id');
+                foreach ($grouped as $priceId => $slots) {
+                    $itemsPayload[] = [
+                        'price' => $priceId,
+                        'quantity' => $slots->count(),
+                        'metadata' => [
+                            'slot_id' => $slots->pluck('id')->join(','),
+                            'postcode' => $slots->pluck('postcode')->join(','),
+                        ],
+                    ];
+                }
+                $stripeSubscription = $stripe->subscriptions->create([
+                    'items' => $itemsPayload,
+                    'customer' => $user->stripe_id,
+                    'default_payment_method' => $paymentMethodId,
+                    'metadata' => [
+                        'user_id' => $user->id,
+                        'type' => 'location_boost',
+                    ],
+                ]);
+                $subscription = $user->subscriptions()->create([
+                    'type' => 'location_boost',
+                    'stripe_id' => $stripeSubscription->id,
+                    'stripe_status' => $stripeSubscription->status,
+                    'stripe_price' => null, // since multiple prices
+                    'quantity' => 0,
+                    'trial_ends_at' => null,
+                    'ends_at' => null,
+                ]);
+                $stripeItems = collect($stripeSubscription->items->data)->keyBy('price.id');
+
+                foreach ($grouped as $priceId => $slots) {
+                    $stripeItem = $stripeItems[$priceId] ?? null;
+                    if (!$stripeItem) continue;
+                    foreach ($slots as $slot) {
+                        unset($slot->stripe_price_id, $slot->stripe_product_id);
+                        $slot->update([
+                            'status' => 'active',
+                            'currency_code' => 'gbp',
+                            'subscription_id' => $subscription->id,
+                            'stripe_subscription_item_id' => $stripeItem->id,
+                        ]);
+                    }
+                }
+            });
+
+            return response()->json([
+                'message' => 'Redirecting...',
+                'redirect' => route('location-boost-cities.index'),
+            ]);
+        }
+
         $stripeKey = config('services.stripe.key');
         return view('location-boost-cities.checkout', [
-            'total' => $total,
             'items' => $items,
+            'total' => $total,
+            'total' => $total,
+            'email' => $user->email,
             'stripeKey' => $stripeKey,
-            'clientSecret' => $intent->client_secret,
         ]);
     }
 
@@ -293,15 +420,33 @@ class LocationBoostCityController extends Controller
             ->get();
         $postcodes = $items->pluck('postcode')->filter()->unique();
         $prices = LocationBoostPrice::query()
-            ->whereIn('postcode', $postcodes)->pluck('amount', 'postcode');
+            ->whereIn('postcode', $postcodes)->get()->keyBy('postcode');
         $defaultPrice = LocationBoostPrice::query()
-            ->whereNull('postcode')->value('amount');
+            ->whereNull('postcode')->first();
         $items->each(function ($item) use ($prices, $defaultPrice, &$total) {
-            $price = $prices[$item->postcode] ?? $defaultPrice;
-            $total = $total + $price;
-            $item->price = $price;
+            $priceRow = $prices[$item->postcode] ?? $defaultPrice;
+            $amount = $priceRow->amount;
+            $total = $total + $amount;
+            $item->amount = $amount;
+            $item->stripe_price_id = $priceRow->stripe_price_id;
+            $item->stripe_product_id = $priceRow->stripe_product_id;
         });
         return ['items' => $items, 'total' => $total];
+    }
+
+    public function confirm(Request $request)
+    {
+        $paymentIntentId = $request->input('payment_intent');
+        if (empty($paymentIntentId)) {
+            abort(500, 'Payment Intent Missing');
+        }
+        $payment = Payment::query()
+            ->where('stripe_intent_id', $paymentIntentId)
+            ->first(['id', 'processed_at']);
+        if (!empty($payment->processed_at)) {
+            return redirect()->route('location-boost-cities.index');
+        }
+        return view('location-boost-cities.confirm');
     }
 
     public function create()
