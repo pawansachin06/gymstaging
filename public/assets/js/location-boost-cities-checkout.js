@@ -3,6 +3,7 @@
     var elements = null;
     var btnCheckout = document.getElementById('btn-checkout');
     var btnCheckoutLoader = btnCheckout.querySelector('.spinner-border');
+    var VALIDATE_URL = btnCheckout.getAttribute('data-validate-url');
 
     function initStripe() {
         stripe = Stripe(STRIPE_KEY);
@@ -40,45 +41,57 @@
     btnCheckout.addEventListener('click', function () {
         btnCheckout.disabled = true;
         btnCheckoutLoader.classList.remove('d-none');
-        elements.submit().then(function (result) {
-            if (result.error) {
-                btnCheckoutLoader.classList.add('d-none');
-                toast.error(result.error.message);
-                btnCheckout.disabled = false;
-                return;
-            }
-            stripe.createPaymentMethod({
-                elements: elements,
-                params: {
-                    billing_details: {
-                        email: USER_EMAIL
-                    }
-                }
-            }).then(function (res) {
-                if (res.error) {
+
+        jQuery.ajax({
+            method: 'POST',
+            url: VALIDATE_URL,
+            dataType: 'json',
+        }).done(function (res) {
+            console.log(res);
+            elements.submit().then(function (result) {
+                if (result.error) {
                     btnCheckoutLoader.classList.add('d-none');
-                    toast.error(res.error.message);
+                    toast.error(result.error.message);
                     btnCheckout.disabled = false;
                     return;
                 }
-                var paymentMethod = res.paymentMethod;
-                jQuery.ajax({
-                    method: 'POST',
-                    data: {
-                        ajax: 1,
-                        id: paymentMethod.id
-                    },
-                    dataType: 'json',
-                }).done(function (res) {
-                    if (res.redirect) {
-                        window.location.href = res.redirect;
+                stripe.createPaymentMethod({
+                    elements: elements,
+                    params: {
+                        billing_details: {
+                            email: USER_EMAIL
+                        }
                     }
-                }).fail(function (err) {
-                    btnCheckout.disabled = false;
-                    toast.error(getErrorMessage(err));
-                    btnCheckoutLoader.classList.add('d-none');
+                }).then(function (res) {
+                    if (res.error) {
+                        btnCheckoutLoader.classList.add('d-none');
+                        toast.error(res.error.message);
+                        btnCheckout.disabled = false;
+                        return;
+                    }
+                    var paymentMethod = res.paymentMethod;
+                    jQuery.ajax({
+                        method: 'POST',
+                        data: {
+                            ajax: 1,
+                            id: paymentMethod.id
+                        },
+                        dataType: 'json',
+                    }).done(function (res) {
+                        if (res.redirect) {
+                            window.location.href = res.redirect;
+                        }
+                    }).fail(function (err) {
+                        btnCheckout.disabled = false;
+                        toast.error(getErrorMessage(err));
+                        btnCheckoutLoader.classList.add('d-none');
+                    });
                 });
             });
+        }).fail(function (err) {
+            btnCheckout.disabled = false;
+            toast.error(getErrorMessage(err));
+            btnCheckoutLoader.classList.add('d-none');
         });
     });
 

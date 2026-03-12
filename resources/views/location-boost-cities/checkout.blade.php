@@ -60,7 +60,7 @@
                 <div id="payment-element"></div>
             </div>
             <div class="d-none">
-                <button id="btn-checkout" type="button" class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
+                <button id="btn-checkout" data-validate-url="{{ route('location-boost-cities.validate-slots') }}" type="button" class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
                     <span class="spinner-border spinner-border-sm mx-1 d-none" role="status">
                         <span class="sr-only">Loading...</span>
                     </span>

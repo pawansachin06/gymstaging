@@ -26,14 +26,19 @@ document.addEventListener('alpine:init', function () {
                 mapTypeControl: false,
                 streetViewControl: false,
                 fullscreenControl: false,
-                mapId: '3090fde3d7f90191d556c527',
-
+                mapId: myMapContainer.getAttribute('data-id'),
             });
             google.maps.event.addListenerOnce(myMap, 'idle', function () {
                 postcodeLayer = myMap.getFeatureLayer('POSTAL_CODE');
                 if (!postcodeLayer) {
                     console.warn('POSTAL_CODE layer not available');
                 }
+                postcodeLayer.addListener('style', (options) => {
+                    console.warn('STYLE EVENT FIRED:', options.feature.displayName);
+                });
+                postcodeLayer.addListener('addfeature', (event) => {
+                    console.warn('FEATURE ADDED:', event.feature.displayName);
+                });
                 window.dispatchEvent(new Event('google-maps-ready'));
             });
         });
@@ -61,7 +66,7 @@ document.addEventListener('alpine:init', function () {
             keywordChange(el) {
                 var self = this;
                 var keyword = el.value;
-                if (keyword.length < 3) {
+                if (keyword.length < 2) {
                     self.placeSuggestions = [];
                     return;
                 }
@@ -108,19 +113,7 @@ document.addEventListener('alpine:init', function () {
                     var postcodesToHighlight = res.data.map(function (slot) {
                         return slot.postcode.code.split(' ')[0];
                     });
-                    console.log({ postcodesToHighlight });
-                    postcodeLayer.style = (options) => {
-                        console.log('MAP POSTCODE:', options.feature.displayName);
-                        if (postcodesToHighlight.includes(options.feature.displayName)) {
-                            return {
-                                fillColor: '#8106ef',
-                                fillOpacity: 0.1,
-                                strokeColor: '#8106ef',
-                                strokeWeight: 2,
-                            };
-                        }
-                        return null;
-                    };
+                    console.log(postcodesToHighlight);
                 }).fail(function (err) {
                     toast.error(getErrorMessage(err));
                 }).always(function () {
@@ -221,6 +214,9 @@ document.addEventListener('alpine:init', function () {
                     toast.show(res.message);
                     if (res.redirect) {
                         window.location.href = res.redirect;
+                        setTimeout(function(){
+                            self.isCheckingOut = false;
+                        }, 2000);
                     }
                 }).fail(function (err) {
                     self.isCheckingOut = false;
@@ -316,6 +312,7 @@ document.addEventListener('alpine:init', function () {
                         }
                         self.cancelSlot.loading = false;
                         self.cancelSlot.message = res.message;
+                        self.cancelSlot.canceled = res.canceled;
                     }
                 }).fail(function (err) {
                     self.cancelSlot = null;

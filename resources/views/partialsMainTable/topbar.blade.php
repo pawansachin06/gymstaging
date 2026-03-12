@@ -98,7 +98,7 @@
                                     @endif
                                     @if($listing)
                                             <li><a style="color:#33b0ba" class="dropdown-item" href="{{route('business.boost')}}">Review Boost</a></li>
-                                            <li><a class="dropdown-item" href="{{route('business.locationboost')}}"style="color:#47a0b4">Location Boost</a></li>
+                                            <li><a class="dropdown-item" href="/business/location-boost"style="color:#47a0b4">Location Boost</a></li>
                                         @if(!$listing->verified)
                                             <li><a style="color:#e2a10f" class="dropdown-item" href="{{route('business.verify')}}">Verify Account</a></li>
                                         @endif

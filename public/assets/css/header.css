@@ -7,9 +7,26 @@ header.topnav {
 
 @media(max-width: 575.98px) {
     header.topnav .row .col-12.logo {
-        top: -36px;
+        top: -37px;
     }
     header.topnav .row .menu-btn1 {
-        top: 4px;
+        top: 5px;
+    }
+    header.topnav .row .menu-btn2 {
+        top: 5px;
+        position: relative;
+    }
+}
+
+@media(min-width: 576px) {
+    header.topnav .row .col-12.logo {
+        margin-top: 12px;
+        margin-bottom: 7px;
+    }
+    header.topnav .row .menu-btn1 {
+        margin-top: 5px;
+    }
+    header.topnav .row .menu-btn2 {
+        margin-top: 5px;
     }
 }

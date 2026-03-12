@@ -120,9 +120,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('business/boost', [HomePageController::class, 'businessBoost'])->name('business.boost');
     Route::post('business/{id}/boost', [HomePageController::class, 'businessBoosted'])->name('business.boosted');
 
-    Route::get('business/location-boost-new', [LocationBoostCityController::class, 'index'])->name('location-boost-cities.index');
+    Route::get('business/location-boost', [LocationBoostCityController::class, 'index'])->name('location-boost-cities.index');
     Route::get('business/location-boosts-confirmation', [LocationBoostCityController::class, 'confirm'])->name('location-boost-cities.confirm');
     Route::get('location-boost-cities/-/available-slots', [LocationBoostCityController::class, 'availableSlots'])->name('location-boost-cities.available-slots');
+    Route::post('location-boost-cities/-/validate-slots', [LocationBoostCityController::class, 'validateSlots'])->name('location-boost-cities.validate-slots');
     Route::post('location-boost-cities/-/remove-drafts', [LocationBoostCityController::class, 'removeDrafts'])->name('location-boost-cities.remove-drafts');
     Route::post('location-boost-cities/-/add-drafts', [LocationBoostCityController::class, 'addDrafts'])->name('location-boost-cities.add-drafts');
     Route::get('location-boost-cities-checkout', [LocationBoostCityController::class, 'checkout'])->name('location-boost-cities.checkout');
@@ -130,7 +131,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('location-boost-cities/{locationBoostCity}/show', [LocationBoostCityController::class, 'show']);
     Route::delete('location-boost-cities/{locationBoostCity}/delete', [LocationBoostCityController::class, 'destroy']);
 
-    Route::get('business/location-boost', [HomePageController::class, 'businessLocationBoost'])->name('business.locationboost');
+    Route::get('business/location-boost-old', [HomePageController::class, 'businessLocationBoost'])->name('business.locationboost');
     Route::post('business/save-locations', [HomePageController::class, 'saveLocations'])->name('business.saveLocations');
 
     Route::post('business/location-boost', [HomePageController::class, 'doBusinessLocationBoost'])->name('business.dolocationboost');

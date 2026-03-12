@@ -51,6 +51,7 @@ class LocationBoostCityController extends Controller
             ->where('status', 'active')
             ->where('user_id', $user->id)
             ->pluck('id')->toArray();
+        $mapId = config('services.google.maps.id');
 
         $benefits = [[
             'icon' => 'https://placehold.co/64.png',
@@ -80,6 +81,7 @@ class LocationBoostCityController extends Controller
         ]];
         return view('location-boost-cities.index', [
             'faqs' => $faqs,
+            'mapId' => $mapId,
             'listing' => $listing,
             'benefits' => $benefits,
             'locations' => $locations,
@@ -190,6 +192,7 @@ class LocationBoostCityController extends Controller
                     'disabled' => $disabled,
                     'city' => $place['city'],
                     'available' => $available,
+                    'total' => 3,
                     'country' => $place['country'],
                     'latitude' => $place['latitude'],
                     'longitude' => $place['longitude'],
@@ -197,7 +200,7 @@ class LocationBoostCityController extends Controller
             }
 
             return response()->json([
-                'zoom' => 12,
+                'zoom' => 15,
                 'slots' => $slots,
                 'data' => $places,
                 'message' => '',
@@ -465,6 +468,57 @@ class LocationBoostCityController extends Controller
         //
     }
 
+    public function validateSlots(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            $drafts = LocationBoostCity::query()
+                ->where('user_id', $user->id)
+                ->where('status', 'draft')
+                ->get();
+
+            if ($drafts->isEmpty()) {
+                return response()->json([
+                    'message' => 'No slots found in cart'
+                ], 422);
+            }
+
+            $postcodes = $drafts->pluck('postcode')->unique()->values();
+
+            $counts = LocationBoostCity::query()
+                ->where('status', 'active')
+                ->whereIn('postcode', $postcodes)
+                ->selectRaw('postcode, COUNT(*) as total')
+                ->groupBy('postcode')
+                ->pluck('total', 'postcode');
+
+            $removed = [];
+
+            foreach ($drafts as $draft) {
+                $taken = $counts[$draft->postcode] ?? 0;
+                if ($taken >= 3) {
+                    $removed[] = $draft->postcode;
+                    $draft->status = 'conflict';
+                    $draft->save();
+                    $draft->delete(); // soft delete
+                }
+            }
+            if (!empty($removed)) {
+                $postcode = $removed[0];
+                return response()->json([
+                    'message' => "Postcode {$postcode} has just been taken.",
+                    'postcodes' => $removed,
+                ], 422);
+            }
+            return response()->json([
+                'message' => 'Slots available'
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
     /**
      * Display the specified resource.
      */
@@ -479,6 +533,7 @@ class LocationBoostCityController extends Controller
                 $message = 'Subscription already cancelled.';
             }
             return response()->json([
+                'canceled' => !empty($locationBoostCity->ends_at),
                 'ends_at' => optional($subscription->ends_at)->toIso8601String(),
                 'item' => $locationBoostCity,
                 'message' => $message,

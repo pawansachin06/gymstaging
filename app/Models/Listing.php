@@ -50,7 +50,7 @@ class Listing extends Model
         self::saving(function ($model) {
             if ($model->isDirty('profile_image')) {
                 // Artisan::call('image:marker', ['--file' => $model->profile_image]);
-                $this->generateMarkerImage();
+                $model->generateMarkerImage();
             }
             if ($model->isDirty('name')) {
                 $dispatcher = User::getEventDispatcher();
