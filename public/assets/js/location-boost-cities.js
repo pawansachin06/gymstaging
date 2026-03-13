@@ -3,9 +3,193 @@ document.addEventListener('alpine:init', function () {
     var sessionToken = null;
     var postcodeLayer = null;
     var autocompleteService = null;
+    var resolution = 8;
+    var coveragePolygon = null;
+
+    var postcodeDistricts = new Set();
+    var loadedAreas = new Set();
 
     var myMapCenter = { lat: lat, lng: lng };
     var myMapContainer = document.getElementById('my-map-container');
+
+    function clearCoverage() {
+        if (coveragePolygon) {
+            coveragePolygon.setMap(null);
+            coveragePolygon = null;
+        }
+    }
+
+    function getCoverageCells(slots) {
+        let cells = new Set();
+        slots.forEach(slot => {
+            const center = h3.latLngToCell(
+                slot.latitude,
+                slot.longitude,
+                resolution
+            );
+            // slight expansion
+            h3.gridDisk(center, 1).forEach(c => cells.add(c));
+        });
+        return Array.from(cells);
+    }
+
+    function hexUnionBoundary(cells) {
+        let edges = new Map();
+        cells.forEach(cell => {
+            const boundary = h3.cellToBoundary(cell);
+            for (let i = 0; i < boundary.length; i++) {
+                const a = boundary[i];
+                const b = boundary[(i + 1) % boundary.length];
+                const key1 = a[0] + "," + a[1] + "|" + b[0] + "," + b[1];
+                const key2 = b[0] + "," + b[1] + "|" + a[0] + "," + a[1];
+                if (edges.has(key2)) {
+                    edges.delete(key2); // internal edge
+                } else {
+                    edges.set(key1, [a, b]);
+                }
+            }
+        });
+        let points = [];
+        edges.forEach(edge => {
+            points.push({
+                lat: edge[0][0],
+                lng: edge[0][1]
+            });
+        });
+        return points;
+    }
+
+    function sortPolygon(points) {
+        const center = points.reduce((acc, p) => {
+            acc.lat += p.lat;
+            acc.lng += p.lng;
+            return acc;
+        }, { lat: 0, lng: 0 });
+        center.lat /= points.length;
+        center.lng /= points.length;
+        points.sort((a, b) => {
+            const angleA = Math.atan2(a.lat - center.lat, a.lng - center.lng);
+            const angleB = Math.atan2(b.lat - center.lat, b.lng - center.lng);
+            return angleA - angleB;
+        });
+        return points;
+    }
+
+    function convexHull(points) {
+        points.sort((a, b) => a.lng === b.lng ? a.lat - b.lat : a.lng - b.lng);
+        function cross(o, a, b) {
+            return (a.lng - o.lng) * (b.lat - o.lat) -
+                (a.lat - o.lat) * (b.lng - o.lng);
+        }
+        const lower = [];
+        for (const p of points) {
+            while (lower.length >= 2 &&
+                cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) {
+                lower.pop();
+            }
+            lower.push(p);
+        }
+        const upper = [];
+        for (let i = points.length - 1; i >= 0; i--) {
+            const p = points[i];
+            while (upper.length >= 2 &&
+                cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) {
+                upper.pop();
+            }
+            upper.push(p);
+        }
+        upper.pop();
+        lower.pop();
+        return lower.concat(upper);
+    }
+
+    function drawPostcodeCoverage2(slots) {
+        clearCoverage();
+        const resolution = 7;
+        let cells = new Set();
+        slots.forEach(slot => {
+            const center = h3.latLngToCell(slot.latitude, slot.longitude, resolution);
+            // small expansion to fill gaps
+            h3.gridDisk(center, 0).forEach(c => cells.add(c));
+        });
+        let boundaryPoints = [];
+        cells.forEach(cell => {
+            const boundary = h3.cellToBoundary(cell);
+            boundary.forEach(coord => {
+                boundaryPoints.push({
+                    lat: coord[0],
+                    lng: coord[1]
+                });
+            });
+        });
+        const hull = convexHull(boundaryPoints);
+        coveragePolygon = new google.maps.Polygon({
+            paths: hull,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.9,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.2,
+            map: myMap
+        });
+    }
+
+    function drawPostcodeCoverage(slots) {
+        clearCoverage();
+        const cells = getCoverageCells(slots);
+        let boundary = hexUnionBoundary(cells);
+        boundary = sortPolygon(boundary);
+        coveragePolygon = new google.maps.Polygon({
+            paths: boundary,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.9,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.2,
+            map: myMap
+        });
+    }
+
+    function drawPostcodeArea(slots) {
+        // clear previous polygons
+        myMap.data.forEach(function (feature) {
+            myMap.data.remove(feature);
+        });
+        loadedAreas.clear();
+        postcodeDistricts.clear();
+        // collect postcode districts (PR1, M1 etc.)
+        slots.forEach(function (slot) {
+            const code = slot.postcode; // PR1
+            postcodeDistricts.add(code);
+        });
+        // load required GeoJSON files
+        postcodeDistricts.forEach(function (code) {
+            const area = code.replace(/[0-9].*/, ''); // PR1 -> PR
+            if (!loadedAreas.has(area)) {
+                myMap.data.loadGeoJson(
+                    '/storage/app/public/geojson/gb/' + area + '.geojson'
+                );
+                loadedAreas.add(area);
+            }
+        });
+
+        // style only the districts we need
+        myMap.data.setStyle(function (feature) {
+            const code =
+                feature.getProperty('name') ||
+                feature.getProperty('Name') ||
+                feature.getProperty('postcode');
+            if (postcodeDistricts.has(code)) {
+                return {
+                    fillColor: "#FF0000",
+                    strokeColor: "#FF0000",
+                    strokeWeight: 2,
+                    fillOpacity: 0.25
+                };
+            }
+            return { visible: false };
+        });
+    }
 
     window.addEventListener('google-maps-loaded', function () {
         if (!myMapContainer) return;
@@ -109,11 +293,13 @@ document.addEventListener('alpine:init', function () {
                     if (res.zoom) {
                         myMap.setZoom(res.zoom);
                     }
-                    myMap.setCenter({ lat: res.data[0].latitude, lng: res.data[0].longitude });
+                    myMap.setCenter({ lat: res.slots[0].latitude, lng: res.slots[0].longitude });
                     var postcodesToHighlight = res.data.map(function (slot) {
                         return slot.postcode.code.split(' ')[0];
                     });
                     console.log(postcodesToHighlight);
+                    drawPostcodeArea(res.slots);
+                    // drawPostcodeCoverage(res.slots);
                 }).fail(function (err) {
                     toast.error(getErrorMessage(err));
                 }).always(function () {
@@ -214,7 +400,7 @@ document.addEventListener('alpine:init', function () {
                     toast.show(res.message);
                     if (res.redirect) {
                         window.location.href = res.redirect;
-                        setTimeout(function(){
+                        setTimeout(function () {
                             self.isCheckingOut = false;
                         }, 2000);
                     }
@@ -258,6 +444,9 @@ document.addEventListener('alpine:init', function () {
                 }
                 if (val?.country?.name?.length) {
                     return val.country.name;
+                }
+                if (val?.postal_town?.name?.length) {
+                    return val.postal_town.name;
                 }
                 return val?.postcode;
             },
@@ -389,4 +578,31 @@ document.addEventListener('alpine:init', function () {
             },
         }
     });
+});
+
+
+function _init_popOver() {
+    jQuery("[data-toggle=popover]").popover({
+        html: true,
+        trigger: 'click focus',
+        container: 'body',
+        offset: 125,
+        content: function() {
+            var content = jQuery(this).attr("data-popover-content");
+            return jQuery(content).children(".popover-body").html();
+        },
+        template: '<div class="popover list-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+    });
+}
+_init_popOver();
+jQuery('body').on('click', '[data-toggle=popover]', function() {
+    _init_popOver();
+    jQuery('[data-toggle=popover]').not(this).popover('hide');
+});
+jQuery('body').on('focus', '[data-toggle=popover]', function() {
+    _init_popOver();
+    jQuery('[data-toggle=popover]').not(this).popover('hide');
+});
+jQuery('body').on('click', '.popover-close', function() {
+    jQuery(this).closest('.list-popover').popover('hide');
 });

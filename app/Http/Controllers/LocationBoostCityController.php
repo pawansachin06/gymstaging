@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Listing;
 use App\Models\LocationBoostCity;
 use App\Models\LocationBoostPrice;
 use App\Models\Payment;
@@ -53,6 +54,18 @@ class LocationBoostCityController extends Controller
             ->pluck('id')->toArray();
         $mapId = config('services.google.maps.id');
 
+        $boostedUserIds = LocationBoostCity::query()
+            ->where('status', 'active')->pluck('user_id');
+        $boostedListings = Listing::query()->has('user')
+            ->with(['address', 'amentities'])->published()
+            ->whereIn('user_id', $boostedUserIds)
+            ->inRandomOrder()->limit(3)->get();
+        $boostedListingsIds = $boostedListings->pluck('id');
+        $organicListings = Listing::query()->has('user')
+            ->with(['address', 'amentities'])->published()
+            ->whereNotIn('id', $boostedListingsIds)
+            ->inRandomOrder()->limit(3)->get();
+
         $benefits = [[
             'icon' => 'https://placehold.co/64.png',
             'title' => 'Top 3 Featured',
@@ -85,6 +98,8 @@ class LocationBoostCityController extends Controller
             'listing' => $listing,
             'benefits' => $benefits,
             'locations' => $locations,
+            'boostedListings' => $boostedListings,
+            'organicListings' => $organicListings,
         ]);
     }
 
@@ -173,6 +188,11 @@ class LocationBoostCityController extends Controller
             $slots = [];
             foreach ($places as $place) {
                 $postcode = $place['postcode']['code'];
+                $city = $place['city']['code'] ?? '';
+                if (empty($city) && !empty($place['postal_town']['code'])) {
+                    $city = $place['postal_town']['code'];
+                }
+
                 $address = str_replace(" {$postcode}", '', $place['address']);
                 $taken = $counts[$postcode] ?? 0;
                 $available = max(0, 3 - $taken);
@@ -187,10 +207,10 @@ class LocationBoostCityController extends Controller
                     'taken' => $taken,
                     'amount' => $amount,
                     'id' => $place['id'],
+                    'city' => $city,
                     'address' => $address,
                     'postcode' => $postcode,
                     'disabled' => $disabled,
-                    'city' => $place['city'],
                     'available' => $available,
                     'total' => 3,
                     'country' => $place['country'],
@@ -200,7 +220,7 @@ class LocationBoostCityController extends Controller
             }
 
             return response()->json([
-                'zoom' => 15,
+                'zoom' => 13,
                 'slots' => $slots,
                 'data' => $places,
                 'message' => '',

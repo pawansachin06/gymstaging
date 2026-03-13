@@ -56,6 +56,12 @@
                         </span>
                 </a>
                 <ul class="treeview-menu">
+                    <li class="">
+                        <a href="{{ route('admin.location-boost-prices.index') }}">
+                            <i class="fa fa-money"></i>
+                            <span class="title">Listing Boost Prices</span>
+                        </a>
+                    </li>
                     @can('pcoupon_access')
                         <li class="{{ $request->segment(2) == 'pcoupon' ? 'active active-sub' : '' }}">
                             <a href="{{ route('admin.pcoupon.index') }}">

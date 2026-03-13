@@ -129,6 +129,7 @@ class GoogleMapsApi
             $state = ['code' => '', 'name' => ''];
             $country = ['code' => '', 'name' => ''];
             $postcode = ['code' => '', 'name' => ''];
+            $postalTown = ['code' => '', 'name' => ''];
 
             foreach ($components as $component) {
                 $types = $component['types'] ?? [];
@@ -147,6 +148,10 @@ class GoogleMapsApi
                     $postcode['code'] = $shortText;
                     $postcode['name'] = $longText;
                 }
+                if (in_array('postal_town', $types)) {
+                    $postalTown['code'] = $shortText;
+                    $postalTown['name'] = $longText;
+                }
                 if (in_array('administrative_area_level_1', $types)) {
                     $state['code'] = $shortText;
                     $state['name'] = $longText;
@@ -159,6 +164,8 @@ class GoogleMapsApi
                 'state' => $state,
                 'country' => $country,
                 'postcode' => $postcode,
+                'postal_code' => $postcode,
+                'postal_town' => $postalTown,
                 'latitude' => $location['latitude'],
                 'longitude' => $location['longitude'],
                 'place' => $result,

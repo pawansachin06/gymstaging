@@ -31,6 +31,11 @@ class LocationBoostPrice extends Model
         'meta' => 'array',
     ];
 
+    public function isLive()
+    {
+        return $this->environment !== 'sandbox';
+    }
+
     public static function createTable()
     {
         $messages = [];

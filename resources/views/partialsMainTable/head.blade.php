@@ -17,7 +17,7 @@
 @stack('head_scripts')
 <!-- Latest compiled and minified CSS -->
 <link href="{{ asset('/gymselect/styles/custom.css?v=1.0.1') }}" rel="stylesheet" type="text/css">
-@if(request()->route()->getName() != 'location-boost-cities.checkout')
+@if(request()->route()?->getName() != 'location-boost-cities.checkout')
       <link href="/assets/css/stripe.css?v=1.0.1" rel="stylesheet" type="text/css">
 @endif
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet"/>

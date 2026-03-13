@@ -310,6 +310,133 @@
     </section>
 
     <section class="my-5">
+        <h2 class="h4 mb-4 font-weight-bold text-center">
+            How Featured Listings Appear in Search
+        </h2>
+        <div class="mb-4 d-flex align-items-center">
+            <div class="lead font-weight-bold">FEATURED</div>
+            <div class="mx-2"></div>
+            <div class="flex-grow-1" style="background:linear-gradient(90deg, #d1f1f0, #fed2fe);height:14px;"></div>
+        </div>
+        <div class="row justify-content-center">
+            @if($boostedListings?->isNotEmpty())
+                @foreach($boostedListings as $boostedListing)
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-4 mn-blk">
+                        <span class="aoc">Ad | Online Coach</span>
+                        @if ($boostedListing->verified)
+                            <span class="ver">Verified </span>
+                        @endif
+                        <div class="list-thumb">
+                            <div class="heading d-flex">
+                                <div class="list-thumb-heading">
+                                    <img src="{{ $boostedListing->getThumbUrl('profile_image') }}" alt="{{ $boostedListing->name }}">
+                                    {{ $boostedListing->name }}
+                                    <br />
+                                    <span>{{ $boostedListing->category->name }}</span>
+                                </div>
+                                <div class="list-thumb-heading-right w-100">
+                                    {!! $boostedListing->reviewStars !!}
+                                    <div>
+                                        <strong>
+                                            {{ $boostedListing->reviewAverage }}
+                                            <span>({{ $boostedListing->reviewCount }})</span>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-thumb-img">
+                                <a href="{{ route('listing.view', $boostedListing->slug) }}">
+                                    <img src="{{ $boostedListing->getCoverImageUrl() }}" alt=" ">
+                                </a>
+                            </div>
+                            <div class="btn-group w-100">
+                                <button type="button" class="btn thumb-btn1 features-btn" data-toggle="popover" data-placement="bottom"
+                                    title="Viewing Features" data-popover-content="#feature-{{ $boostedListing->id }}">
+                                    {{ $boostedListing->featuresLabel }}
+                                </button>
+                                <a href="{{ route('listing.view', $boostedListing->slug) }}"
+                                    target="_blank" rel="noopener noreferrer nofollow"
+                                    class="btn thumb-btn1 learn-more">
+                                    Learn More
+                                </a>
+                                <div id="feature-{{ $boostedListing->id }}" class="d-none">
+                                    <div class="popover-body">
+                                        @foreach ($boostedListing->amentities as $amentity)
+                                            <img src="{{ asset('/storage/amenity_icons/' . $amentity['icon']) }}" alt=" ">
+                                        @endforeach
+                                        <div class="row">
+                                            <span class="popover-close close btn btn1" data-target="#feature-{{ $boostedListing->id }}">Close</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+        <div class="my-4">
+            <div style="background-color:#cdcdcd;height:14px;"></div>
+        </div>
+        <div class="row justify-content-center">
+            @if($organicListings?->isNotEmpty())
+                @foreach($organicListings as $organicListing)
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-4 mn-blk">
+                        @if ($organicListing->verified)
+                            <span class="ver">Verified </span>
+                        @endif
+                        <div class="list-thumb">
+                            <div class="heading d-flex">
+                                <div class="list-thumb-heading">
+                                    <img src="{{ $organicListing->getThumbUrl('profile_image') }}" alt="{{ $organicListing->name }}">
+                                    {{ $organicListing->name }}
+                                    <br />
+                                    <span>{{ $organicListing->category->name }}</span>
+                                </div>
+                                <div class="list-thumb-heading-right w-100">
+                                    {!! $organicListing->reviewStars !!}
+                                    <div>
+                                        <strong>
+                                            {{ $organicListing->reviewAverage }}
+                                            <span>({{ $organicListing->reviewCount }})</span>
+                                        </strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="list-thumb-img">
+                                <a href="{{ route('listing.view', $organicListing->slug) }}">
+                                    <img src="{{ $organicListing->getCoverImageUrl() }}" alt=" ">
+                                </a>
+                            </div>
+                            <div class="btn-group w-100">
+                                <button type="button" class="btn thumb-btn1 features-btn" data-toggle="popover" data-placement="bottom"
+                                    title="Viewing Features" data-popover-content="#feature-{{ $organicListing->id }}">
+                                    {{ $organicListing->featuresLabel }}
+                                </button>
+                                <a href="{{ route('listing.view', $organicListing->slug) }}"
+                                    target="_blank" rel="noopener noreferrer nofollow"
+                                    class="btn thumb-btn1 learn-more">
+                                    Learn More
+                                </a>
+                                <div id="feature-{{ $organicListing->id }}" class="d-none">
+                                    <div class="popover-body">
+                                        @foreach ($organicListing->amentities as $amentity)
+                                            <img src="{{ asset('/storage/amenity_icons/' . $amentity['icon']) }}" alt=" ">
+                                        @endforeach
+                                        <div class="row">
+                                            <span class="popover-close close btn btn1" data-target="#feature-{{ $organicListing->id }}">Close</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </section>
+
+    <section class="my-5">
         <h2 class="h4 mb-4 font-weight-bold text-center">FAQs</h2>
         <div class="accordion" id="faqAccordion">
             @foreach($faqs as $faqIndex => $faq)
@@ -390,5 +517,6 @@
     var DRAFTS_REMOVE_URL = '{{ route('location-boost-cities.remove-drafts') }}';
     var AVAILABLE_SLOTS_URL = '{{ route('location-boost-cities.available-slots') }}';
 </script>
+<script defer src="https://unpkg.com/h3-js@4/dist/h3-js.umd.js"></script>
 <script defer src="/assets/js/location-boost-cities.js?v={{ config('app.version') }}"></script>
 @endpush

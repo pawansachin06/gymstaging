@@ -30,6 +30,7 @@ use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Webhook\StripeController;
 
 use App\Http\Controllers\LocationBoostCityController;
+use App\Http\Controllers\LocationBoostPriceController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -163,6 +164,10 @@ Route::group(['middleware' => ['auth','role:3'], 'prefix' => 'admin', 'as' => 'a
     Route::post('cities_mass_destroy', [CitiesController::class, 'massDestroy'])->name('cities.mass_destroy');
     Route::post('cities_restore/{id}', [CitiesController::class, 'restore'])->name('cities.restore');
     Route::delete('cities_perma_del/{id}', [CitiesController::class, 'perma_del'])->name('cities.perma_del');
+
+    Route::get('location-boost-prices', [LocationBoostPriceController::class, 'adminIndex'])->name('location-boost-prices.index');
+    Route::get('location-boost-prices/{locationBoostPrice}/edit', [LocationBoostPriceController::class, 'adminEdit'])->name('location-boost-prices.edit');
+    Route::put('location-boost-prices/{locationBoostPrice}/update', [LocationBoostPriceController::class, 'adminUpdate'])->name('location-boost-prices.update');
 
     //Businesses
     Route::post('businesses_mass_destroy', [BusinessesController::class, 'massDestroy'])->name('businesses.mass_destroy');
