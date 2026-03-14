@@ -1,4 +1,4 @@
-@extends('layouts.front')
+@extends('layouts.front2')
 
 @push('styles')
 <link rel="stylesheet" href="/assets/css/location-boost-cities.css?v={{ config('app.version') }}" />
@@ -145,7 +145,7 @@
                                         <div class="d-flex justify-content-between">
                                             <div class="font-weight-semibold">Featured Spots</div>
                                             <div class="font-weight-semibold">
-                                                <span x-text="slot.available + '/'+ slot.total"></span>
+                                                <span x-text="(slot.total - slot.available) + '/'+ slot.total"></span>
                                                 taken
                                             </div>
                                         </div>
@@ -153,7 +153,7 @@
                                             <div class="d-flex align-items-center">
                                                 <template x-for="i in 3" x-bind:key="i">
                                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="14" height="14"
-                                                        class="d-inline-block mr-1" x-bind:fill="[i <= slot.available ? '#9c9c9c' : '#18b9b5']">
+                                                        class="d-inline-block mr-1" x-bind:fill="[i <= slot.available ? '#18b9b5' : '#9c9c9c']">
                                                         <path d="M480-80q-83 0-156-31.5T197-197t-85.5-127T80-480t31.5-156T197-763t127-85.5T480-880t156 31.5T763-763t85.5 127T880-480t-31.5 156T763-197t-127 85.5T480-80"/>
                                                     </svg>
                                                 </template>

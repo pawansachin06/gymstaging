@@ -1,4 +1,4 @@
-@extends('layouts.front')
+@extends('layouts.front2')
 
 @section('content')
 <article class="container">

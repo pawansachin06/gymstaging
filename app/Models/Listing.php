@@ -387,7 +387,9 @@ class Listing extends Model
                 $path = "markers/{$this->marker_image}";
                 Storage::disk('public')->delete($path);
             }
-            $this->update(['marker_image' => $filename]);
+            DB::table($this->getTable())->where('id', $this->id)->update([
+                'marker_image' => $filename
+            ]);
         } catch (Exception $e) {
             Log::error('Listing Marker Image', ['msg' => $e->getMessage()]);
         }

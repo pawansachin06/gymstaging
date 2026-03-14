@@ -238,6 +238,14 @@ return [
         'GoogleReCaptchaV3'=> TimeHunter\LaravelGoogleReCaptchaV3\Facades\GoogleReCaptchaV3::class
     ])->toArray(),
 
+    'social' => [
+        'links' => [
+            'twitter' => 'https://x.com/gymselect',
+            'facebook' => 'https://www.facebook.com/gymselect',
+            'instagram' => 'https://www.instagram.com/gymselect',
+            'linkedin' => 'https://linkedin.com/company/gymselect',
+        ],
+    ],
     'version' => date('Y-m-d-h-i-a'),
 
 ];

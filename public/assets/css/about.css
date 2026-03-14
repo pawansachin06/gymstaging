@@ -1,0 +1,12 @@
+.card-bg-1 {
+    background-color: #f4fbfb;
+}
+.card-bg-2 {
+    background-color: #fef4fe;
+}
+
+@media(min-width:768px) {
+    .video-contents-bg {
+        background-image: linear-gradient(90deg, #f4fbfb, #fef4fe);
+    }
+}

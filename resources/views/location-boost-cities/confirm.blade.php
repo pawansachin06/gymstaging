@@ -1,4 +1,4 @@
-@extends('layouts.front')
+@extends('layouts.front2')
 
 @push('styles')
 <link rel="stylesheet" href="/assets/css/location-boost-cities.css?v={{ config('app.version') }}" />

@@ -29,20 +29,25 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Webhook\StripeController;
 
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\LocationBoostCityController;
 use App\Http\Controllers\LocationBoostPriceController;
 
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomePageController::class, 'index'])->name('home');
-Route::get('contact', [HomePageController::class, 'getContactForm'])->name('contact');
+Route::get('about-us', [HomePageController::class, 'aboutUs'])->name('aboutus');
+Route::get('about', [PageController::class, 'about'])->name('about');
+Route::get('contact-us', [HomePageController::class, 'getContactForm']);
+Route::get('contact', [PageController::class, 'contact'])->name('contact');
 Route::post('contact', [HomePageController::class, 'sendEmail'])->name('contact.sendmail');
-Route::get('page/{slug}', [HomePageController::class, 'getCMSPage'])->name('cms');
+Route::get('page/{slug}', [SettingController::class, 'show'])->name('cms');
+
 Route::get('legals', [HomePageController::class, 'legalPage'])->name('legals');
 Route::get('get_users', [HomePageController::class, 'getUsers'])->name('getusers');
 Route::get('partners', [HomePageController::class, 'partners'])->name('partner');
 Route::get('searchname', [HomePageController::class, 'searchGym'])->name('searchname');
-Route::get('about', [HomePageController::class, 'aboutUs'])->name('aboutus');
 Route::get('testemail/{bid?}', [HomePageController::class, 'testEmail'])->name('testemail');
 Route::get('facebook/reviews', [HomePageController::class, 'get_facebook_reviews'])->name('facebook.reviews');
 Route::post('load/google_rev', [HomePageController::class, 'load_google_rev'])->name('load.google_rev');
