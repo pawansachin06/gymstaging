@@ -25,8 +25,6 @@
   clip-path: ellipse(58% 100% at 50% 0%);
 }
 
-
-
 @property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -47,6 +45,17 @@
 }
 
 
+
+#menu-offcanvas,
+#user-offcanvas {
+    --bs-offcanvas-width: 300px;
+}
+
+#menu-offcanvas .list-group,
+#user-offcanvas .list-group {
+    --bs-list-group-active-bg: #33b0ba;
+    --bs-list-group-active-border-color: #1e868f;
+}
 
 .site-main::before {
     content: "";

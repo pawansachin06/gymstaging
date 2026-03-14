@@ -10,9 +10,15 @@ class FrontLayout extends Component
 {
     public function render(): View
     {
+        $listing = null;
         $title = 'GymSelect';
+        $user = auth()->user();
         $routeName = Route::currentRouteName();
         $v = config('app.version');
+        
+        if ($user && $user->business_id) {
+            $listing = $user->listing;
+        }
 
         if ($routeName === 'contact') {
             $title = 'Contact';
@@ -46,7 +52,10 @@ class FrontLayout extends Component
         ];
 
         return view('layouts.front', [
+            'user' => $user,
             'title' => $title,
+            'listing' => $listing,
+            'routeName' => $routeName,
             'stylesArr' => $stylesArr,
             'scriptsArr' => $scriptsArr,
             'sidebarLinks' => $sidebarLinks,

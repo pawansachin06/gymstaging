@@ -41,12 +41,13 @@ Route::get('about-us', [HomePageController::class, 'aboutUs'])->name('aboutus');
 Route::get('about', [PageController::class, 'about'])->name('about');
 Route::get('contact-us', [HomePageController::class, 'getContactForm']);
 Route::get('contact', [PageController::class, 'contact'])->name('contact');
+Route::get('partners', [PageController::class, 'partners']);
 Route::post('contact', [HomePageController::class, 'sendEmail'])->name('contact.sendmail');
 Route::get('page/{slug}', [SettingController::class, 'show'])->name('cms');
 
 Route::get('legals', [HomePageController::class, 'legalPage'])->name('legals');
 Route::get('get_users', [HomePageController::class, 'getUsers'])->name('getusers');
-Route::get('partners', [HomePageController::class, 'partners'])->name('partner');
+Route::get('partners-old', [HomePageController::class, 'partners'])->name('partner');
 Route::get('searchname', [HomePageController::class, 'searchGym'])->name('searchname');
 Route::get('testemail/{bid?}', [HomePageController::class, 'testEmail'])->name('testemail');
 Route::get('facebook/reviews', [HomePageController::class, 'get_facebook_reviews'])->name('facebook.reviews');
