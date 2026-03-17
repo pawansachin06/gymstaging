@@ -4,11 +4,37 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Faq;
+use App\Models\Listing;
 use App\Models\Partner;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    public function index(Request $request)
+    {
+        if ($request->input('ajax')) {
+            $keyword = $request->input('q');
+            $listings = Listing::query()->published()->has('user')
+                ->where('name', 'LIKE', "%{$keyword}%")
+                ->whereNotNull('name')->limit(6)
+                ->get(['name', 'slug', 'profile_image']);
+            return response()->json([
+                'items' => $listings,
+            ]);
+        }
+        $services = [
+            ['name' => 'Gyms, Clubs & Studios'],
+            ['name' => 'Personal Trainers & Coaches'],
+            ['name' => 'Physio & Sports Therapy'],
+            ['name' => 'Recovery Facilties & Clinics'],
+            ['name' => 'Food, Cafés & Meal Prep'],
+            ['name' => 'Nutritionists & Dieticians'],
+        ];
+        return view('pages.index', [
+            'services' => $services,
+        ]);
+    }
+
     public function about(Request $request)
     {
         // $faqs = Faq::active()->get();

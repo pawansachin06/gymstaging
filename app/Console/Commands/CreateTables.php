@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Listing;
+use App\Models\Service;
 use App\Models\LocationBoostCity;
 use App\Models\LocationBoostPrice;
 use App\Models\Payment;
@@ -19,6 +20,7 @@ class CreateTables extends Command
         $msgs = [];
 
         $msgs[] = Listing::createTable();
+        $msgs[] = Service::createTable();
         $msgs[] = LocationBoostCity::createTable();
         $msgs[] = LocationBoostPrice::createTable();
         $msgs[] = Payment::createTable();

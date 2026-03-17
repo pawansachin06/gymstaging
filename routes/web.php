@@ -36,7 +36,8 @@ use App\Http\Controllers\LocationBoostPriceController;
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [HomePageController::class, 'index'])->name('home');
+Route::get('/', [PageController::class, 'index'])->name('home');
+Route::get('/old', [HomePageController::class, 'index'])->name('home2');
 Route::get('about-us', [HomePageController::class, 'aboutUs'])->name('aboutus');
 Route::get('about', [PageController::class, 'about'])->name('about');
 Route::get('contact-us', [HomePageController::class, 'getContactForm']);

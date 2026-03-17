@@ -40,6 +40,8 @@ class Listing extends Model
 
     protected $casts = ['timings' => 'array', 'ctas' => 'object'];
 
+    protected $appends = ['permalink', 'image_url'];
+
     protected $perPage = 6;
     const CTA_LABEL = ['site' => 'Visit Site', 'enquire' => 'Enquire', 'call' => 'Call', 'email' => 'Email', 'whatsapp' => 'Whatsapp'];
 
@@ -202,6 +204,20 @@ class Listing extends Model
                 return $this->hasMany(ListingReview::class)->reply(false);
         } else
             return $this->hasMany(ListingReview::class)->reply(false);
+    }
+
+    public function getPermalinkAttribute()
+    {
+        return url($this->slug ?? '');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        $image = $this->profile_image;
+        if (empty($image)) {
+            return 'https://placehold.co/100.png';
+        }
+        return url("storage/thumb/$image");
     }
 
     public function getFullAddressAttribute()

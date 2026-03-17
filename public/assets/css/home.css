@@ -1,0 +1,70 @@
+
+
+#serviceInputBox::before,
+#locationInputBox::before{
+    content: '';
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    opacity: 0;
+    position: absolute;
+    border-radius: 16px;
+    pointer-events: none;
+    display: inline-block;
+    height: var(--height, 0px);
+    border: 2px solid transparent;
+    background-color: #ffffff;
+    transition: height 0.25s ease, opacity 0.25s ease;
+    background: linear-gradient(#fff, #fff) padding-box, linear-gradient(50deg, #18a7a7, #e12ad7) border-box;
+}
+#serviceInputBox.active::before,
+#locationInputBox.active::before {
+    opacity: 1;
+}
+
+#serviceInput,
+#locationInput {
+    width: 320px;
+    border-radius: 18px 18px 18px 18px;
+    transition: border-radius 0.25s ease;
+}
+
+#serviceInput.active,
+#locationInput.active {
+    border-radius: 18px 18px 0 0;
+}
+
+.suggestions {
+    left: 0;
+    top: 100%;
+    z-index: 1;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
+    border-radius: 0 0 18px 18px;
+    transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.35s ease;
+}
+
+.suggestions.show {
+    opacity: 1;
+    max-height: 400px;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.suggestion-item {
+    cursor: pointer;
+}
+
+.suggestion-item:hover,
+.suggestion-item.active {
+    background: #f4f4f4;
+}
+
+
+
+
+
+
