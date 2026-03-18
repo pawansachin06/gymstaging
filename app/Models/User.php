@@ -7,9 +7,11 @@ use App\Models\Traits\StorageurlTrait;
 use App\Notifications\ResetPassword;
 use Hash;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Cashier\Billable;
 
@@ -27,7 +29,12 @@ class User extends Authenticatable
 {
     use Notifiable, Billable, ExtendBillable, StorageurlTrait, Impersonate, SoftDeletes;
 
-    protected $fillable = ['name', 'email', 'password', 'remember_token', 'role_id', 'avatar', 'status', 'verify_token', 'address_line_1', 'address_line_2', 'city', 'postal_code'];
+    protected $fillable = [
+        'name', 'email', 'password', 'remember_token',
+        'role_id', 'avatar', 'status', 'verify_token',
+        'address_line_1', 'address_line_2', 'city', 'postal_code',
+        'email_2fa_enabled_at',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -44,6 +51,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
+        'email_2fa_enabled_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
 
@@ -176,5 +184,18 @@ class User extends Authenticatable
         } catch (\Exception $e) { }
 
         return false;
+    }
+
+    public static function createTable()
+    {
+        $messages = [];
+        $tableName = 'users';
+        if (!Schema::hasColumn($tableName, 'email_2fa_enabled_at')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->dateTime('email_2fa_enabled_at')->nullable()->after('trial_ends_at');
+            });
+            $messages[] = "$tableName email_2fa_enabled_at added.";
+        }
+        return $messages;
     }
 }

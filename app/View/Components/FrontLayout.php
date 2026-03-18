@@ -28,9 +28,6 @@ class FrontLayout extends Component
             $title = 'Contact';
         }
 
-        $sweetalerts = [
-            'home',
-        ];
         $googleMaps = [
             'home',
         ];
@@ -39,10 +36,7 @@ class FrontLayout extends Component
 
         $stylesArr = [];
         $stylesArr[] = '/assets/css/lib/bootstrap.5.3.8.min.css';
-        
-        if (in_array($routeName, $sweetalerts)) {
-            $stylesArr[] = '/assets/css/lib/sweetalert2.11.26.23.min.css';
-        }
+        $stylesArr[] = '/assets/css/lib/sweetalert2.11.26.23.min.css';
 
         $stylesArr[] = "/assets/css/global.css?v=$v";
 
@@ -56,16 +50,15 @@ class FrontLayout extends Component
         $scriptsArr[] = '/assets/js/lib/popper.2.11.8.min.js';
         $scriptsArr[] = '/assets/js/lib/bootstrap.5.3.8.min.js';
         $scriptsArr[] = '/assets/js/lib/axios.1.13.6.min.js';
-
-        if (in_array($routeName, $sweetalerts)) {
-            $scriptsArr[] = "/assets/js/lib/sweetalert2.11.26.23.min.js";
-        }
+        $scriptsArr[] = "/assets/js/lib/sweetalert2.11.26.23.min.js";
 
         $scriptsArr[] = "/assets/js/lib/jquery.3.7.1.min.js";
         $scriptsArr[] = "/assets/js/global.js?v=$v";
 
         if (in_array($routeName, ['home'])) {
             $scriptsArr[] = "/assets/js/home.js?v=$v";
+        } elseif (in_array($routeName, ['account.edit'])) {
+            $scriptsArr[] = "/assets/js/account.js?v=$v";
         }
 
         if (in_array($routeName, $googleMaps)) {

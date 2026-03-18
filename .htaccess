@@ -1,4 +1,3 @@
-
 # <IfModule mod_rewrite.c>
 #     RewriteEngine On
 #     # Redirect everything to /public
@@ -9,7 +8,14 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
+
+    # Force www + https
+    RewriteCond %{HTTPS} off [OR]
+    RewriteCond %{HTTP_HOST} ^gymselect\.io [NC]
+    RewriteRule ^(.*)$ https://www.gymselect.io/$1 [L,R=302]
+
     RewriteRule ^index\.php$ - [L]
+
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ public/$1 [L]

@@ -129,3 +129,56 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
     if (err.message) return err.message;
     return fallback;
 };
+
+
+(function(){
+    var forms = document.querySelectorAll('[data-js="form"]');
+    for (var i = forms.length - 1; i >= 0; i--) {
+        forms[i].addEventListener('submit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var formMsg = form.querySelector('[data-js="form-msg"]');
+            var formBtn = form.querySelector('[data-js="form-btn"]');
+            var loader = formBtn.querySelector('[data-js="loader"]');
+            
+            formBtn.disabled = true;
+            loader?.classList.remove('d-none');
+
+            if (formMsg) {
+                formMsg.textContent = 'Please wait...';
+                formMsg.classList.add('alert-primary');
+                formMsg.classList.remove('d-none', 'alert-danger', 'alert-success');
+            }
+
+            var data = new FormData(form);
+            var url = form.getAttribute('action');
+
+            axios.post(url, data).then(function(res) {
+                var msg = res.data.message;
+                toast.success(msg);
+                if (formMsg) {
+                    formMsg.textContent = msg;
+                    formMsg.classList.add('alert-success');
+                    formMsg.classList.remove('alert-danger', 'alert-primary');
+                }
+                if (res.data.redirect) {
+                    window.location.href = res.data.redirect;
+                }
+            }).catch(function(err) {
+                var msg = getErrorMessage(err);
+                toast.error(msg);
+                if (formMsg) {
+                    formMsg.textContent = msg;
+                    formMsg.classList.add('alert-danger');
+                    formMsg.classList.remove('alert-success', 'alert-primary');
+                }
+            }).finally(function() {
+                formBtn.disabled = false;
+                loader?.classList.add('d-none');
+            });
+        });
+    }
+})();
+
+
+

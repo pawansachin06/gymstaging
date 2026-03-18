@@ -1336,6 +1336,7 @@ public function get_google_reviews()
         $user = Auth::user();
         $user->name = $request->name;
         $user->email = $request->email;
+        $email_2fa = $request->input('email_2fa');
 
         if ($request->password) {
             $user->password = Hash::make($request->password);
@@ -1353,6 +1354,13 @@ public function get_google_reviews()
                 Listing::where("user_id", $user->id)->update(['profile_image' => $request->avatar]);
             } else {
                 $user->avatar = $request->avatar;
+            }
+        }
+        if (empty($email_2fa)) {
+            $user->email_2fa_enabled_at = null;
+        } else {
+            if (empty($user->email_2fa_enabled_at)) {
+                $user->email_2fa_enabled_at = now();
             }
         }
         $user->save();

@@ -23,11 +23,12 @@ use App\Http\Controllers\Admin\VerificationCouponController;
 use App\Http\Controllers\Admin\SponsorController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\ProductOrderController as AdminProductOrderController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Webhook\StripeController;
+
+use App\Http\Controllers\Auth\LoginController;
 
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SettingController;
@@ -89,6 +90,11 @@ Route::impersonate();
 // Authentication Routes...
 Route::get('login-now', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('auth.login');
+
+Route::get('login-otp-email', [LoginController::class, 'otpEmail'])->name('login-otp-email');
+Route::post('login-otp-email-verify', [LoginController::class, 'otpEmailVerify'])->name('login-otp-email-verify');
+Route::post('login-otp-email-resend', [LoginController::class, 'otpEmailResend'])->name('login-otp-email-resend');
+
 Route::get('web-admin', [LoginController::class, 'showLoginForm'])->name('auth.admin-login');
 Route::post('login', [LoginController::class, 'login'])->name('auth.login');
 Route::post('logout', [LoginController::class, 'logout'])->name('auth.logout');
