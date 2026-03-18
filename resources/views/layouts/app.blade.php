@@ -55,5 +55,7 @@
 
 @include('partials.javascripts')
 @stack('scripts')
+<script defer src="/assets/js/lib/axios.1.13.6.min.js"></script>
+<script defer src="/assets/js/global.js?v={{ config('app.version') }}"></script>
 </body>
 </html>

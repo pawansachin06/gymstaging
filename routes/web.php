@@ -31,7 +31,9 @@ use App\Http\Controllers\Webhook\StripeController;
 use App\Http\Controllers\Auth\LoginController;
 
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ListingController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\LocationBoostCityController;
 use App\Http\Controllers\LocationBoostPriceController;
 
@@ -131,6 +133,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('business/edit', [HomePageController::class, 'businessRegister'])->name('business.edit');
     Route::get('business/{id}/{status}', [HomePageController::class, 'businessStatus'])->name('business.status');
 
+    Route::get('listings/edit', [ListingController::class, 'edit'])->name('listings.edit');
+
     Route::get('business/boost', [HomePageController::class, 'businessBoost'])->name('business.boost');
     Route::post('business/{id}/boost', [HomePageController::class, 'businessBoosted'])->name('business.boosted');
 
@@ -181,6 +185,11 @@ Route::group(['middleware' => ['auth','role:3'], 'prefix' => 'admin', 'as' => 'a
     Route::get('location-boost-prices', [LocationBoostPriceController::class, 'adminIndex'])->name('location-boost-prices.index');
     Route::get('location-boost-prices/{locationBoostPrice}/edit', [LocationBoostPriceController::class, 'adminEdit'])->name('location-boost-prices.edit');
     Route::put('location-boost-prices/{locationBoostPrice}/update', [LocationBoostPriceController::class, 'adminUpdate'])->name('location-boost-prices.update');
+
+    Route::get('services', [ServiceController::class, 'adminIndex'])->name('services.index');
+    Route::post('services', [ServiceController::class, 'adminStore'])->name('services.store');
+    Route::get('services/{service}/edit', [ServiceController::class, 'adminEdit'])->name('services.edit');
+    Route::put('services/{service}/update', [ServiceController::class, 'adminUpdate'])->name('services.update');
 
     //Businesses
     Route::post('businesses_mass_destroy', [BusinessesController::class, 'massDestroy'])->name('businesses.mass_destroy');

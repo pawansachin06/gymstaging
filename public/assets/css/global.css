@@ -20,6 +20,10 @@
 .btn {
     --bs-btn-font-family: var(--bs-font-sans-serif);
 }
+.form-switch .form-check-input:checked {
+    border-color: #0dcaf0;
+    background-color: #0dcaf0;
+}
 
 
 .bg-primary-gradient {

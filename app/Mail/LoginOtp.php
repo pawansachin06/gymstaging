@@ -26,15 +26,10 @@ class LoginOtp extends Mailable
 
     public function envelope(): Envelope
     {
-        $subject = 'Login OTP';
-        return new Envelope(
-            subject: $subject,
-        );
+        $subject = 'Login Verification OTP - GymSelect';
+        return new Envelope(subject: $subject);
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(

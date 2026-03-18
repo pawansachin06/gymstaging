@@ -436,14 +436,18 @@ class Listing extends Model
     {
         $messages = [];
         $tableName = 'listings';
-
         if (!Schema::hasColumn($tableName, 'marker_image')) {
             Schema::table($tableName, function (Blueprint $table) {
                 $table->string('marker_image', 100)->nullable()->after('cover_image');
             });
             $messages[] = "$tableName marker_image added.";
         }
-
+        if (!Schema::hasColumn($tableName, 'service_id')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->foreignUuid('service_id')->nullable()->after('place_id');
+            });
+            $messages[] = "$tableName service_id added.";
+        }
         return $messages;
     }
 }

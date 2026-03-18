@@ -42,7 +42,9 @@
                 @if($listing)
                     <a href="/{{ $listing->slug }}" class="list-group-item list-group-item-action">View Listing</a>
                 @endif
-                <a href="{{ route('account.edit') }}" class="list-group-item list-group-item-action">Account Info</a>
+                <a href="{{ route('account.edit') }}" class="list-group-item list-group-item-action {{ $routeName == 'account.edit' ? 'active' : '' }}">
+                    Account Info
+                </a>
                 @if($listing)
                     <a href="/business/boost" class="list-group-item list-group-item-action">Review Boost</a>
                     <a href="/business/location-boost" class="list-group-item list-group-item-action">Location Boost</a>
