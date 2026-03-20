@@ -178,6 +178,60 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
             });
         });
     }
+
+    
+    // ui-segmented start
+    document.querySelectorAll(".ui-segmented").forEach(function (toggle) {
+      var inputs = Array.from(toggle.querySelectorAll('input[type="radio"]'));
+      var labels = Array.from(
+        toggle.querySelectorAll(".ui-segmented-track label")
+      );
+    
+      if (inputs.length !== labels.length) {
+        console.warn("ui-segmented: inputs and labels mismatch", toggle);
+      }
+    
+      // set count
+      toggle.style.setProperty("--count", inputs.length);
+    
+      // assign index
+      inputs.forEach(function (input, i) {
+        input.dataset.index = i;
+      });
+    
+      function update(activeInput = null) {
+        var activeIndex = activeInput
+          ? Number(activeInput.dataset.index)
+          : inputs.findIndex((i) => i.checked);
+    
+        if (activeIndex < 0) return;
+    
+        toggle.style.setProperty("--index", activeIndex);
+    
+        labels.forEach(function (label, i) {
+          label.classList.toggle("active", i === activeIndex);
+        });
+    
+        toggle.dispatchEvent(
+          new CustomEvent("ui-segmented:change", {
+            detail: {
+              value: inputs[activeIndex].value,
+              index: activeIndex
+            }
+          })
+        );
+      }
+    
+      inputs.forEach(function(input) {
+        input.addEventListener("change", function () {
+          update(input);
+        });
+      });
+    
+      update();
+    });
+    // ui-segmented end
+    
 })();
 
 

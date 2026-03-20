@@ -1,0 +1,18 @@
+#accordion-listing .accordion-button::before {
+    content: "";
+    width: 36px;
+    height: 36px;
+    margin-right: auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-image: url("/assets/img/icons/tick-empty.png");
+}
+#accordion-listing .accordion-item.border-gradient-primary .accordion-button::before {
+    background-image: url("/assets/img/icons/tick-primary-empty.png");
+}
+#accordion-listing .accordion-item.active .accordion-button::before {
+    background-image: url("/assets/img/icons/tick.png");
+}
+#accordion-listing .accordion-item.border-gradient-primary.active .accordion-button::before {
+    background-image: url("/assets/img/icons/tick-primary.png");
+}

@@ -78,6 +78,37 @@
     linear-gradient(to right, #cfe9e8, #e7cfe6);
 }
 
+.border-gradient,
+.border-gradient-primary {
+    position: relative;
+}
+.border-gradient::before,
+.border-gradient-primary::before {
+    content: "";
+    z-index: -1;
+    position: absolute;
+    pointer-events: none;
+    border-radius: inherit;
+    background-size: 300% 300%;
+    top: calc(-1 * var(--border-width, 2px));
+    left: calc(-1 * var(--border-width, 2px));
+    width: calc(100% + var(--border-width, 2px) * 2);
+    height: calc(100% + var(--border-width, 2px) * 2);
+    animation: aniBorderGradient 6s linear infinite;
+}
+.border-gradient::before {
+    background-image: linear-gradient(60deg, #18a7a7, #6a7bd0, #18b9b5, #6a7bd0);
+}
+.border-gradient-primary::before {
+    background-image: linear-gradient(60deg, #18a7a7, #6a7bd0, #e12ad7);
+}
+
+@keyframes aniBorderGradient {
+  0% { background-position: 0% 50% }
+  50% { background-position: 100% 50% }
+  100% { background-position: 0% 50% }
+}
+
 .px-2\.5 {padding-left:0.75rem;padding-right:0.75rem;}
 .top-0 {top:0}
 .left-0 {left:0}
@@ -87,3 +118,76 @@
 .font-weight-semibold {font-weight:600}
 .rounded-3 {border-radius:0.5rem !important}
 .shadow-md {box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px}
+
+
+
+
+
+
+
+/* ui-segmented start */
+.ui-segmented {
+  --index: 0;
+  --bg: #eee;
+  --text: #333;
+  --active-text: #fff;
+  --active: linear-gradient(45deg, #18b9b5, #6f6adf);
+
+  padding: 4px;
+  position: relative;
+  background: var(--bg);
+  border-radius: 999px;
+}
+
+.ui-segmented input {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.ui-segmented-track {
+  display: flex;
+  position: relative;
+}
+
+.ui-segmented-track label {
+    flex: 1;
+    z-index: 2;
+    display: block;
+    padding: 8px 0;
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    color: var(--text);
+    transition: color 0.25s;
+}
+
+.ui-segmented-thumb {
+    top: 0;
+    left: 0;
+    z-index: 1;
+    height: 100%;
+    position: absolute;
+    border-radius: 999px;
+    background: var(--active);
+    transition: transform 0.3s ease;
+    width: calc(100% / var(--count));
+    transform: translateX(calc(var(--index) * 100%));
+}
+
+.ui-segmented-track label.active {
+    color: var(--active-text);
+}
+/* ui-segmented end */
+
+
+
+
+
+
+
+
+
+
+
+

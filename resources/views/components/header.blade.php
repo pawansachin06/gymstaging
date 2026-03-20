@@ -24,7 +24,11 @@
                 @auth
                     <button class="btn px-1 py-1 rounded-circle {{ $isDark ? 'text-white border-dark' : 'border-light' }}"
                         type="button" data-bs-toggle="offcanvas" data-bs-target="#user-offcanvas" aria-controls="user-offcanvas">
-                        <img src="{{ $user->profile_image }}" alt="{{ $user->name }}" width="36" height="36" class="rounded-circle user-select-none" />
+                        @if( empty($user->profile_image) )
+                            <img src="https://ui-avatars.com/api/?format=png&name={{ $user->name }}" alt="{{ $user->name }}" width="36px" height="36px" class="rounded-circle user-select-none" />
+                        @else
+                            <img src="{{ $user->profile_image }}" alt="{{ $user->name }}" width="36px" height="36px" class="rounded-circle user-select-none" />
+                        @endif
                     </button>
                 @else
                     <button class="btn px-2 py-2 rounded-circle {{ $isDark ? 'text-white border-dark' : 'border-light' }}"

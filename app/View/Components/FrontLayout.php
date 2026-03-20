@@ -44,6 +44,8 @@ class FrontLayout extends Component
             $stylesArr[] = "/assets/css/home.css?v=$v";
         } elseif (in_array($routeName, ['about'])) {
             $stylesArr[] = "/assets/css/about.css?v=$v";
+        } elseif (in_array($routeName, ['listings.edit'])) {
+            $stylesArr[] = "/assets/css/listings-edit.css?v=$v";
         }
 
         $scriptsArr = [];
