@@ -103,7 +103,7 @@ document.addEventListener('alpine:init', function () {
         return lower.concat(upper);
     }
 
-    function drawPostcodeCoverage2(slots) {
+    function drawPostcodeCoverage(slots) {
         clearCoverage();
         const resolution = 7;
         let cells = new Set();
@@ -134,7 +134,7 @@ document.addEventListener('alpine:init', function () {
         });
     }
 
-    function drawPostcodeCoverage(slots) {
+    function drawPostcodeCoverage2(slots) {
         clearCoverage();
         const cells = getCoverageCells(slots);
         let boundary = hexUnionBoundary(cells);
@@ -298,8 +298,8 @@ document.addEventListener('alpine:init', function () {
                         return slot.postcode.code.split(' ')[0];
                     });
                     console.log(postcodesToHighlight);
-                    drawPostcodeArea(res.slots);
-                    // drawPostcodeCoverage(res.slots);
+                    drawPostcodeCoverage(res.slots);
+                    // drawPostcodeArea(res.slots);
                 }).fail(function (err) {
                     toast.error(getErrorMessage(err));
                 }).always(function () {

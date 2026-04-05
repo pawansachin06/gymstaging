@@ -34,8 +34,10 @@ class ListingController extends Controller
         if (!$listing) {
             abort(500, 'Listing not found');
         }
+        $serviceVariant = $request->input('service-variant', 'coach');
         return view('listings.edit', [
             'item' => $listing,
+            'serviceVariant' => $serviceVariant,
         ]);
     }
 

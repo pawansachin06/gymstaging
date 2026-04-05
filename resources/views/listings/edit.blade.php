@@ -2,7 +2,9 @@
     <section class="container my-4">
         <form action="" method="post">
             <div class="mb-4 accordion accordion-flush" id="accordion-listing">
-                <x-services.form-coach />
+
+                <x-dynamic-component :component="'services.form-' . $serviceVariant" :item="$item" />
+
             </div>
             <div class="mb-5 row justify-content-center">
                 <div class="col-11 col-md-8 col-lg-6 col-xl-4">

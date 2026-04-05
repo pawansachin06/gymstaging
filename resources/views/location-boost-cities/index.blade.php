@@ -512,7 +512,7 @@
 @push('scripts')
 <script type="text/javascript">
     var lat = 54.8476977; var lng = -3.175587;
-    var MARKER_IMAGE_URL = '{{ url("storage/markers/{$listing->marker_image}") }}';
+    var MARKER_IMAGE_URL = '{{ url("storage/markers/{$listing?->marker_image}") }}';
     var DRAFTS_ADD_URL = '{{ route('location-boost-cities.add-drafts') }}';
     var DRAFTS_REMOVE_URL = '{{ route('location-boost-cities.remove-drafts') }}';
     var AVAILABLE_SLOTS_URL = '{{ route('location-boost-cities.available-slots') }}';
