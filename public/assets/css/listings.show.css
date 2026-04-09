@@ -1,0 +1,18 @@
+
+#listing-tabs {
+    --bs-nav-link-color: #212121;
+    --bs-nav-link-font-weight: 500;
+    --bs-nav-link-hover-color: #212121;
+    --bs-nav-pills-link-active-bg: #ffffff;
+    --bs-nav-pills-link-active-color: #000000;
+}
+
+#listing-tabs .nav-link.active {
+    --bs-nav-link-font-weight: 600;
+    box-shadow: var(--bs-box-shadow);
+}
+
+#listing-map-container {
+    height: 390px;
+}
+

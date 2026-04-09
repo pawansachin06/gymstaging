@@ -36,9 +36,12 @@ class Listing extends Model
 {
     use SoftDeletes, StorageurlTrait, HasSlug;
 
-    protected $fillable = ['name', 'about', 'profile_image', 'cover_image', 'marker_image', 'business_id', 'category_id', 'user_id', 'timetable', 'timetable_link', 'signup_url', 'timings', 'title', 'keyword', 'description', 'published', 'verified', 'coupon_id', 'ctas', 'boosted'];
+    protected $fillable = ['name', 'about', 'profile_image', 'cover_image', 'marker_image', 'service_id', 'business_id', 'category_id', 'user_id', 'timetable', 'timetable_link', 'signup_url', 'country_code', 'timings', 'title', 'keyword', 'description', 'published', 'verified', 'coupon_id', 'ctas', 'boosted'];
 
-    protected $casts = ['timings' => 'array', 'ctas' => 'object'];
+    protected $casts = [
+        'timings' => 'array',
+        'ctas' => 'object',
+    ];
 
     protected $appends = ['permalink', 'image_url'];
 
@@ -218,6 +221,15 @@ class Listing extends Model
             return 'https://placehold.co/100.png';
         }
         return url("storage/thumb/$image");
+    }
+
+    public function getMarkerImageUrlAttribute()
+    {
+        $image = $this->marker_image;
+        if (empty($image)) {
+            return $this->getMarkerUrl('profile_image');
+        }
+        return url($image);
     }
 
     public function getFullAddressAttribute()
@@ -447,6 +459,12 @@ class Listing extends Model
                 $table->foreignUuid('service_id')->nullable()->after('place_id');
             });
             $messages[] = "$tableName service_id added.";
+        }
+        if (!Schema::hasColumn($tableName, 'country_code')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->string('country_code', 3)->nullable()->after('signup_url');
+            });
+            $messages[] = "$tableName country_code added.";
         }
         return $messages;
     }

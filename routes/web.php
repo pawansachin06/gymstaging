@@ -293,4 +293,5 @@ Route::group(['middleware' => ['auth','role:3'], 'prefix' => 'admin', 'as' => 'a
     ]);
 });
 
+Route::get('{countryCode}/{service:slug}/{listing:slug}', [ListingController::class, 'show'])->name('listings.show');
 Route::get('{slug}', [HomePageController::class, 'listing'])->name('listing.view');

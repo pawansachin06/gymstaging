@@ -28,6 +28,11 @@ class Service extends Model
         'variant' => ServiceVariantEnum::class,
     ];
 
+    public function listings()
+    {
+        return $this->hasMany(Listing::class, 'service_id', 'id');
+    }
+
     public static function createTable()
     {
         $messages = [];

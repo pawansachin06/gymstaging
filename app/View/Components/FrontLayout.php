@@ -30,6 +30,7 @@ class FrontLayout extends Component
 
         $googleMaps = [
             'home',
+            'listings.show',
         ];
         $recaptchas = [
         ];
@@ -45,7 +46,9 @@ class FrontLayout extends Component
         } elseif (in_array($routeName, ['about'])) {
             $stylesArr[] = "/assets/css/about.css?v=$v";
         } elseif (in_array($routeName, ['listings.edit'])) {
-            $stylesArr[] = "/assets/css/listings-edit.css?v=$v";
+            $stylesArr[] = "/assets/css/listings.edit.css?v=$v";
+        } elseif (in_array($routeName, ['listings.show'])) {
+            $stylesArr[] = "/assets/css/listings.show.css?v=$v";
         }
 
         $scriptsArr = [];
@@ -61,6 +64,8 @@ class FrontLayout extends Component
             $scriptsArr[] = "/assets/js/home.js?v=$v";
         } elseif (in_array($routeName, ['account.edit'])) {
             $scriptsArr[] = "/assets/js/account.js?v=$v";
+        } elseif (in_array($routeName, ['listings.show'])) {
+            $scriptsArr[] = "/assets/js/listings.show.js?v=$v";
         }
 
         if (in_array($routeName, $googleMaps)) {
@@ -71,6 +76,7 @@ class FrontLayout extends Component
             $scriptsArr[] = "https://www.google.com/recaptcha/api.js";
         }
 
+        $scriptsArr[] = '/assets/js/lib/alpine.3.15.11.min.js';
         $sidebarLinks = [
             // ['href' => route('dashboard'), 'name' => 'Dashboard'],
         ];
