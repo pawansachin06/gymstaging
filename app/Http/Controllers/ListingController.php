@@ -50,8 +50,10 @@ class ListingController extends Controller
         $mapId = config('services.google.maps.id');
         $listingLinks = $listing->links ?? [];
         $address = $listing->address;
+        $media = $listing->media;
         return view('listings.show', [
             'mapId' => $mapId,
+            'media' => $media,
             'item' => $listing,
             'address' => $address,
             'listingLinks' => $listingLinks,
@@ -76,6 +78,11 @@ class ListingController extends Controller
     public function update(Request $request, Listing $listing)
     {
         //
+    }
+
+    public function verify()
+    {
+        return view('listings.verify', []);
     }
 
     public function destroy(Listing $listing)

@@ -44,8 +44,12 @@ class ResetPassword extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)->markdown('emails.resetpasswordnotification',
-            ['name' => $notifiable->name, 'token' => $this->token]
+        return (new MailMessage)->markdown('emails.reset-password',
+            [
+                'token' => $this->token,
+                'name' => $notifiable->name,
+                'email' => $notifiable->email,
+            ]
         );
     }
 }

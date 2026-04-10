@@ -1,11 +1,10 @@
 <x-front-layout>
     <section class="container my-4">
-        <div class="mb-4 px-3 py-4 text-center rounded-3 border border-light bg-white shadow">
-            <h1 class="h4 fw-bold">Verify Login Attempt</h1>
-            <p class="mb-0 fw-medium">
-                Please enter the OTP sent to your email.
-            </p>
-        </div>
+        <x-ui.page-header
+            class="mb-4"
+            title="Verify Login Attempt"
+            subtitle="Please enter the OTP sent to your email."
+        />
     </section>
 
     <div class="container mb-4">

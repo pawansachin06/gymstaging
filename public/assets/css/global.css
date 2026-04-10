@@ -17,6 +17,17 @@
 
 [x-cloak] {display:none !important}
 
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+    -webkit-text-fill-color: #212121;
+    -webkit-box-shadow: 0 1px 3px #ffffff inset, 0 0 0 1000px #fafafa inset;
+}
+
+.goverlay {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
 .btn {
     --bs-btn-font-family: var(--bs-font-sans-serif);
 }
@@ -44,7 +55,8 @@
   initial-value: 0deg;
   inherits: false;
 }
-.btn-gradient {
+.btn-gradient,
+.btn-gradient-dark {
     position: relative;
     border: 2px solid transparent;
     animation: rotate 3s linear infinite;
@@ -53,6 +65,18 @@
 }
 .btn.btn-gradient:active {
     border-color: transparent;
+}
+.btn-gradient {
+    background: linear-gradient(#fff, #fff) padding-box,
+        conic-gradient(from var(--angle), #18a7a7, #6a7bd0, #e12ad7, #18a7a7) border-box;
+}
+.btn-gradient-dark {
+    --bs-btn-color: #fafafa;
+    --bs-btn-hover-color: #fafafa;
+    --bs-btn-active-color: #fafafa;
+    --bs-btn-disabled-color: #c4c4c4;
+    background: linear-gradient(#212121, #212121) padding-box,
+        conic-gradient(from var(--angle), #18a7a7, #6a7bd0, #e12ad7, #18a7a7) border-box;
 }
 @keyframes rotate {
   to { --angle: 360deg; }

@@ -13,6 +13,30 @@
 }
 
 #listing-map-container {
-    height: 390px;
+    height: 346px;
 }
 
+#listing-thumbs-swiper .swiper-slide {
+    opacity: 0.5;
+    width: 4rem;
+}
+
+#listing-thumbs-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+}
+
+#listing-media-mobile-swiper {
+    overflow: visible;
+}
+
+@media(min-width:1200px) {
+    #listing-map-container {
+        height: 414px;
+    }
+}
+
+@media(min-width:1400px) {
+    #listing-map-container {
+        height: 481px;
+    }
+}

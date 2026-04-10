@@ -134,6 +134,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('business/{id}/{status}', [HomePageController::class, 'businessStatus'])->name('business.status');
 
     Route::get('listings/edit', [ListingController::class, 'edit'])->name('listings.edit');
+    Route::get('business/verify', [ListingController::class, 'verify'])->name('listings.verify');
 
     Route::get('business/boost', [HomePageController::class, 'businessBoost'])->name('business.boost');
     Route::post('business/{id}/boost', [HomePageController::class, 'businessBoosted'])->name('business.boosted');
@@ -158,7 +159,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('business/getcities', [HomePageController::class, 'getCity'])->name('business.getcities');
 
-    Route::get('business/verify', [HomePageController::class, 'businessVerify'])->name('business.verify');
+    Route::get('business/verify-old', [HomePageController::class, 'businessVerify'])->name('business.verify');
     Route::post('business/verify/upload', [HomePageController::class, 'businessVerifyUpload'])->name('business.verify.upload');
     Route::post('business/{id}/verification', [HomePageController::class, 'businessVerification'])->name('business.verification');
     Route::post('listings/{slug}/review', [HomePageController::class, 'storeReview'])->name('listings.reviewstore');

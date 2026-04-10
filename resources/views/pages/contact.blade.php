@@ -1,12 +1,11 @@
 <x-front-layout>
     <section class="container py-4">
-        <div class="mb-4 px-3 py-4 text-center rounded-3 border border-light bg-white shadow">
-            <h1 class="h4 fw-bold">Contact</h1>
-            <p class="mb-0 fw-medium">
-                How can we help you?
-            </p>
-        </div>
-        
+        <x-ui.page-header
+            class="mb-4"
+            title="Contact"
+            subtitle="How can we help you?"
+        />
+
         <iframe
             src="https://api.leadconnectorhq.com/widget/form/HHd1CQ1ibGRm0P2IOMsj"
             class="w-100 border-0 rounded"

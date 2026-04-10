@@ -28,6 +28,7 @@ class LoginController extends Controller
         $columns = ['id', 'name', 'email', 'password', 'email_2fa_enabled_at'];
         $credentials = $request->only('email', 'password');
         $remember = $request->filled('remember');
+        $isAjax = $request->boolean('ajax');
         $email = $credentials['email'];
         $user = User::select($columns)->where('email', $email)->first();
         if ($user && Hash::check($credentials['password'], $user->password)) {
@@ -40,11 +41,26 @@ class LoginController extends Controller
                 cache()->put($key, Hash::make($otp), $expiry);
                 session(['2fa:user:id' => $userId, 'remember' => $remember]);
                 Mail::send(new LoginOtp($user, $otp));
+                if ($isAjax) {
+                    return resJson([
+                        'message' => 'Loading...',
+                        'redirect' => route('login-otp-email'),
+                    ]);
+                }
                 return redirect()->route('login-otp-email');
             }
             if (Auth::attempt($credentials, $remember)) {
+                if ($isAjax) {
+                    return resJson([
+                        'reload' => true,
+                        'message' => 'Logged in',
+                    ]);
+                }
                 return redirect()->intended('/');
             }
+        }
+        if ($isAjax) {
+            return resJson('Invalid login credentials', 422);
         }
         return back()->withErrors([ 'email' => 'Invalid login credentials.', ]);
     }

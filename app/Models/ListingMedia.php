@@ -22,5 +22,10 @@ class ListingMedia extends Model
     {
         return $this->belongsTo(Listing::class);
     }
-    
+
+    public function getUrlAttribute()
+    {
+        return $this->getUrl('file_path');
+    }
+
 }

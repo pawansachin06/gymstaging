@@ -1,6 +1,6 @@
 <x-front-layout>
-    <div x-data="listing">
-        <div class="position-relative py-5 bg-black text-white">
+    <div x-data="listing" style="overflow-x:hidden;">
+        <div class="d-lg-none position-relative py-5 bg-black text-white">
             <img src="https://placehold.co/720x360/png" alt="cover image" class="position-absolute top-0 start-0 end-0 bottom-0 w-100 h-100 object-fit-cover" />
             <div class="position-absolute top-0 start-0 end-0 bottom-0 w-100 h-100" style="background:linear-gradient(0deg,#000000,transparent);"></div>
             <div class="position-relative d-flex flex-column align-items-center justify-content-center">
@@ -23,11 +23,66 @@
             </div>
         </div>
         <div class="container py-4">
-            <div class="row flex-lg-row-reverse gy-4">
-                <div class="col-12 col-lg-4">
-                    <div id="listing-map-container" data-id="{{ $mapId }}" class="rounded shadow"></div>
+            <div class="row mb-4 d-none d-lg-flex justify-content-between">
+                <div class="col-8">
+                    <div class="d-flex gap-3 align-items-center">
+                        <div>
+                            <img src="{{ $item->image_url }}" width="50px" height="50px"
+                                class="border rounded-circle shadow" />
+                        </div>
+                        <div>
+                            <p class="mb-0 h4 fw-bold">{{ $item->name }}</p>
+                            <p class="mb-0 lh-sm fw-semibold">{{ $item->category->name }}</p>
+                        </div>
+                    </div>
                 </div>
+                <div class="col-auto">
+                    <div class="d-flex align-items-center">
+                        @if($item->verified == 1)
+                            <div class="mx-2">Verified</div>
+                        @endif
+                        @for($i = 0; $i < 5; $i++)
+                            @if($i < $item->review_average)
+                                <x-icons.star filled width="16" height="16" class="align-bottom" />
+                            @else
+                                <x-icons.star width="16" height="16" class="align-bottom" />
+                            @endif
+                        @endfor
+                    </div>
+                    <div class="text-end">
+                        <strong>{{ $item->review_average }}</strong> &bull; {{ $item->review_count }}
+                    </div>
+                </div>
+            </div>
+            <div class="row gy-4">
                 <div class="col-12 col-lg-8">
+                    @if($media)
+                        <div class="mb-4 d-none d-lg-block user-select-none">
+                            <div id="listing-media-swiper" class="swiper mb-2">
+                                <div class="swiper-wrapper">
+                                    @foreach($media as $mediaFile)
+                                        <div class="swiper-slide">
+                                            <a href="{{ $mediaFile->url }}" data-gallery="listing-media-swiper" class="glightbox ratio ratio-16x9 rounded shadow">
+                                                <img src="{{ $mediaFile->url }}" class="rounded object-fit-cover" />
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div id="listing-thumbs-swiper" class="swiper">
+                                <div class="swiper-wrapper">
+                                    @foreach($media as $mediaFile)
+                                        <div class="swiper-slide">
+                                            <div class="ratio ratio-1x1">
+                                                <img src="{{ $mediaFile->url }}" class="rounded object-fit-cover" />
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
                     <div class="mb-4 px-4 py-4 d-flex flex-wrap gap-3 rounded-3 shadow">
                         @if(!empty($listingLinks->website))
                             <a href="{{ $listingLinks->website }}" title="website" class="btn px-2 btn-dark" target="_blank" rel="noopener noreferrer nofollow">
@@ -66,12 +121,29 @@
                         @endif
                     </div>
 
+                    @if($media)
+                        <div class="mb-4 d-lg-none">
+                            <h2 class="h3 mb-2 fw-bold">Media</h2>
+                            <div id="listing-media-mobile-swiper" class="swiper">
+                                <div class="swiper-wrapper">
+                                    @foreach($media as $mediaFile)
+                                        <div class="swiper-slide">
+                                            <a href="{{ $mediaFile->url }}" data-gallery="listing-media-mobile-swiper" class="glightbox ratio ratio-16x9 rounded shadow">
+                                                <img src="{{ $mediaFile->url }}" class="rounded object-fit-cover" />
+                                            </a>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="mb-4" x-data="{ expanded: false, isOverflowing: false, checkOverflow(el) {
                             this.$nextTick(() => {
                                 this.isOverflowing = el.scrollHeight > el.clientHeight;
                             });
                         } }" x-init="checkOverflow($refs.text)">
-                        <h2 class="h3 fw-bold">About</h2>
+                        <h2 class="h3 mb-3 fw-bold">About</h2>
                         <p class="mb-2" x-ref="text" x-bind:class="!expanded ? 'text-truncate-3' : ''">
                             {!! nl2br(@$item->about) !!}
                         </p>
@@ -80,7 +152,7 @@
                             <span x-text="expanded ? 'Read Less' : 'Read More'">Read More</span>
                         </button>
                     </div>
-                    
+
                     <ul class="nav nav-pills mb-3" id="listing-tabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="listing-overview-tab" aria-controls="listing-overview" data-bs-target="#listing-overview" aria-selected="true" data-bs-toggle="pill" type="button" role="tab">
@@ -176,33 +248,34 @@
                                 </div>
                             </div>
                         </template>
-                        <div x-show="reviewsLast > 1">
-                            <div class="d-flex flex-wrap gap-1">
+                        <nav x-show="reviewsLast > 1">
+                            <ul class="pagination">
                                 <template x-if="reviewsPage > 1">
-                                    <button type="button" x-on:click="getReviews(reviewsPage - 1)"
-                                        class="btn btn-sm btn-outline-info">
-                                        Prev
-                                    </button>
+                                    <li class="page-item">
+                                        <a href="" x-on:click.prevent="getReviews(reviewsPage - 1)" class="page-link">
+                                            Prev
+                                        </a>
+                                    </li>
                                 </template>
                                 <template x-for="p in reviewsPages" x-bind:key="p">
-                                    <button type="button" x-on:click="getReviews(p)" x-bind:disabled="p === reviewsPage"
-                                        class="btn btn-sm btn-outline-info"
-                                        x-bind:class="{'opacity-50': p === reviewsPage}">
-                                        <span x-text="p"></span>
-                                    </button>
+                                    <li class="page-item" x-bind:class="{'active': p === reviewsPage}">
+                                        <a href="" x-on:click.prevent="getReviews(p)" x-bind:disabled="p === reviewsPage" class="page-link" x-text="p"></a>
+                                    </li>
                                 </template>
                                 <template x-if="reviewsPage < reviewsLast">
-                                    <button type="button" x-on:click="getReviews(reviewsPage + 1)"
-                                        class="btn btn-sm btn-outline-info">
-                                        Next
-                                    </button>
+                                    <li class="page-item">
+                                        <a x-on:click.prevent="getReviews(reviewsPage + 1)" class="page-link">Next</a>
+                                    </li>
                                 </template>
-                                <div x-cloak x-show="reviews.length > 1 && reviewsLoading" class="px-1 align-self-center">
+                                <li x-cloak x-show="reviews.length > 1 && reviewsLoading" class="px-1 align-self-center">
                                     <span class="spinner-border spinner-border-sm text-info" aria-hidden="true"></span>
-                                </div>
-                            </div>
-                        </div>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div id="listing-map-container" data-id="{{ $mapId }}" class="rounded shadow"></div>
                 </div>
             </div>
         </div>

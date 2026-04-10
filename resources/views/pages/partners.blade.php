@@ -1,12 +1,11 @@
 <x-front-layout>
     <section class="container py-4">
-        <div class="mb-5 px-3 py-4 text-center rounded-3 border border-light bg-white shadow">
-            <h1 class="h4 fw-bold">Partners</h1>
-            <p class="mb-0 fw-medium">
-                Select and visit all our awesome partners!
-            </p>
-        </div>
-        
+        <x-ui.page-header
+            class="mb-5"
+            title="Partners"
+            subtitle="Select and visit all our awesome partners!"
+        />
+
         <div class="row mb-5 gy-4">
             @foreach($partners as $i => $partner)
                 <div class="col-12 col-sm-6 col-md-4">

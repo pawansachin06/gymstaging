@@ -28,6 +28,12 @@ class FrontLayout extends Component
             $title = 'Contact';
         }
 
+        $needSwiper = [
+            'listings.show',
+        ];
+        $needGlightbox = [
+            'listings.show',
+        ];
         $googleMaps = [
             'home',
             'listings.show',
@@ -38,6 +44,12 @@ class FrontLayout extends Component
         $stylesArr = [];
         $stylesArr[] = '/assets/css/lib/bootstrap.5.3.8.min.css';
         $stylesArr[] = '/assets/css/lib/sweetalert2.11.26.23.min.css';
+        if (in_array($routeName, $needSwiper)) {
+            $stylesArr[] = '/assets/css/lib/swiper-bundle.12.1.3.min.css';
+        }
+        if (in_array($routeName, $needGlightbox)) {
+            $stylesArr[] = '/assets/css/lib/glightbox.3.3.1.min.css';
+        }
 
         $stylesArr[] = "/assets/css/global.css?v=$v";
 
@@ -56,7 +68,12 @@ class FrontLayout extends Component
         $scriptsArr[] = '/assets/js/lib/bootstrap.5.3.8.min.js';
         $scriptsArr[] = '/assets/js/lib/axios.1.13.6.min.js';
         $scriptsArr[] = "/assets/js/lib/sweetalert2.11.26.23.min.js";
-
+        if (in_array($routeName, $needSwiper)) {
+            $scriptsArr[] = "/assets/js/lib/swiper-bundle.12.1.3.min.js";
+        }
+        if (in_array($routeName, $needGlightbox)) {
+            $scriptsArr[] = '/assets/js/lib/glightbox.3.3.1.min.js';
+        }
         $scriptsArr[] = "/assets/js/lib/jquery.3.7.1.min.js";
         $scriptsArr[] = "/assets/js/global.js?v=$v";
 
@@ -68,6 +85,8 @@ class FrontLayout extends Component
             $scriptsArr[] = "/assets/js/listings.show.js?v=$v";
         }
 
+
+        $scriptsArr[] = '/assets/js/lib/alpine.3.15.11.min.js'; // alpine before Google Scripts
         if (in_array($routeName, $googleMaps)) {
             $googleMapsKey = config('services.google.maps.key');
             $scriptsArr[] = "https://maps.googleapis.com/maps/api/js?key={$googleMapsKey}&loading=async&callback=initMap&libraries=places,marker";
@@ -76,7 +95,6 @@ class FrontLayout extends Component
             $scriptsArr[] = "https://www.google.com/recaptcha/api.js";
         }
 
-        $scriptsArr[] = '/assets/js/lib/alpine.3.15.11.min.js';
         $sidebarLinks = [
             // ['href' => route('dashboard'), 'name' => 'Dashboard'],
         ];

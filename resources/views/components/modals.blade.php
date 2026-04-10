@@ -70,3 +70,43 @@
     </div>
 </div>
 
+<div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="login-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mt-3 mb-4 text-center">
+                    <p class="h5 mb-0 fw-bold" id="login-modal-label">
+                         Sign in to continue
+                    </p>
+                    <p class="mb-0 fw-medium">Unlock exclusive perks & leave reviews.</p>
+                </div>
+                <form action="{{ route('auth.login') }}" method="post" data-js="form">
+                    <div class="mb-3 rounded-pill shadow">
+                        <input text="email" name="email" autocomplete="off" placeholder="Email" required class="form-control w-100 rounded-pill" />
+                    </div>
+                    <div class="mb-3 rounded-pill shadow">
+                        <input type="password" name="password" autocomplete="off" placeholder="Password" required class="form-control w-100 rounded-pill" />
+                    </div>
+                    <p class="mb-2 text-center">
+                        <a href="{{ route('auth.password.reset') }}" class="link-dark fw-medium">
+                            Forgot Password
+                        </a>
+                    </p>
+                    <input type="hidden" name="ajax" value="1" /> 
+                    <button type="submit" data-js="form-btn" class="mb-3 btn btn-gradient-dark w-100 position-relative px-5 fw-medium rounded-pill">
+                        <span class="d-inline-block px-2">Login</span>
+                        <span data-js="loader" class="d-none position-absolute top-0 bottom-0 end-0 px-2 d-inline-flex align-items-center">
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        </span>
+                    </button>
+                    <p class="mb-0 text-center fw-medium">
+                        Don't have an account? <a href="/join" class="link-dark fw-semibold">Register</a>
+                    </p>
+                </form>
+                <div class="position-absolute top-0 end-0 px-1 py-1">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

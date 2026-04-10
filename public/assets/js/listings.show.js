@@ -1,3 +1,26 @@
+(function(){
+    var thumbsSwiper = new Swiper('#listing-thumbs-swiper', {
+        freeMode: true,
+        spaceBetween: 8,
+        slidesPerView: 'auto',
+        watchSlidesProgress: true,
+    });
+    var mainSwiper = new Swiper('#listing-media-swiper', {
+        spaceBetween: 8,
+        keyboard: {
+            enabled: true,
+        },
+        thumbs: {
+            swiper: thumbsSwiper,
+        },
+    });
+    new Swiper('#listing-media-mobile-swiper', {
+        freeMode: true,
+        spaceBetween: 8,
+        slidesPerView: 1.25,
+    });
+})();
+
 window.addEventListener('google-maps-loaded', function () {
     var myMap = null;
     var myMapCenter = { lat: latitude, lng: longitude };

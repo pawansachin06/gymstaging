@@ -18,10 +18,17 @@ class ForgotPasswordController extends Controller
         $request->validate([
             'email' => ['required', 'email'],
         ]);
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
-        return $status === Password::RESET_LINK_SENT
+        $status = Password::sendResetLink($request->only('email'));
+        $isSent = $status === Password::RESET_LINK_SENT;
+        $isAjax = $request->boolean('ajax');
+
+        if ($isAjax) {
+            return resJson([
+                'message' => __($status),
+            ], $isSent ? 200 : 422);
+        }
+
+        return $isSent
             ? back()->with('status', __($status))
             : back()->withErrors(['email' => __($status)]);
     }

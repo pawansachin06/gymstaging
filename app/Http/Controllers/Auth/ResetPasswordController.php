@@ -34,10 +34,19 @@ class ResetPasswordController extends Controller
                     'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
-
                 event(new PasswordReset($user));
             }
         );
+
+        $isReset = $status === Password::PASSWORD_RESET;
+        $isAjax = $request->boolean('ajax');
+
+        if ($isAjax) {
+            return resJson([
+                'message' => __($status),
+                'redirect' => $isReset ? route('auth.login') : null,
+            ], $isReset ? 200 : 422);
+        }
 
         return $status == Password::PASSWORD_RESET
             ? redirect()->route('auth.login')->with('status', __($status))

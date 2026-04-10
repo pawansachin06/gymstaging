@@ -132,6 +132,12 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
 
 
 (function(){
+    if (typeof GLightbox !== 'undefined') {
+        var lightbox = GLightbox({
+            selector: '.glightbox',
+        });
+    }
+
     var forms = document.querySelectorAll('[data-js="form"]');
     for (var i = forms.length - 1; i >= 0; i--) {
         forms[i].addEventListener('submit', function(e) {
