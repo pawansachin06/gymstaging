@@ -135,6 +135,9 @@ class HomePageController extends Controller
             ];
         }
         $business = $data['business'] = Business::where('name', $type)->first();
+        if (!$business) {
+            abort(500, "Business not found: $type");
+        }
         $data['plans'] = Plan::where('business_id', $business->id)->get();
         $data['media'] = [];
         $data['teams'] = [];

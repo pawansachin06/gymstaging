@@ -2,7 +2,7 @@
 @php
     $isDark = in_array($routeName, ['home']);
 @endphp
-<header class="position-relative {{ $isDark ? 'bg-black' : 'bg-white shadow' }}">
+<header class="position-relative z-1 {{ $isDark ? 'bg-black' : 'bg-white shadow' }}">
     <div class="container px-1 py-1">
         <div class="row gx-1 justify-content-between align-items-center">
             <div class="col-auto">

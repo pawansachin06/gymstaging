@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ServiceVariantEnum;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ServiceController extends Controller
 {
@@ -60,7 +62,7 @@ class ServiceController extends Controller
                 'message' => 'Loading...'
             ]);
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return resJson($e->getMessage(), 500);
         }
     }
 
@@ -76,12 +78,34 @@ class ServiceController extends Controller
 
     public function adminEdit(Request $request, Service $service)
     {
-        return view('services.admin.edit', ['item'=> $service]);
+        $variants = ServiceVariantEnum::labels();
+        return view('services.admin.edit', [
+            'item'=> $service,
+            'variants' => $variants,
+        ]);
     }
 
-    public function update(Request $request, Service $service)
+    public function update(Request $request, Service $service){
+        
+    }
+
+    public function adminUpdate(Request $request, Service $service)
     {
-        //
+        $input = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'variant' => ['required', Rule::enum(ServiceVariantEnum::class)],
+            'label' => ['nullable', 'string', 'max:100'],
+            'slug' => ['required', 'string', 'max:100', Rule::unique(Service::class, 'slug')->ignore($service->id)],
+            'parent_id' => ['nullable', Rule::exists(Service::class, 'id')],
+            'type' => ['required', 'in:professional,organization'],
+        ]);
+        try {
+            $input['label'] = empty($input['label']) ? $input['name'] : $input['label'];
+            $service->update($input);
+            return resJson('Updated successfully');
+        } catch (Exception $e) {
+            return resJson($e->getMessage(), 500, $e);
+        }
     }
 
     public function destroy(Service $service)

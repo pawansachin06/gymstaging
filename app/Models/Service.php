@@ -28,9 +28,40 @@ class Service extends Model
         'variant' => ServiceVariantEnum::class,
     ];
 
+    protected $appends = ['variant_label', 'icon_url', 'image_url'];
+
     public function listings()
     {
         return $this->hasMany(Listing::class, 'service_id', 'id');
+    }
+
+    public function getTypeLabelAttribute()
+    {
+        if ($this->type === 'organization') {
+            return 'Facility / Club';
+        }
+        return ucfirst($this->type);
+    }
+
+    public function getVariantLabelAttribute()
+    {
+        return $this->variant->label();
+    }
+
+    public function getIconUrlAttribute()
+    {
+        if (!empty($this->icon)) {
+            return url("uploads/services/{$this->icon}");
+        }
+        return config('app.placeholder.thumb');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if (!empty($this->image)) {
+            return url("uploads/services/{$this->image}");
+        }
+        return config('app.placeholder.thumb');
     }
 
     public static function createTable()

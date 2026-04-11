@@ -30,10 +30,11 @@
                                 <td>{{ ($page - 1) * $limit + ($index + 1) }}</td>
                                 <td>
                                     <a href="{{ route('admin.services.edit', $item) }}">
-                                        {{ $item->name }}
+                                        {{ $item->name }}<br />
+                                        {{ $item->variant_label }} &bull; {{ $item->slug }}
                                     </a>
                                 </td>
-                                <td>{{ $item->type }}</td>
+                                <td>{{ ucfirst($item->type) }}</td>
                                 <td>
                                     
                                 </td>

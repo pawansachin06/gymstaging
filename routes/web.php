@@ -23,12 +23,13 @@ use App\Http\Controllers\Admin\VerificationCouponController;
 use App\Http\Controllers\Admin\SponsorController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\ProductOrderController as AdminProductOrderController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Webhook\StripeController;
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ChangePasswordController;
 
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ListingController;
@@ -49,6 +50,10 @@ Route::get('partners', [PageController::class, 'partners']);
 Route::post('contact', [HomePageController::class, 'sendEmail'])->name('contact.sendmail');
 Route::get('page/{slug}', [SettingController::class, 'show'])->name('cms');
 
+Route::get('join', [RegisterController::class, 'join'])->name('join');
+Route::get('join/{service:slug}', [RegisterController::class, 'joinService'])->name('join.service');
+Route::post('register', [RegisterController::class, 'register'])->name('register');
+
 Route::get('legals', [HomePageController::class, 'legalPage'])->name('legals');
 Route::get('get_users', [HomePageController::class, 'getUsers'])->name('getusers');
 Route::get('partners-old', [HomePageController::class, 'partners'])->name('partner');
@@ -65,8 +70,8 @@ Route::get('google/reviews', [HomePageController::class, 'get_google_reviews'])-
 Route::get('fb/reviews', [HomePageController::class, 'get_fb_reviews'])->name('fb.reviews');
 Route::get('join/personal', [HomePageController::class, 'personalRegister'])->name('join.personal');
 Route::post('join/personal', [HomePageController::class, 'storePersonalUser'])->name('store.personal.user');
-Route::get('join', [HomePageController::class, 'selectBusiness'])->name('select.business');
-Route::get('join/business/{type?}/{status?}', [HomePageController::class, 'businessRegister'])->name('join.business');
+Route::get('join-old', [HomePageController::class, 'selectBusiness'])->name('select.business');
+Route::get('join/business/{type}/{status?}', [HomePageController::class, 'businessRegister'])->name('join.business');
 Route::post('join/validate/coupon', [HomePageController::class, 'validateBusinessCoupon'])->name('validate.business.coupon');
 Route::post('join/validate/{type}', [HomePageController::class, 'validateBusinessForm'])->name('validate.business.user');
 Route::post('join/business/{type}', [HomePageController::class, 'storeBusinessUser'])->name('store.business.user');

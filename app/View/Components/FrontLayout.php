@@ -83,6 +83,10 @@ class FrontLayout extends Component
             $scriptsArr[] = "/assets/js/account.js?v=$v";
         } elseif (in_array($routeName, ['listings.show'])) {
             $scriptsArr[] = "/assets/js/listings.show.js?v=$v";
+        } elseif (in_array($routeName, ['join'])) {
+            $scriptsArr[] = "/assets/js/join.js?v=$v";
+        } elseif (in_array($routeName, ['join.service'])) {
+            $scriptsArr[] = "/assets/js/join.service.js?v=$v";
         }
 
 

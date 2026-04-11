@@ -246,6 +246,9 @@ return [
             'linkedin' => 'https://linkedin.com/company/gymselect',
         ],
     ],
+    'placeholder' => [
+        'thumb' => 'https://placehold.co/200x200/c2c2c2/262626.png?text=No+Image',
+    ],
     'version' => date('Y-m-d-h-i-a'),
 
 ];

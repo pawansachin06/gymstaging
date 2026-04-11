@@ -152,7 +152,7 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
 
             if (formMsg) {
                 formMsg.textContent = 'Please wait...';
-                formMsg.classList.add('alert-primary');
+                formMsg.classList.add('alert', 'alert-primary');
                 formMsg.classList.remove('d-none', 'alert-danger', 'alert-success');
             }
 
@@ -170,6 +170,9 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
                 if (res.data.redirect) {
                     window.location.href = res.data.redirect;
                 }
+                if (res.data.reload) {
+                    window.location.reload();
+                }
             }).catch(function(err) {
                 var msg = getErrorMessage(err);
                 toast.error(msg);
@@ -179,7 +182,9 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
                     formMsg.classList.remove('alert-success', 'alert-primary');
                 }
             }).finally(function() {
-                formBtn.disabled = false;
+                setTimeout(function(){
+                    formBtn.disabled = false;
+                }, 2000);
                 loader?.classList.add('d-none');
             });
         });
