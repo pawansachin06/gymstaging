@@ -35,6 +35,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\LocationBoostCityController;
 use App\Http\Controllers\LocationBoostPriceController;
 
@@ -196,6 +197,13 @@ Route::group(['middleware' => ['auth','role:3'], 'prefix' => 'admin', 'as' => 'a
     Route::post('services', [ServiceController::class, 'adminStore'])->name('services.store');
     Route::get('services/{service}/edit', [ServiceController::class, 'adminEdit'])->name('services.edit');
     Route::put('services/{service}/update', [ServiceController::class, 'adminUpdate'])->name('services.update');
+
+    Route::get('currencies', [CurrencyController::class, 'adminIndex'])->name('currencies.index');
+    Route::post('currencies', [CurrencyController::class, 'adminStore'])->name('currencies.store');
+    Route::get('currencies/{currency}/edit', [CurrencyController::class, 'adminEdit'])->name('currencies.edit');
+    Route::put('currencies/{currency}/update', [CurrencyController::class, 'adminUpdate'])->name('currencies.update');
+    Route::post('currencies/{id}/restore', [CurrencyController::class, 'adminRestore'])->name('currencies.restore');
+    Route::delete('currencies/{id}/delete', [CurrencyController::class, 'adminDelete'])->name('currencies.delete');
 
     //Businesses
     Route::post('businesses_mass_destroy', [BusinessesController::class, 'massDestroy'])->name('businesses.mass_destroy');

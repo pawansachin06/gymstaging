@@ -7,7 +7,7 @@ try {
         });
     });
 } catch (e) {
-    console.log(e.message);    
+    console.log(e.message);
 }
 
 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -190,39 +190,104 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
         });
     }
 
-    
+    var restoreBtns = document.querySelectorAll('[data-js="restore-btn"]');
+    if (restoreBtns) {
+        for (let i = 0; i < restoreBtns.length; i++) {
+            restoreBtns[i]?.addEventListener('click', function (e) {
+                e.preventDefault();
+                var btn = this;
+                btn.disabled = true;
+                var url = btn.getAttribute('data-route');
+                var rowId = btn.getAttribute('data-row-id');
+                axios.post(url).then(function (res) {
+                    toast.success(res.data.message ?? 'No response from server');
+                    if (rowId) {
+                        document.getElementById(rowId)?.remove();
+                    }
+                }).catch(function (err) {
+                    btn.disabled = false;
+                    toast.error(getErrorMessage(err));
+                });
+            });
+        }
+    }
+
+    var deleteBtns = document.querySelectorAll('[data-js="delete-btn"]');
+    if (deleteBtns) {
+        for (let i = 0; i < deleteBtns.length; i++) {
+            deleteBtns[i]?.addEventListener('click', function (e) {
+                e.preventDefault();
+                var btn = this;
+                var deleteUrl = btn.getAttribute('data-route');
+                var deleteItemName = btn.getAttribute('data-name');
+                var deleteRowId = btn.getAttribute('data-row-id');
+                var permanent = !!btn.getAttribute('data-permanent');
+                var title = permanent ? 'Permanently delete?' : 'Move to bin?';
+                var confirmButtonText = permanent ? 'Yes, Delete' : 'Yes, Trash';
+                Swal.fire({
+                    title: title,
+                    text: deleteItemName,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: confirmButtonText,
+                    customClass: {
+                        confirmButton: "btn btn-danger",
+                        cancelButton: "btn btn-label-secondary",
+                    },
+                    buttonsStyling: false,
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        btn.disabled = true;
+                        axios.delete(deleteUrl, {
+                            params: {permanent: permanent}
+                        }).then(function (res) {
+                            toast.success(res.data.message ?? 'No response from server');
+                            if (deleteRowId) {
+                                document.getElementById(deleteRowId)?.remove();
+                            }
+                        }).catch(function (err) {
+                            toast.error(getErrorMessage(err));
+                            btn.disabled = false;
+                        });
+                    }
+                });
+            });
+        }
+    }
+
+
     // ui-segmented start
     document.querySelectorAll(".ui-segmented").forEach(function (toggle) {
       var inputs = Array.from(toggle.querySelectorAll('input[type="radio"]'));
       var labels = Array.from(
         toggle.querySelectorAll(".ui-segmented-track label")
       );
-    
+
       if (inputs.length !== labels.length) {
         console.warn("ui-segmented: inputs and labels mismatch", toggle);
       }
-    
+
       // set count
       toggle.style.setProperty("--count", inputs.length);
-    
+
       // assign index
       inputs.forEach(function (input, i) {
         input.dataset.index = i;
       });
-    
+
       function update(activeInput = null) {
         var activeIndex = activeInput
           ? Number(activeInput.dataset.index)
           : inputs.findIndex((i) => i.checked);
-    
+
         if (activeIndex < 0) return;
-    
+
         toggle.style.setProperty("--index", activeIndex);
-    
+
         labels.forEach(function (label, i) {
           label.classList.toggle("active", i === activeIndex);
         });
-    
+
         toggle.dispatchEvent(
           new CustomEvent("ui-segmented:change", {
             detail: {
@@ -232,17 +297,17 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
           })
         );
       }
-    
+
       inputs.forEach(function(input) {
         input.addEventListener("change", function () {
           update(input);
         });
       });
-    
+
       update();
     });
     // ui-segmented end
-    
+
 })();
 
 
