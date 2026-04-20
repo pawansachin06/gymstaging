@@ -74,6 +74,12 @@
                             <span class="title">Currencies</span>
                         </a>
                     </li>
+                    <li class="">
+                        <a href="{{ route('admin.memberships.index') }}">
+                            <i class="fa fa-money"></i>
+                            <span class="title">Memberships</span>
+                        </a>
+                    </li>
                     @can('pcoupon_access')
                         <li class="{{ $request->segment(2) == 'pcoupon' ? 'active active-sub' : '' }}">
                             <a href="{{ route('admin.pcoupon.index') }}">

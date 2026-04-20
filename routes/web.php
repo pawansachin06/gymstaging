@@ -36,6 +36,7 @@ use App\Http\Controllers\ListingController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\MembershipController;
 use App\Http\Controllers\LocationBoostCityController;
 use App\Http\Controllers\LocationBoostPriceController;
 
@@ -202,8 +203,15 @@ Route::group(['middleware' => ['auth','role:3'], 'prefix' => 'admin', 'as' => 'a
     Route::post('currencies', [CurrencyController::class, 'adminStore'])->name('currencies.store');
     Route::get('currencies/{currency}/edit', [CurrencyController::class, 'adminEdit'])->name('currencies.edit');
     Route::put('currencies/{currency}/update', [CurrencyController::class, 'adminUpdate'])->name('currencies.update');
-    Route::post('currencies/{id}/restore', [CurrencyController::class, 'adminRestore'])->name('currencies.restore');
-    Route::delete('currencies/{id}/delete', [CurrencyController::class, 'adminDelete'])->name('currencies.delete');
+    Route::post('currencies/{id}/restore', [CurrencyController::class, 'adminRestore'])->withTrashed()->name('currencies.restore');
+    Route::delete('currencies/{id}/delete', [CurrencyController::class, 'adminDelete'])->withTrashed()->name('currencies.delete');
+
+    Route::get('memberships', [MembershipController::class, 'adminIndex'])->name('memberships.index');
+    Route::post('memberships', [MembershipController::class, 'adminStore'])->name('memberships.store');
+    Route::get('memberships/{membership}/edit', [MembershipController::class, 'adminEdit'])->name('memberships.edit');
+    Route::put('memberships/{membership}/update', [MembershipController::class, 'adminUpdate'])->name('memberships.update');
+    Route::post('memberships/{membership}/restore', [MembershipController::class, 'adminRestore'])->withTrashed()->name('memberships.restore');
+    Route::delete('memberships/{membership}/delete', [MembershipController::class, 'adminDelete'])->withTrashed()->name('memberships.delete');
 
     //Businesses
     Route::post('businesses_mass_destroy', [BusinessesController::class, 'massDestroy'])->name('businesses.mass_destroy');
