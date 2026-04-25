@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use App\Models\Service;
+use App\Models\Currency;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -78,7 +80,42 @@ class RegisterController extends Controller
     public function joinService(Request $request, Service $service)
     {
         $user = $request->user();
-        return view('auth.join-service', ['service' => $service]);
+        $action = $request->input('action');
+        $isAjax = $request->boolean('ajax');
+        if ($isAjax) {
+            if ($action === 'register') {
+                $input = $request->validate([
+                    'name' => ['required', 'string', 'max:150'],
+                    'email' => ['required', 'email', 'max:100', 'unique:users'],
+                    'password' => ['required', 'string', 'min:6', 'confirmed'],
+                    'newsletter' => ['nullable', 'boolean'],
+                ]);
+                return resJson('Select membership');
+            }
+            try {
+                if ($action === 'get-currencies') {
+                    $cols = 'id,name,code,rate';
+                    $items = Currency::query()->select(explode(',', $cols))
+                        ->orderBy('sequence')->get();
+                    return resJson(['items' => $items]);
+                } elseif ($action === 'get-memberships') {
+                    $cols = 'id,name,excerpt,price,duration,features';
+                    $cols .= ',is_popular,overline,underline,sequence';
+                    $items = Membership::query()
+                        ->select(explode(',', $cols))
+                        ->orderBy('sequence')->get();
+                    return resJson(['items' => $items]);
+                }
+                return resJson([]);
+            } catch (Exception $e) {
+                return resJson($e->getMessage(), 500, $e);
+            }
+        }
+        $stripeKey = config('services.stripe.key');
+        return view('auth.join-service', [
+            'service' => $service,
+            'stripeKey' => $stripeKey,
+        ]);
     }
 
     public function register(Request $request)

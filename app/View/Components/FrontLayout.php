@@ -38,6 +38,9 @@ class FrontLayout extends Component
             'home',
             'listings.show',
         ];
+        $needStripe = [
+            'join.service',
+        ];
         $recaptchas = [
         ];
 
@@ -94,6 +97,9 @@ class FrontLayout extends Component
         if (in_array($routeName, $googleMaps)) {
             $googleMapsKey = config('services.google.maps.key');
             $scriptsArr[] = "https://maps.googleapis.com/maps/api/js?key={$googleMapsKey}&loading=async&callback=initMap&libraries=places,marker";
+        }
+        if (in_array($routeName, $needStripe)) {
+            $scriptsArr[] = "https://js.stripe.com/v3";
         }
         if (in_array($routeName, $recaptchas)) {
             $scriptsArr[] = "https://www.google.com/recaptcha/api.js";

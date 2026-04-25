@@ -53,7 +53,7 @@ Route::post('contact', [HomePageController::class, 'sendEmail'])->name('contact.
 Route::get('page/{slug}', [SettingController::class, 'show'])->name('cms');
 
 Route::get('join', [RegisterController::class, 'join'])->name('join');
-Route::get('join/{service:slug}', [RegisterController::class, 'joinService'])->name('join.service');
+Route::match(['get', 'post'], 'join/{service:slug}', [RegisterController::class, 'joinService'])->name('join.service');
 Route::post('register', [RegisterController::class, 'register'])->name('register');
 
 Route::get('legals', [HomePageController::class, 'legalPage'])->name('legals');

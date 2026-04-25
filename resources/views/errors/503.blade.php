@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>Be right back.</title>
-
-        <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet" type="text/css">
-
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
         <style>
             html, body {
                 height: 100%;
@@ -14,10 +14,10 @@
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                color: #B0BEC5;
+                color: #373737;
                 display: table;
-                font-weight: 100;
-                font-family: 'Lato';
+                font-weight: 700;
+                font-family: "Montserrat", sans-serif;
             }
 
             .container {
@@ -32,14 +32,16 @@
             }
 
             .title {
-                font-size: 72px;
-                margin-bottom: 40px;
+                font-size: 28px;
             }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="content">
+                <picture>
+                    <img src="/assets/img/logo-header.png" width="350" height="68" />
+                </picture>
                 <div class="title">Be right back.</div>
             </div>
         </div>

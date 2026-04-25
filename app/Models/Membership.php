@@ -15,12 +15,14 @@ class Membership extends Model
     
     protected $fillable = [
         'name', 'excerpt', 'currency_code', 'price', 'duration', 'is_popular',
-        'sequence', 'features', 'capabilities', 'meta',
+        'overline', 'underline', 'sequence', 'features', 'capabilities', 'meta',
     ];
 
     protected $casts = [
         'name' => 'string',
         'excerpt' => 'string',
+        'overline' => 'string',
+        'underline' => 'string',
         'currency_code' => 'string',
         'price' => 'float',
         'duration' => 'string',
@@ -45,6 +47,8 @@ class Membership extends Model
                 $table->uuid('id')->primary();
                 $table->string('name', 50);
                 $table->string('excerpt', 255);
+                $table->string('overline', 100)->nullable();
+                $table->string('underline', 100)->nullable();
                 $table->string('currency_code', 3);
                 $table->decimal('price', 10, 2);
                 $table->enum('duration', ['monthly','yearly']);
@@ -58,6 +62,12 @@ class Membership extends Model
                 $table->dateTime('updated_at')->nullable();
             });
             $messages[] = "$tableName created";
+        }
+        if (!Schema::hasColumn($tableName, 'underline')) {
+            Schema::table($tableName, function(Blueprint $table) {
+                $table->string('overline', 100)->nullable()->after('excerpt');
+                $table->string('underline', 100)->nullable()->after('overline');
+            });
         }
         return $messages;
     }

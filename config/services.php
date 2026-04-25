@@ -39,6 +39,15 @@ return [
         ],
     ],
 
+    'telegram' => [
+        'bot' => [
+            'token' => env('TELEGRAM_TOKEN', ''),
+        ],
+        'group' => [
+            'admin' => env('TELEGRAM_ADMIN_GROUP_ID', '-1003970130062'),
+        ],
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),

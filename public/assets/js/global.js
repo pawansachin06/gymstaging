@@ -130,6 +130,35 @@ window.getErrorMessage = function (err, fallback = 'Something went wrong') {
     return fallback;
 };
 
+window.toCurrencySymbol = function toCurrencySymbol(currencyCode = 'GBP') {
+    var currencySymbols = {
+        USD: "$", // &dollar;
+        EUR: "€", // &euro;
+        GBP: "£", // &pound;
+        INR: "₹", // &#8377;
+        JPY: "¥", // &yen;
+        CNY: "¥", // &yen; (China)
+        AUD: "$", // (Australia)
+        CAD: "$", // (Canada)
+        CHF: "₣", // &#x20A3; (Swiss Franc)
+        RUB: "₽", // &#8381; (Russian Ruble)
+        BRL: "R$", // &#x52;&#x24; (Brazilian Real)
+        KRW: "₩", // &#8361; (South Korean Won)
+        MXN: "$", // &#36; (Mexican Peso)
+        ZAR: "R", // &#82; (South African Rand)
+    };
+    return currencySymbols[currencyCode.toUpperCase()] || currencyCode;
+};
+
+window.toPrice = function toPrice(val = null, code = 'GBP') {
+    var symbol = toCurrencySymbol(code);
+    if (!val) return `${symbol}0.00`;
+    var num = typeof val === 'number' ? val : parseFloat(val);
+    if (isNaN(num)) {
+        return `${symbol}${val}`;
+    }
+    return `${symbol}${num.toFixed(2)}`;
+};
 
 (function(){
     if (typeof GLightbox !== 'undefined') {

@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Schema;
+use App\Services\TelegramService;
+// use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Laravel\Cashier\Cashier;
@@ -19,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrapFour();
-        Schema::defaultStringLength(191);
+        // Schema::defaultStringLength(255);
     }
 
     /**
@@ -30,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         // Cashier::ignoreMigrations();
+        $this->app->singleton(TelegramService::class);
     }
 }

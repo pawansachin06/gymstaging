@@ -6,15 +6,39 @@
             </div>
             <div class="container position-relative pt-4 pt-md-5 pb-md-5 text-center">
                 <div class="d-none d-md-block">
-                    <h1 class="h1 fw-bold">Create account</h1>
+                    <h1 class="h1 fw-bold">
+                        <span x-show="step == 1">Create account</span>
+                        <span x-show="step == 2">Select Plan</span>
+                        <span x-show="step == 3">Select Plan</span>
+                    </h1>
                     <p class="mb-4 fw-medium">
-                        Create an account to publish listings, unlock perks, and get discovered.
+                        <span x-show="step == 1">
+                            Create an account to publish listings, unlock perks, and get discovered.
+                        </span>
+                        <span x-show="step == 2">
+                            Choose a plan to start appearing in search.
+                        </span>
+                        <span x-show="step == 3">
+                            Choose a plan to start appearing in search.
+                        </span>
                     </p>
                 </div>
                 <div class="d-md-none">
-                    <h2 class="h1 fw-bold">Create account</h2>
+                    <h2 class="h1 fw-bold">
+                        <span x-show="step == 1">Create account</span>
+                        <span x-show="step == 2">Select Plan</span>
+                        <span x-show="step == 3">Select Plan</span>
+                    </h2>
                     <p class="mb-0 fw-medium">
-                        Create an account to publish listings, unlock perks, and get discovered.
+                        <span x-show="step == 1">
+                            Create an account to publish listings, unlock perks, and get discovered.
+                        </span>
+                        <span x-show="step == 2">
+                            Choose a plan to start appearing in search.
+                        </span>
+                        <span x-show="step == 3">
+                            Choose a plan to start appearing in search.
+                        </span>
                     </p>
                 </div>
             </div>
@@ -24,34 +48,32 @@
                 <span x-cloak x-bind:style="{width: stepWidth +'%'}" style="width:33.33%;transition:width 300ms ease-in-out;"
                     class="position-absolute bg-primary-gradient h-100 start-0 d-flex align-items-center justify-content-center rounded-pill border border-2 shadow"></span>
                 <div class="position-relative d-flex align-items-center text-center">
-                    <a href="" x-on:click.prevent="goToStep(1)"
-                        class="d-inline-block py-2 fw-semibold text-decoration-none text-white" style="width:33.33%">
+                    <span class="d-inline-block py-2 fw-semibold text-decoration-none text-white" style="width:33.33%">
                         Step 1
-                    </a>
-                    <a href="" x-on:click.prevent="goToStep(2)"
-                        class="d-inline-block py-2 fw-semibold text-decoration-none text-white" style="width:33.33%">
+                    </span>
+                    <span class="d-inline-block py-2 fw-semibold text-decoration-none text-white" style="width:33.33%">
                         Step 2
-                    </a>
-                    <a href="" x-on:click.prevent="goToStep(3)"
-                        class="d-inline-block py-2 fw-semibold text-decoration-none text-white" style="width:33.33%">
+                    </span>
+                    <span class="d-inline-block py-2 fw-semibold text-decoration-none text-white" style="width:33.33%">
                         Step 3
-                    </a>
+                    </span>
                 </div>
             </div>
+
             <!-- step 1 start -->
-            <div class="px-4 py-4 rounded-3 border border-light bg-white shadow mb-5">
+            <div x-show="step == 1" class="px-4 py-4 rounded-3 border border-light bg-white shadow mb-5">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-10 col-lg-6 col-xl-5">
-                        <form x-on:submit.prevent="handleRegister($el)" action="{{ route('register') }}" method="post">
+                        <form x-on:submit.prevent="handleRegister()" action="{{ route('register') }}" method="post">
                             @csrf
                             <div class="mb-3 shadow rounded">
-                                <input type="text" name="name" required placeholder="Name" class="form-control rounded" />
+                                <input type="text" x-model="name" required placeholder="Name" class="form-control rounded" />
                             </div>
                             <div class="mb-3 shadow rounded">
-                                <input type="email" name="email" required placeholder="Email" class="form-control rounded" />
+                                <input type="email" x-model="email" required placeholder="Email" x-bind:disabled="registering" class="form-control rounded" />
                             </div>
                             <div class="mb-3 shadow rounded position-relative" x-data="{visible: false}">
-                                <input x-bind:type="visible ? 'text' : 'password'" name="password" required placeholder="Password" class="form-control rounded" />
+                                <input x-bind:type="visible ? 'text' : 'password'" x-model="password" required placeholder="Password" class="form-control rounded" />
                                 <div class="position-absolute d-flex align-items-center top-0 bottom-0 end-0">
                                     <button type="button" x-on:click="visible = !visible" class="btn btn-sm border-0">
                                         <x-icons.fa.eye x-show="visible" x-cloak />
@@ -60,7 +82,7 @@
                                 </div>
                             </div>
                             <div class="mb-3 shadow rounded">
-                                <input type="password" name="password_confirmation" required placeholder="Confirm Password" class="form-control rounded" />
+                                <input type="password" x-model="passwordConfirmation" required placeholder="Confirm Password" class="form-control rounded" />
                             </div>
                             <div class="mb-2 d-flex gap-2">
                                 <div class="align-self-start rounded border border-2 border-gradient-primary position-relative z-1 lh-1">
@@ -69,18 +91,20 @@
                                 <label class="form-check-label user-select-none small lh-sm" for="form-item-terms">
                                     I have read and agree to the <a href="/page/terms-conditions" target="_blank" rel="noopener noreferrer nofollow" class="fw-semibold link-dark">Terms & Conditions</a> and <a href="/page/privacy-policy" target="_blank" rel="noopener noreferrer nofollow" class="fw-semibold link-dark">Privacy Policy</a>. *
                                 </label>
+                                <input type="hidden" name="ajax" value="1" />
+                                <input type="hidden" name="action" value="register" />
                             </div>
                             <div class="mb-3 d-flex gap-2">
                                 <div class="align-self-start rounded border border-2 border-gradient-primary position-relative z-1 lh-1">
-                                    <input class="form-check-input my-0 border-0" name="newsletter" type="checkbox" value="" id="form-item-newsletter" />
+                                    <input class="form-check-input my-0 border-0" x-model="newsletter" type="checkbox" value="1" id="form-item-newsletter" />
                                 </div>
                                 <label class="form-check-label user-select-none small lh-sm" for="form-item-newsletter">
                                     Receive exclusive GymSelect perks, partner discounts, and early access to new offers.
                                 </label>
                             </div>
                             <div>
-                                <button type="submit" class="btn btn-dark bg-gradient w-100 position-relative">
-                                    <span class="fw-semibold">Create Account</span>
+                                <button type="submit" x-bind:disabled="registering" class="btn btn-dark bg-gradient w-100 position-relative">
+                                    <span class="fw-semibold" x-text="registering ? 'Please wait...' : 'Create Account'">Create Account</span>
                                     <span class="position-absolute top-0 bottom-0 end-0 px-2 d-inline-flex align-items-center">
                                         <x-icons.rocket />
                                     </span>
@@ -91,6 +115,110 @@
                 </div>
             </div>
             <!-- step 1 end -->
+            <!-- step 2 start -->
+            <div x-show="step == 2" x-cloak class="mb-5">
+                <div class="mb-4 d-flex justify-content-center gap-3 flex-wrap align-items-center user-select-none">
+                    <div class="position-relative px-1 py-1 flex-grow-1 flex-md-grow-0 rounded-pill shadow" style="min-width:350px;">
+                        <div class="position-relative">
+                            <span x-cloak x-bind:style="{transform: duration == 'monthly' ? 'translateX(0%)' : 'translateX(100%)'}"
+                                style="transition:transform 100ms ease-in-out;"
+                                class="position-absolute w-50 h-100 left-0 d-flex align-items-center justify-content-center rounded-pill bg-black bg-gradient"></span>
+                            <div class="position-relative d-flex align-items-center text-center">
+                                <button type="button" x-on:click.prevent="duration = 'monthly'"
+                                    x-bind:class="[duration === 'monthly' ? 'text-white' : 'text-black']"
+                                    class="d-inline-block w-50 px-1 py-1 border-0 bg-transparent">
+                                    <span class="fw-semibold">Monthly</span>
+                                </button>
+                                <button type="button" x-on:click.prevent="duration = 'yearly'"
+                                    x-bind:class="[duration === 'yearly' ? 'text-white' : 'text-black']"
+                                    class="d-inline-block w-50 px-1 py-1 border-0 bg-transparent">
+                                    <span class="fw-semibold">Yearly</span> | Save 25%
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="position-relative ms-auto ms-md-0" x-on:click.outside="isCurrenciesOpen = false">
+                        <button type="button" x-on:click="isCurrenciesOpen = !isCurrenciesOpen"
+                            style="min-width:100px"
+                            class="px-2 py-1 border border-light fw-semibold rounded-pill shadow bg-white">
+                            <span x-text="currencyCode"></span>
+                            <span x-text=toCurrencySymbol(currencyCode)></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 640 640">
+                                <path d="M300.3 440.8C312.9 451 331.4 450.3 343.1 438.6L471.1 310.6C480.3 301.4 483 287.7 478 275.7C473 263.7 461.4 256 448.5 256L192.5 256C179.6 256 167.9 263.8 162.9 275.8C157.9 287.8 160.7 301.5 169.9 310.6L297.9 438.6L300.3 440.8z"/>
+                            </svg>
+                        </button>
+                        <div class="position-relative">
+                            <div x-cloak x-show="isCurrenciesOpen" x-transition.origin.top.right
+                                class="position-absolute my-1 rounded-3 z-1 shadow bg-white">
+                                <div class="d-flex flex-column px-1 py-1 text-nowrap">
+                                    <template x-for="currency in currencies" x-bind:key="currency.id">
+                                        <button type="button" x-on:click="handleCurrency(currency)" class="px-2 py-1 fw-medium rounded-3 border-0"
+                                            x-bind:class="[currencyCode == currency.code ? 'bg-info text-white' : 'bg-white text-black']">
+                                            <span x-text="currency.code"></span>
+                                            <span x-text="toCurrencySymbol(currency.code)"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <template x-for="membership in memberships" x-bind:key="membership.id">
+                        <div x-show="duration === membership.duration"
+                            class="col-12 col-md-6 col-lg-4" x-bind:class="getMembershipOrderClasses(membership)">
+                            <div x-bind:class="[membership.is_popular ? '' : 'opacity-0']"
+                                class="position-relative z-n2 py-1 bg-primary-gradient rounded-top-3 text-center small text-white">
+                                <span class="fw-medium" x-text="membership.overline ?? 'Most Popular'"></span>
+                                <span class="position-absolute top-0 bottom-0 end-0 d-inline-flex align-items-center px-1">
+                                    <x-icons.material.crown />
+                                </span>
+                            </div>
+                            <div x-bind:class="[membership.is_popular ? 'border-gradient-primary' : 'border-light']"
+                                class="px-4 py-4 rounded-3 border-2 bg-white shadow">
+                                <p class="mb-1">
+                                    <strong x-text="membership.name"></strong>
+                                </p>
+                                <p class="mb-3 fw-medium" x-text="membership.excerpt"></p>
+                                <p class="h3 mb-2 fw-semibold">
+                                    <span x-text="getPrice(membership)"></span>
+                                </p>
+                                <p class="mb-0 lh-sm fw-medium">
+                                    Per <span x-text="membership.duration === 'monthly' ? 'month' : 'year'"></span>
+                                </p>
+                                <p class="mb-3 lh-sm fw-medium" x-bind:class="membership.duration === 'monthly' ? 'text-info' : ''">
+                                    <span x-text="membership.underline"></span>
+                                </p>
+                                <button type="button" x-on:click="handleMembership(membership)" class="mb-3 btn btn-dark bg-gradient rounded-pill w-100">
+                                    <span class="fw-semibold">Join Now</span>
+                                </button>
+                                <p class="mb-2 fw-semibold">
+                                    <span x-text="getMembershipFeaturesTitle(membership)"></span>
+                                </p>
+                                <template x-for="(feature, featureInx) in membership.features" x-bind:key="featureInx">
+                                    <div class="mb-2 d-flex align-items-start gap-2">
+                                        <div class="flex-shrink-0">
+                                            <x-icons.fa.circle-check />
+                                        </div>
+                                        <div class="fw-medium">
+                                            <span x-text="feature.title"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <!-- step 2 end -->
+            <!-- step 3 start -->
+            <div x-show="step == 3" x-cloak class="mb-5">
+                <div id="payment-element"></div>
+            </div>
+            <!-- step 3 end -->
         </div>
     </section>
+    <script type="text/javascript">
+        var STRIPE_KEY = '{{ $stripeKey }}';
+    </script>
 </x-front-layout>

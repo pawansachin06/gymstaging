@@ -113,6 +113,8 @@ class MembershipController extends Controller
         $input = $request->validate([
             'name' => ['required', 'string', 'max:50'],
             'excerpt' => ['required', 'string', 'max:255'],
+            'overline' => ['nullable', 'string', 'max:100'],
+            'underline' => ['nullable', 'string', 'max:100'],
             'duration' => ['required', 'in:monthly,yearly'],
             'price' => ['required', 'numeric', 'decimal:0,2'],
             'sequence' => ['required', 'numeric', 'integer', 'gte:0'],

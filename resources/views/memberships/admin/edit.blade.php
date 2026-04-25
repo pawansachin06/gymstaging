@@ -19,6 +19,14 @@
                         <input type="text" name="excerpt" value="{{ $item->excerpt }}" required class="form-control" />
                     </div>
                     <div class="col-xs-6 form-group">
+                        <label class="control-label">Overline</label>
+                        <input type="text" name="overline" value="{{ $item->overline }}" placeholder="Most Popular" class="form-control" />
+                    </div>
+                    <div class="col-xs-6 form-group">
+                        <label class="control-label">Underline</label>
+                        <input type="text" name="underline" value="{{ $item->underline }}" placeholder="Billed at £270 | Save £60" class="form-control" />
+                    </div>
+                    <div class="col-xs-6 form-group">
                         <label class="control-label">Price in {{ $item->currency_code }}</label>
                         <input type="number" name="price" value="{{ $item->price }}" required min="0.01" step="0.01" class="form-control" />
                     </div>

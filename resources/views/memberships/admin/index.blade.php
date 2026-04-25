@@ -43,7 +43,8 @@
                                         @if($item->is_popular)
                                             &bull; [Popular]
                                         @endif
-                                    </a>
+                                    </a><br />
+                                    <small>{{ $item->underline }}</small>
                                 </td>
                                 <td>
                                     {{ $item->price }} {{ $item->currency_code }}

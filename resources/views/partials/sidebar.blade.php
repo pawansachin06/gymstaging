@@ -1,4 +1,8 @@
 @inject('request', 'Illuminate\Http\Request')
+
+@php
+    $routeName = request()->route()->getName();
+@endphp
 <!-- Left side column. contains the sidebar -->
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
@@ -47,7 +51,7 @@
                 </li>
             @endcan
             @can('product_list_access')
-            <li class="treeview">
+            <li class="treeview {{ in_array($routeName, ['admin.memberships.index', 'admin.memberships.edit']) ? 'active' : '' }}">
                 <a href="#">
                         <i class="fa fa-list"></i>
                         <span class="title">@lang('quickadmin.products_listing.title')</span>
