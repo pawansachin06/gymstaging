@@ -8,17 +8,17 @@
                 <div class="d-none d-md-block">
                     <h1 class="h1 fw-bold">
                         <span x-show="step == 1">Create account</span>
-                        <span x-show="step == 2">Select Plan</span>
-                        <span x-show="step == 3">Select Plan</span>
+                        <span x-show="step == 2" x-cloak>Select Plan</span>
+                        <span x-show="step == 3" x-cloak>Select Plan</span>
                     </h1>
                     <p class="mb-4 fw-medium">
                         <span x-show="step == 1">
                             Create an account to publish listings, unlock perks, and get discovered.
                         </span>
-                        <span x-show="step == 2">
+                        <span x-show="step == 2" x-cloak>
                             Choose a plan to start appearing in search.
                         </span>
-                        <span x-show="step == 3">
+                        <span x-show="step == 3" x-cloak>
                             Choose a plan to start appearing in search.
                         </span>
                     </p>
@@ -26,17 +26,17 @@
                 <div class="d-md-none">
                     <h2 class="h1 fw-bold">
                         <span x-show="step == 1">Create account</span>
-                        <span x-show="step == 2">Select Plan</span>
-                        <span x-show="step == 3">Select Plan</span>
+                        <span x-show="step == 2" x-cloak>Select Plan</span>
+                        <span x-show="step == 3" x-cloak>Select Plan</span>
                     </h2>
                     <p class="mb-0 fw-medium">
                         <span x-show="step == 1">
                             Create an account to publish listings, unlock perks, and get discovered.
                         </span>
-                        <span x-show="step == 2">
+                        <span x-show="step == 2" x-cloak>
                             Choose a plan to start appearing in search.
                         </span>
-                        <span x-show="step == 3">
+                        <span x-show="step == 3" x-cloak>
                             Choose a plan to start appearing in search.
                         </span>
                     </p>
@@ -67,7 +67,7 @@
                         <form x-on:submit.prevent="handleRegister()" action="{{ route('register') }}" method="post">
                             @csrf
                             <div class="mb-3 shadow rounded">
-                                <input type="text" x-model="name" required placeholder="Name" class="form-control rounded" />
+                                <input type="text" x-model="name" required placeholder="Name" autofocus class="form-control rounded" />
                             </div>
                             <div class="mb-3 shadow rounded">
                                 <input type="email" x-model="email" required placeholder="Email" x-bind:disabled="registering" class="form-control rounded" />
@@ -189,8 +189,8 @@
                                 <p class="mb-3 lh-sm fw-medium" x-bind:class="membership.duration === 'monthly' ? 'text-info' : ''">
                                     <span x-text="membership.underline"></span>
                                 </p>
-                                <button type="button" x-on:click="handleMembership(membership)" class="mb-3 btn btn-dark bg-gradient rounded-pill w-100">
-                                    <span class="fw-semibold">Join Now</span>
+                                <button type="button" x-bind:disabled="membership.loading" x-on:click="handleMembership(membership)" class="mb-3 btn btn-dark bg-gradient rounded-pill w-100">
+                                    <span class="fw-semibold" x-text="membership.loading ? 'Please wait...' : 'Join Now'">Join Now</span>
                                 </button>
                                 <p class="mb-2 fw-semibold">
                                     <span x-text="getMembershipFeaturesTitle(membership)"></span>
@@ -213,7 +213,112 @@
             <!-- step 2 end -->
             <!-- step 3 start -->
             <div x-show="step == 3" x-cloak class="mb-5">
-                <div id="payment-element"></div>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="d-flex flex-column h-100">
+                            <div>
+                                <p class="mb-2 text-opacity-50">
+                                    Subscribe to GymSelect Subscription
+                                </p>
+                                <div class="mb-4 d-flex gap-2">
+                                    <p class="mb-0 h1 fw-semibold lh-1 text-nowrap">
+                                        <span x-show="refreshingCheckout">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
+                                        <span x-show="!refreshingCheckout" x-text="toPrice(pricing.subtotal, currencyCode)"></span>
+                                    </p>
+                                    <p class="mb-0 lh-sm text-secondary">
+                                        per<br />
+                                        <span x-text="duration === 'monthly' ? 'month' : 'year'"></span>
+                                    </p>
+                                </div>
+                                <div class="mb-3 pb-3 d-flex justify-content-between border-bottom">
+                                    <div>
+                                        <p class="mb-0 fw-medium">GymSelect Subscription</p>
+                                        <small class="text-secondary">
+                                            Billed <span x-text="duration"></span>
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 fw-semibold">
+                                            <span x-text="toPrice(pricing.subtotal, currencyCode)"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="pb-2 d-flex justify-content-between">
+                                    <div>
+                                        <p class="mb-0 fw-medium">Subtotal</p>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 fw-semibold">
+                                            <span x-text="toPrice(pricing.subtotal, currencyCode)"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mb-3 d-flex justify-content-between">
+                                    <div>
+                                        <p class="mb-0 fw-medium text-info">
+                                            <a data-bs-toggle="collapse" href="#collapseCouponCode" role="button" aria-expanded="false" aria-controls="collapseCouponCode">
+                                                Add promotion code
+                                            </a>
+                                        </p>
+                                        <div class="collapse" id="collapseCouponCode">
+                                            <div class="input-group my-2">
+                                                <input type="text" x-model="couponCode" placeholder="coupon code" class="form-control text-uppercase" />
+                                                <button x-on:click="removeCoupon()" x-show="couponCode.length > 0" class="btn btn-outline-secondary" type="button">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                                                    </svg>
+                                                </button>
+                                                <button x-on:click="refreshCheckout()" x-on:disabled="refreshingCheckout" class="btn btn-outline-secondary" type="button">
+                                                    <span x-text="refreshingCheckout ? 'Checking..' : 'Apply'">Apply</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div x-show="pricing.discount > 0">
+                                        <p class="mb-0 fw-semibold">
+                                            <span x-text="toPrice(pricing.discount, currencyCode)"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mb-3 d-flex justify-content-between">
+                                    <div>
+                                        <p class="mb-0 fw-medium">Total due today</p>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0 fw-semibold">
+                                            <span x-text="toPrice(pricing.total, currencyCode)"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-auto mb-4">
+                                <button type="button" x-on:click="goToStep(2)" class="btn btn-sm ps-2 pe-3 fw-medium btn-outline-dark rounded-pill">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-short" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5"/>
+                                    </svg>
+                                    <span>Back to Plan Selection</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="mb-3">
+                            <div id="payment-element"></div>
+                        </div>
+                        <button type="button" x-bind:disabled="refreshingCheckout || isPaying" x-show="stripeReady" class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
+                            <span x-show="isPaying" class="spinner-border spinner-border-sm mx-1" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </span>
+                            <span x-text="isPaying ? 'Please wait...' : 'Subscribe'"></span>
+                        </button>
+                        <div x-show="stripeReady" class="my-2 small">
+                            <p class="mb-0 small text-center text-secondary">
+                                By confirming your subscription, you allow GymSelect Limited to charge you for future payments in accordance with their terms.
+                                You can always cancel your subscription.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- step 3 end -->
         </div>

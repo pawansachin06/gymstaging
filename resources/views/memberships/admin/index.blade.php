@@ -28,7 +28,7 @@
                     <tr>
                         <th>S.No.</th>
                         <th>Name</th>
-                        <th>Price</th>
+                        <th>Stripe</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -47,7 +47,16 @@
                                     <small>{{ $item->underline }}</small>
                                 </td>
                                 <td>
-                                    {{ $item->price }} {{ $item->currency_code }}
+                                    {{ $item->stripe_product_id }}<br />
+                                    @if(!empty($item->stripe_price_ids))
+                                        <ul style="padding-left:1.75rem;">
+                                            @foreach($item->stripe_price_ids as $currencyCode => $priceId)
+                                                <li>
+                                                    <small>{{ $currencyCode }} → {{ $priceId }}</small>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
                                 </td>
                                 <td>
                                     @if ($item->trashed())

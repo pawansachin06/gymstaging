@@ -27,10 +27,6 @@
                         <input type="text" name="underline" value="{{ $item->underline }}" placeholder="Billed at £270 | Save £60" class="form-control" />
                     </div>
                     <div class="col-xs-6 form-group">
-                        <label class="control-label">Price in {{ $item->currency_code }}</label>
-                        <input type="number" name="price" value="{{ $item->price }}" required min="0.01" step="0.01" class="form-control" />
-                    </div>
-                    <div class="col-xs-6 form-group">
                         <label class="control-label">Duration</label>
                         <select name="duration" class="form-control">
                             <option value="">Select duration</option>
@@ -43,11 +39,25 @@
                         <input type="number" name="sequence" value="{{ $item->sequence }}" required min="0" step="1" class="form-control" />
                     </div>
                     <div class="col-xs-6 form-group">
+                        <label class="control-label">Stripe Product Id</label>
+                        <input type="text" name="stripe_product_id" value="{{ $item->stripe_product_id }}" placeholder="prod_1234567" class="form-control" />
+                    </div>
+                    <div class="col-xs-6 form-group">
                         <label class="control-label">Is Popular</label>
                         <div>
                             <input type="checkbox" value="1" name="is_popular" @checked($item->is_popular) />
                         </div>
                     </div>
+                    <div class="col-xs-12 form-group">
+                        @foreach($currencies as $currency)
+                            <div style="margin-bottom:8px;">
+                                <label class="control-label">{{ $currency->code }} Price ID</label>
+                                <input type="text" name="stripe_price_ids[{{ $currency->code }}]" placeholder="price_1234567" class="form-control"
+                                    value="{{ $item->stripe_price_ids[$currency->code] ?? '' }}" />
+                            </div>
+                        @endforeach
+                    </div>
+                    <!--currencies-->
                     <div class="col-xs-12 form-group">
                         <label class="control-label">Features</label>
                         <div id="features-wrapper">

@@ -33,7 +33,7 @@ class User extends Authenticatable
         'name', 'email', 'password', 'remember_token',
         'role_id', 'avatar', 'status', 'verify_token',
         'address_line_1', 'address_line_2', 'city', 'postal_code',
-        'email_2fa_enabled_at',
+        'email_2fa_enabled_at', 'currency_code',
     ];
 
     /**
@@ -195,6 +195,12 @@ class User extends Authenticatable
                 $table->dateTime('email_2fa_enabled_at')->nullable()->after('trial_ends_at');
             });
             $messages[] = "$tableName email_2fa_enabled_at added.";
+        }
+        if (!Schema::hasColumn($tableName, 'currency_code')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->string('currency_code', 3)->nullable()->after('status');
+            });
+            $messages[] = "$tableName currency_code added.";
         }
         return $messages;
     }

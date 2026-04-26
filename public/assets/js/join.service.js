@@ -2,12 +2,21 @@ document.addEventListener('alpine:init', function(){
     var self = null;
     var stripe = null;
     var elements = null;
+    var paymentElement = null;
+
+    function initStripe() {
+        if (!stripe) {
+            stripe = Stripe(STRIPE_KEY);
+        }
+    }
 
     Alpine.data('joinService', function(){
         return {
             url: '',
             step: 1,
             total: 0,
+            redirectUrl: '',
+            checkoutUrl: '',
             stepWidth: 33.33,
 
             name: '',
@@ -22,10 +31,16 @@ document.addEventListener('alpine:init', function(){
             currencyCode: 'GBP',
             isCurrenciesOpen: false,
 
+            couponCode: '',
+            refreshingCheckout: false,
+            pricing: {subtotal:0, total:0, discount:0},
+
             memberships: [],
             myMembership: null,
             duration: 'monthly',
 
+            isPaying: false,
+            checkoutId: null,
             stripeReady: false,
 
             goToStep(val) {
@@ -50,7 +65,7 @@ document.addEventListener('alpine:init', function(){
                     self.getMemberships();
                     self.getCurrencies();
                     self.goToStep(2);
-                    toast.show(msg);
+                    console.log(msg);
                 }).catch(function(err) {
                     var msg = getErrorMessage(err);
                     toast.error(msg);
@@ -84,14 +99,27 @@ document.addEventListener('alpine:init', function(){
                 }
             },
             handleMembership(val) {
-                // or an API request will be made to get total price from server
-                self.total = val.price * self.currencyRate;
+                val.loading = true;
                 self.myMembership = val;
-                self.initStripe();
-                self.goToStep(3);
+                axios.get(self.url, {
+                    params: {action: 'checkout', membership_id: val.id, ajax: 1}
+                }).then(function(res) {
+                    self.redirectUrl = res.data.redirect_url;
+                    self.checkoutUrl = res.data.checkout_url;
+                    self.goToStep(3);
+                    setTimeout(function() {
+                        self.refreshCheckout();
+                    }, 500);
+                }).catch(function(err) {
+                    var msg = getErrorMessage(err);
+                    toast.error(msg);
+                }).finally(function(){
+                    val.loading = false;
+                });
             },
             getPrice(val) {
-                return toPrice(val.price * self.currencyRate, self.currencyCode);
+                if (val === null) return '';
+                return toPrice(val.prices[self.currencyCode] ?? 0, self.currencyCode);
             },
             getCurrencies() {
                 axios.get(self.url, {
@@ -119,9 +147,65 @@ document.addEventListener('alpine:init', function(){
                     return 'Key features:';
                 }
             },
-            initStripe() {
-                stripe = Stripe(STRIPE_KEY);
+            removeCoupon() {
+                self.couponCode = '';
+                if (self.pricing.discount > 0) {
+                    self.refreshCheckout();
+                }
+            },
+            refreshCheckout() {
+                self.refreshingCheckout = true;
+                axios.post(self.checkoutUrl, {
+                    name: self.name,
+                    email: self.email,
+                    password: self.password,
+                    newsletter: self.newsletter,
+                    coupon_code: self.couponCode,
+                    checkout_id: self.checkoutId,
+                    currency_code: self.currencyCode,
+                    membership_id: self.myMembership.id,
+                }).then(function(res) {
+                    self.pricing = res.data.pricing;
+                    self.checkoutId = res.data.checkout_id;
+                    self.mountStripe(res.data.client_secret);
+                    setTimeout(function(){
+                        self.stripeReady = true;
+                    }, 1000);
+                    localStorage.setItem('checkout_id', res.data.checkout_id);
+                }).catch(function(err) {
+                    var msg = getErrorMessage(err);
+                    toast.error(msg);
+                }).finally(function(){
+                    self.refreshingCheckout = false;
+                });
+            },
+            handleCheckout() {
+                if (self.isPaying) {
+                    return;
+                }
+                self.isPaying = true;
+                stripe.confirmPayment({
+                    elements,
+                    confirmParams: {
+                        return_url: self.redirectUrl,
+                    }
+                }).then(function(res) {
+                    // will redirect
+                }).catch(function(err){
+                    var msg = getErrorMessage(err);
+                    toast.error(msg);
+                    self.isPaying = false;
+                });
+            },
+            mountStripe(clientSecret) {
+                initStripe();
+                // destroy old
+                if (paymentElement) {
+                    paymentElement.unmount();
+                    paymentElement = null;
+                }
                 elements = stripe.elements({
+                    clientSecret: clientSecret,
                     appearance: {
                         inputs: 'condensed',
                         variables: {
@@ -134,12 +218,8 @@ document.addEventListener('alpine:init', function(){
                     fonts: [{
                         cssSrc: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap'
                     }],
-                    amount: self.total,
-                    mode: 'subscription',
-                    paymentMethodCreation: 'manual',
-                    currency: self.currencyCode.toLowerCase(),
                 });
-                var paymentElement = elements.create('payment');
+                paymentElement = elements.create('payment');
                 paymentElement.mount('#payment-element');
                 paymentElement.on('ready', function () {
                     self.stripeReady = true;
@@ -148,6 +228,7 @@ document.addEventListener('alpine:init', function(){
             init() {
                 self = this;
                 self.getMemberships();
+                self.checkoutId = localStorage.getItem('checkout_id');
             }
         };
     });

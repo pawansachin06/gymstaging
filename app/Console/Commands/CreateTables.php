@@ -7,6 +7,7 @@ use App\Models\Listing;
 use App\Models\Service;
 use App\Models\Currency;
 use App\Models\Membership;
+use App\Models\CheckoutSession;
 use App\Models\LocationBoostCity;
 use App\Models\LocationBoostPrice;
 use App\Models\Payment;
@@ -27,6 +28,7 @@ class CreateTables extends Command
         $msgs[] = Service::createTable();
         $msgs[] = Currency::createTable();
         $msgs[] = Membership::createTable();
+        $msgs[] = CheckoutSession::createTable();
         $msgs[] = LocationBoostCity::createTable();
         $msgs[] = LocationBoostPrice::createTable();
         $msgs[] = Payment::createTable();

@@ -66,4 +66,10 @@ class PageController extends Controller
     {
         return view('pages.contact');
     }
+
+    public function checkoutPending(Request $request)
+    {
+        return view('pages.checkout-pending', [
+        ]);
+    }
 }

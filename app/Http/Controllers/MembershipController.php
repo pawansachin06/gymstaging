@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMembershipRequest;
 use App\Http\Requests\UpdateMembershipRequest;
+use App\Models\Currency;
 use App\Models\Membership;
 use Illuminate\Http\Request;
 
@@ -58,7 +59,6 @@ class MembershipController extends Controller
             $item = Membership::create([
                 'name' => 'New Membership',
                 'excerpt' => '',
-                'price' => 0,
                 'currency_code' => 'GBP',
                 'duration' => 'monthly',
                 'sequence' => 10,
@@ -93,8 +93,10 @@ class MembershipController extends Controller
 
     public function adminEdit(Membership $membership)
     {
+        $currencies = Currency::query()->orderBy('sequence')->get();
         return view('memberships.admin.edit', [
             'item' => $membership,
+            'currencies' => $currencies,
             'features' => $membership->features,
             'capabilities' => $this->getCapabilities(),
         ]);
@@ -116,8 +118,10 @@ class MembershipController extends Controller
             'overline' => ['nullable', 'string', 'max:100'],
             'underline' => ['nullable', 'string', 'max:100'],
             'duration' => ['required', 'in:monthly,yearly'],
-            'price' => ['required', 'numeric', 'decimal:0,2'],
             'sequence' => ['required', 'numeric', 'integer', 'gte:0'],
+            'stripe_product_id' => ['nullable', 'string', 'max:255'],
+            'stripe_price_ids' => ['required', 'array'],
+            'stripe_price_ids.*' => ['nullable', 'string', 'starts_with:price_'],
             'features' => ['required', 'array'],
             'features.*.title' => ['nullable', 'string'],
             'is_popular' => ['boolean'],
@@ -134,6 +138,21 @@ class MembershipController extends Controller
                 fn ($f) => !empty($f['title'])
             ));
             $input['is_popular'] ??= 0;
+
+            $validCurrencies = Currency::pluck('code')->toArray();
+            foreach ($input['stripe_price_ids'] as $code => $priceId) {
+                if (!in_array($code, $validCurrencies)) {
+                    throw ValidationException::withMessages([
+                        "stripe_price_ids.$code" => "Invalid currency"
+                    ]);
+                }
+                if ($priceId && !str_starts_with($priceId, 'price_')) {
+                    throw ValidationException::withMessages([
+                        "stripe_price_ids.$code" => "Invalid Stripe Price ID"
+                    ]);
+                }
+            }
+            $input['stripe_price_ids'] = array_filter($input['stripe_price_ids']);
             $membership->update($input);
             return resJson('Updated successfully');
         } catch (Exception $e) {

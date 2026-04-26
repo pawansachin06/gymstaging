@@ -54,7 +54,10 @@ Route::get('page/{slug}', [SettingController::class, 'show'])->name('cms');
 
 Route::get('join', [RegisterController::class, 'join'])->name('join');
 Route::match(['get', 'post'], 'join/{service:slug}', [RegisterController::class, 'joinService'])->name('join.service');
+Route::post('join-checkout', [RegisterController::class, 'checkout'])->name('join.checkout');
 Route::post('register', [RegisterController::class, 'register'])->name('register');
+
+Route::get('checkout-pending', [PageController::class, 'checkoutPending'])->name('checkout-pending');
 
 Route::get('legals', [HomePageController::class, 'legalPage'])->name('legals');
 Route::get('get_users', [HomePageController::class, 'getUsers'])->name('getusers');

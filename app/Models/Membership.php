@@ -14,8 +14,9 @@ class Membership extends Model
     use UuidTrait, StaticTableName, SoftDeletes;
     
     protected $fillable = [
-        'name', 'excerpt', 'currency_code', 'price', 'duration', 'is_popular',
+        'name', 'excerpt', 'currency_code', 'duration', 'is_popular',
         'overline', 'underline', 'sequence', 'features', 'capabilities', 'meta',
+        'stripe_price_id', 'stripe_price_ids', 'stripe_product_id',
     ];
 
     protected $casts = [
@@ -24,13 +25,13 @@ class Membership extends Model
         'overline' => 'string',
         'underline' => 'string',
         'currency_code' => 'string',
-        'price' => 'float',
         'duration' => 'string',
         'is_popular' => 'boolean',
         'sequence' => 'integer',
         'features' => 'array',
         'capabilities' => 'array',
         'meta' => 'array',
+        'stripe_price_ids' => 'array',
     ];
 
     public function hasCapability($key)
@@ -49,11 +50,11 @@ class Membership extends Model
                 $table->string('excerpt', 255);
                 $table->string('overline', 100)->nullable();
                 $table->string('underline', 100)->nullable();
-                $table->string('currency_code', 3);
-                $table->decimal('price', 10, 2);
                 $table->enum('duration', ['monthly','yearly']);
                 $table->boolean('is_popular')->default(false);
                 $table->unsignedBigInteger('sequence')->default(0);
+                $table->string('stripe_product_id')->nullable();
+                $table->json('stripe_price_ids')->nullable();
                 $table->json('features')->nullable(); // ['title'=> '']
                 $table->json('capabilities')->nullable();
                 $table->json('meta')->nullable();
@@ -67,6 +68,11 @@ class Membership extends Model
             Schema::table($tableName, function(Blueprint $table) {
                 $table->string('overline', 100)->nullable()->after('excerpt');
                 $table->string('underline', 100)->nullable()->after('overline');
+            });
+        }
+        if (!Schema::hasColumn($tableName, 'stripe_price_ids')) {
+            Schema::table($tableName, function(Blueprint $table) {
+                $table->json('stripe_price_ids')->nullable()->after('stripe_product_id');
             });
         }
         return $messages;
