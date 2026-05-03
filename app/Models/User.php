@@ -33,7 +33,9 @@ class User extends Authenticatable
         'name', 'email', 'password', 'remember_token',
         'role_id', 'avatar', 'status', 'verify_token',
         'address_line_1', 'address_line_2', 'city', 'postal_code',
+        'stripe_id', 'business_id',
         'email_2fa_enabled_at', 'currency_code',
+        'membership_id', 'newsletter',
     ];
 
     /**
@@ -51,6 +53,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
+        'newsletter' => 'string',
         'email_2fa_enabled_at' => 'datetime',
         'email_verified_at' => 'datetime',
     ];
@@ -201,6 +204,13 @@ class User extends Authenticatable
                 $table->string('currency_code', 3)->nullable()->after('status');
             });
             $messages[] = "$tableName currency_code added.";
+        }
+        if (!Schema::hasColumn($tableName, 'membership_id')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->uuid('membership_id')->nullable()->after('stripe_id');
+                $table->string('newsletter', 16)->nullable()->after('status');
+            });
+            $messages[] = "$tableName membership_id, newsletter added.";
         }
         return $messages;
     }

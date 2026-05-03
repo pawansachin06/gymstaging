@@ -15,6 +15,7 @@ document.addEventListener('alpine:init', function(){
             url: '',
             step: 1,
             total: 0,
+            serviceId: '',
             redirectUrl: '',
             checkoutUrl: '',
             stepWidth: 33.33,
@@ -104,6 +105,7 @@ document.addEventListener('alpine:init', function(){
                 axios.get(self.url, {
                     params: {action: 'checkout', membership_id: val.id, ajax: 1}
                 }).then(function(res) {
+                    self.serviceId = res.data.service_id;
                     self.redirectUrl = res.data.redirect_url;
                     self.checkoutUrl = res.data.checkout_url;
                     self.goToStep(3);
@@ -159,6 +161,7 @@ document.addEventListener('alpine:init', function(){
                     name: self.name,
                     email: self.email,
                     password: self.password,
+                    service_id: self.serviceId,
                     newsletter: self.newsletter,
                     coupon_code: self.couponCode,
                     checkout_id: self.checkoutId,
@@ -167,6 +170,7 @@ document.addEventListener('alpine:init', function(){
                 }).then(function(res) {
                     self.pricing = res.data.pricing;
                     self.checkoutId = res.data.checkout_id;
+                    self.redirectUrl = res.data.redirect_url;
                     self.mountStripe(res.data.client_secret);
                     setTimeout(function(){
                         self.stripeReady = true;

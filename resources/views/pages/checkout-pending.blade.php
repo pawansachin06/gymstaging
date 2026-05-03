@@ -6,4 +6,11 @@
             subtitle="Please wait while we confirm payment..."
         />
     </section>
+    <script type="text/javascript">
+        (function(){
+            setInterval(function() {
+                location.reload();
+            }, 4000); // 4000 milliseconds = 4 seconds
+        })();
+    </script>
 </x-front-layout>

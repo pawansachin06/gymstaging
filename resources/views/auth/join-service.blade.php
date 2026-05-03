@@ -222,7 +222,9 @@
                                 </p>
                                 <div class="mb-4 d-flex gap-2">
                                     <p class="mb-0 h1 fw-semibold lh-1 text-nowrap">
-                                        <span x-show="refreshingCheckout">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
+                                        <span x-show="refreshingCheckout">
+                                            <span class="spinner-border" style="--bs-spinner-border-width:4px;"></span>
+                                        </span>
                                         <span x-show="!refreshingCheckout" x-text="toPrice(pricing.subtotal, currencyCode)"></span>
                                     </p>
                                     <p class="mb-0 lh-sm text-secondary">
@@ -305,10 +307,9 @@
                         <div class="mb-3">
                             <div id="payment-element"></div>
                         </div>
-                        <button type="button" x-bind:disabled="refreshingCheckout || isPaying" x-show="stripeReady" class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
-                            <span x-show="isPaying" class="spinner-border spinner-border-sm mx-1" role="status">
-                                <span class="sr-only">Loading...</span>
-                            </span>
+                        <button type="button" x-on:click="handleCheckout()" x-bind:disabled="refreshingCheckout || isPaying" x-show="stripeReady"
+                            class="btn btn-info w-100 py-2 rounded-3 font-weight-semibold">
+                            <span x-show="isPaying" class="spinner-border spinner-border-sm mx-1" role="status"></span>
                             <span x-text="isPaying ? 'Please wait...' : 'Subscribe'"></span>
                         </button>
                         <div x-show="stripeReady" class="my-2 small">

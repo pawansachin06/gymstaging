@@ -12,8 +12,14 @@ use Illuminate\Database\Eloquent\Model;
 */
 class Subscription extends Model
 {
-  
-   protected $fillable = ['user_id', 'name','stripe_id','stripe_plan','trial_ends_at','ends_at'];
+    protected $fillable = [
+        'user_id', 'name', 'quantity', 'type',
+        'stripe_id',
+        'stripe_plan',
+        'stripe_price',
+        'stripe_status', 
+        'trial_ends_at','ends_at',
+    ];
 
     public function user()
     {

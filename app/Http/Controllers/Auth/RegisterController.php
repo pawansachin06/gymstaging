@@ -63,8 +63,10 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:150'],
             'email' => ['required', 'email', 'max:100'],
             'password' => ['required', 'string', 'max:100'],
+            'service_id' => ['required', 'exists:services,id'],
             'membership_id' => ['required', 'exists:memberships,id'],
             'coupon_code' => ['nullable', 'string'],
+            'newsletter' => ['nullable', 'boolean'],
             'currency_code' => ['required', 'exists:currencies,code'],
         ]);
         try {
@@ -116,6 +118,10 @@ class RegisterController extends Controller
                     'meta' => [],
                 ]);
             }
+
+            $meta = $checkout->meta ?? [];
+            $meta['service_id'] = $data['service_id'] ?? '';
+            $meta['newsletter'] = $data['newsletter'] ?? false;
 
             // load or create stripe customer
             if (!empty($checkout->stripe_customer_id)) {
@@ -267,6 +273,7 @@ class RegisterController extends Controller
             }
 
             // save changes
+            $checkout->meta = $meta;
             $checkout->currency_code = $currencyCode;
             $checkout->membership_id = $membership->id;
             $checkout->stripe_subscription_id = $subscription->id;
@@ -276,8 +283,12 @@ class RegisterController extends Controller
             if (!$clientSecret) {
                 throw new Exception('Unable to initialize payment');
             }
+            $redirectUrl = route('checkout-pending', [
+                'checkout_id' => $checkout->id,
+            ]);
             return response()->json([
                 'checkout_id' => $checkout->id,
+                'redirect_url' => $redirectUrl,
                 'client_secret' => $clientSecret,
                 'pricing' => [
                     'subtotal' => $subtotal / 100,
@@ -355,6 +366,7 @@ class RegisterController extends Controller
                     $checkoutUrl = route('join.checkout');
                     $redirectUrl = route('checkout-pending');
                     return resJson([
+                        'service_id' => $service->id,
                         'checkout_url' => $checkoutUrl,
                         'redirect_url' => $redirectUrl,
                     ]);

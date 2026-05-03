@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Faq;
+use App\Models\User;
 use App\Models\Listing;
 use App\Models\Partner;
+use App\Models\CheckoutSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
@@ -69,7 +72,21 @@ class PageController extends Controller
 
     public function checkoutPending(Request $request)
     {
-        return view('pages.checkout-pending', [
-        ]);
+        $checkoutId = $request->input('checkout_id');
+        if (!empty($checkoutId)) {
+            $checkout = CheckoutSession::query()
+                ->where('id', $checkoutId)
+                ->first(['status', 'type', 'user_id']);
+            if ($checkout && $checkout->status === 'completed') {
+                if ($checkout->type === 'register' && !empty($checkout->user_id)) {
+                    $user = User::query()->where('id', $checkout->user_id)->first();
+                    if ($user) {
+                        Auth::login($user, true);
+                        return redirect()->route('listings.edit');
+                    }
+                }
+            }
+        }
+        return view('pages.checkout-pending');
     }
 }
