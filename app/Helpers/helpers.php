@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\SiteService;
 use App\Services\TelegramService;
 use Illuminate\Support\Facades\Log;
 
@@ -7,6 +8,13 @@ if (!function_exists('telegram')) {
     function telegram(): TelegramService
     {
         return app(TelegramService::class);
+    }
+}
+
+if (!function_exists('site')) {
+    function site(): SiteService
+    {
+        return app(SiteService::class);
     }
 }
 

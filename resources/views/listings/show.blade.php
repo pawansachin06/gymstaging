@@ -1,16 +1,16 @@
 <x-front-layout>
     <div x-data="listing" style="overflow-x:hidden;">
         <div class="d-lg-none position-relative py-5 bg-black text-white">
-            <img src="https://placehold.co/720x360/png" alt="cover image" class="position-absolute top-0 start-0 end-0 bottom-0 w-100 h-100 object-fit-cover" />
+            <img src="{{ $item->cover_image_url }}" alt="cover image" class="position-absolute top-0 start-0 end-0 bottom-0 w-100 h-100 object-fit-cover" />
             <div class="position-absolute top-0 start-0 end-0 bottom-0 w-100 h-100" style="background:linear-gradient(0deg,#000000,transparent);"></div>
             <div class="position-relative d-flex flex-column align-items-center justify-content-center">
-                <img src="{{ $item->image_url }}" alt="profile image" width="150px" height="150px" class="d-inline-block mb-3 border border-2 border-light rounded-circle" />
+                <img src="{{ $item->profile_image_url }}" alt="profile image" width="150px" height="150px" class="d-inline-block mb-3 border border-2 border-light rounded-circle" />
                 <div class="text-center">
                     <p class="mb-0 h5 fw-bold text-white">
                         {{ $item->name }}
                     </p>
                     <p class="mb-2 text-white">
-                        {{ $item->category->name }}
+                        {{ $item->category?->name }}
                     </p>
                     <div class="small lh-1 text-white text-opacity-75">
                         @if($item->verified == 1)
@@ -27,12 +27,12 @@
                 <div class="col-8">
                     <div class="d-flex gap-3 align-items-center">
                         <div>
-                            <img src="{{ $item->image_url }}" width="50px" height="50px"
+                            <img src="{{ $item->profile_image_url }}" width="50px" height="50px"
                                 class="border rounded-circle shadow" />
                         </div>
                         <div>
                             <p class="mb-0 h4 fw-bold">{{ $item->name }}</p>
-                            <p class="mb-0 lh-sm fw-semibold">{{ $item->category->name }}</p>
+                            <p class="mb-0 lh-sm fw-semibold">{{ $item->category?->name }}</p>
                         </div>
                     </div>
                 </div>
@@ -281,8 +281,8 @@
         </div>
     </div>
     <script type="text/javascript">
-        var latitude = {{ $address->latitude }};
-        var longitude = {{ $address->longitude }};
+        var latitude = {{ $address?->latitude }};
+        var longitude = {{ $address?->longitude }};
         var MARKER_IMAGE_URL = '{{ $markerUrl }}';
     </script>
 </x-front-layout>

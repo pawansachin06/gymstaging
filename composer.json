@@ -10,7 +10,7 @@
     "require": {
         "php": "^8.2",
         "doctrine/dbal": "^3.0",
-        "intervention/image": "^3.11.0",
+        "intervention/image": "^3.11",
         "jenssegers/agent": "^2.6",
         "lab404/laravel-impersonate": "^1.7.7",
         "laravel/cashier": "^15.0",

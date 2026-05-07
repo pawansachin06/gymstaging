@@ -11,6 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->preventRequestsDuringMaintenance(except: [
+            'stripe/webhook',
+            'api/stripe/webhook',
+        ]);
+
         // Register your custom Route Middleware (formerly $routeMiddleware)
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,

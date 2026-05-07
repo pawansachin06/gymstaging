@@ -144,6 +144,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('business/{id}/{status}', [HomePageController::class, 'businessStatus'])->name('business.status');
 
     Route::get('listings/edit', [ListingController::class, 'edit'])->name('listings.edit');
+    Route::put('listings/{listing}/update', [ListingController::class, 'update'])->name('listings.update');
     Route::get('business/verify', [ListingController::class, 'verify'])->name('listings.verify');
 
     Route::get('business/boost', [HomePageController::class, 'businessBoost'])->name('business.boost');

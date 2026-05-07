@@ -160,6 +160,15 @@ window.toPrice = function toPrice(val = null, code = 'GBP') {
     return `${symbol}${num.toFixed(2)}`;
 };
 
+window.toNiceBytes = function toNiceBytes(x) {
+    var units = ['bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    var l = 0, n = parseInt(x, 10) || 0;
+    while (n >= 1024 && ++l) {
+        n = n / 1024;
+    }
+    return (n.toFixed(n < 10 && l > 0 ? 1 : 0) + ' ' + units[l]);
+};
+
 (function(){
     if (typeof GLightbox !== 'undefined') {
         var lightbox = GLightbox({
@@ -284,6 +293,24 @@ window.toPrice = function toPrice(val = null, code = 'GBP') {
         }
     }
 
+    var inputPreviews = document.querySelectorAll('[data-js="input-image-preview"]');
+    if (inputPreviews) {
+        for (let i = 0; i < inputPreviews.length; i++) {
+            inputPreviews[i].addEventListener('change', function (e) {
+                if (e.target.files[0]) {
+                    var input = this;
+                    var target = input.getAttribute('data-target');
+                    var targetEls = document.querySelectorAll(target);
+                    if (targetEls) {
+                        var previewURL = URL.createObjectURL(e.target.files[0]);
+                        for (let j = 0; j < targetEls.length; j++) {
+                            targetEls[j].src = previewURL;
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     // ui-segmented start
     document.querySelectorAll(".ui-segmented").forEach(function (toggle) {

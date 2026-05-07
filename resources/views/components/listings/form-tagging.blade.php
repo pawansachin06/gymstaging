@@ -1,6 +1,7 @@
 @props(['item' => null])
 
-<div class="accordion-item mb-3 shadow rounded-4 border-0 border-gradient-primary">
+<div x-bind:class="[completedSteps.includes('tagging-permissions') ? 'active' : '']"
+    class="accordion-item mb-3 shadow rounded-4 border-0 border-gradient-primary">
     <h2 class="accordion-header">
         <button class="accordion-button px-3 py-2 shadow-none bg-transparent collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-tagging-permissions" aria-expanded="false" aria-controls="collapse-tagging-permissions">
             <span class="fw-semibold">Tagging Permissions</span>
@@ -12,8 +13,8 @@
             <div class="row justify-content-center">
                 <div class="col-12 col-md-8 col-lg-6">
                     <div class="ui-segmented">
-                        <input type="radio" id="listing-tagging-off" name="taggable" value="off" checked />
-                        <input type="radio" id="listing-tagging-on" name="taggable" value="on" />
+                        <input type="radio" id="listing-tagging-off" name="taggable" x-on:change="checkStep('tagging-permissions')" value="0" @checked(!$item->taggable) />
+                        <input type="radio" id="listing-tagging-on" name="taggable" x-on:change="checkStep('tagging-permissions')" value="1" @checked($item->taggable) />
                         <div class="ui-segmented-track fw-medium">
                             <div class="ui-segmented-thumb"></div>
                             <label for="listing-tagging-off">Off</label>

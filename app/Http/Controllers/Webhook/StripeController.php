@@ -103,6 +103,7 @@ class StripeController extends CashierController
                         'user_id' => $user->id,
                         'name' => $checkout->name,
                         'service_id' => $serviceId,
+                        'folder' => site()->datePath('listings'),
                     ]);
                 }
 

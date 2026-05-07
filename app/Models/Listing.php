@@ -36,14 +36,25 @@ class Listing extends Model
 {
     use SoftDeletes, StorageurlTrait, HasSlug;
 
-    protected $fillable = ['name', 'about', 'profile_image', 'cover_image', 'marker_image', 'service_id', 'business_id', 'category_id', 'user_id', 'timetable', 'timetable_link', 'signup_url', 'country_code', 'timings', 'title', 'keyword', 'description', 'published', 'verified', 'coupon_id', 'ctas', 'boosted'];
+    protected $fillable = [
+        'name', 'about', 'profile_image', 'cover_image', 'marker_image',
+        'service_id', 'business_id', 'category_id', 'user_id',
+        'timetable', 'timetable_link', 'signup_url', 'country_code', 'timings',
+        'title', 'keyword', 'description', 'published', 'verified', 'coupon_id',
+        'ctas', 'boosted', 'taggable',
+        'folder', 'media_files', 'transformation_files',
+    ];
 
     protected $casts = [
         'timings' => 'array',
         'ctas' => 'object',
+        'taggable' => 'boolean',
+        'folder' => 'string',
+        'media_files' => 'array',
+        'transformation_files' => 'array',
     ];
 
-    protected $appends = ['permalink', 'image_url'];
+    protected $appends = ['permalink', 'profile_image_url', 'cover_image_url', 'image_url'];
 
     protected $perPage = 6;
     const CTA_LABEL = ['site' => 'Visit Site', 'enquire' => 'Enquire', 'call' => 'Call', 'email' => 'Email', 'whatsapp' => 'Whatsapp'];
@@ -221,6 +232,26 @@ class Listing extends Model
             return 'https://placehold.co/100.png';
         }
         return url("storage/thumb/$image");
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        $folder = $this->folder;
+        $profileImage = $this->profile_image;
+        if (!empty($profileImage)) {
+            return url("uploads/{$folder}/{$profileImage}");
+        }
+        return 'https://placehold.co/100.png';
+    }
+
+    public function getCoverImageUrlAttribute()
+    {
+        $folder = $this->folder;
+        $coverImage = $this->cover_image;
+        if (!empty($coverImage)) {
+            return url("uploads/{$folder}/{$coverImage}");
+        }
+        return 'https://placehold.co/720x320.png';
     }
 
     public function getMarkerImageUrlAttribute()
@@ -463,8 +494,16 @@ class Listing extends Model
         if (!Schema::hasColumn($tableName, 'country_code')) {
             Schema::table($tableName, function (Blueprint $table) {
                 $table->string('country_code', 3)->nullable()->after('signup_url');
+                $table->string('folder', 20)->nullable()->after('country_code');
+                $table->boolean('taggable')->default(false)->after('service_id');
             });
             $messages[] = "$tableName country_code added.";
+        }
+        if (!Schema::hasColumn($tableName, 'media_files')) {
+            Schema::table($tableName, function (Blueprint $table) {
+                $table->json('media_files')->nullable()->after('taggable');
+                $table->json('transformation_files')->nullable()->after('media_files');
+            });
         }
         return $messages;
     }

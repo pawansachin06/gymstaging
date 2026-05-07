@@ -18,7 +18,7 @@
                                 <img src="{{ $listing->getThumbUrl('profile_image') }}" alt="{{$listing->name}}">
                                 {{$listing->name}}
                                 <br/>
-                                <span>{{$listing->category->name}} </span>
+                                <span>{{$listing->category?->name}} </span>
                             </div>
                             @if($listing->verified)
                                 <div>
@@ -72,7 +72,7 @@
                     mapTypeControlOptions: {mapTypeIds: []},
                     zoom: 12,
                     center: {
-                        lat: {!! $address-> latitude !!}, lng: {!! $address -> longitude !!}
+                        lat: {!! $address?->latitude !!}, lng: {!! $address?->longitude !!}
                     }
                 });
                 let markerImage = {
