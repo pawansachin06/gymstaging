@@ -40,7 +40,13 @@
                     </div>
                 </template>
             </div>
-            <span class="fw-semibold mb-2 d-inline-block">Member Transformations:</span>
+            <span class="fw-semibold mb-2 d-inline-block">
+                @if($item->service_type == 'professional')
+                    Client Transformations:
+                @else
+                    Member Transformations:
+                @endif
+            </span>
             <div class="row gx-2 gy-2 mb-4">
                 <div class="col-4 col-md-3 col-lg-2 col-xl-2">
                     <div class="position-relative rounded-3 bg-info text-white">

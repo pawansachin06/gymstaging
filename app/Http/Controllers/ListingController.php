@@ -70,10 +70,30 @@ class ListingController extends Controller
     {
         $user = $request->user();
         $listing = $user->listing;
+        $keyword = $request->input('q');
+        $action = $request->input('action');
         if (!$listing) {
             abort(500, 'Listing not found');
         }
         if ($request->boolean('ajax')) {
+            if ($action === 'mentions') {
+                $mentionsQuery = Listing::query()
+                    ->with('service:id,slug,name')
+                    ->where('taggable', 1)->where('published', 1)
+                    ->whereNot('id', $listing->id)->limit(5);
+                if (!empty($keyword)) {
+                    $mentionsQuery->where(function ($q) use ($keyword) {
+                        $q->where('name', 'like', "%$keyword%")
+                            ->orWhere('title', 'like', "%$keyword%");
+                    });
+                }
+                $items = $mentionsQuery->get([
+                    'id', 'name', 'slug', 'folder', 'profile_image',
+                    'country_code', 'service_id'
+                ]);
+                return resJson(['items' => $items]);
+            }
+
             $completedSteps = [];
             if (!empty($listing->profile_image) && !empty($listing->cover_image)) {
                 $completedSteps[] = 'profile-and-cover-photo';
@@ -81,12 +101,28 @@ class ListingController extends Controller
             if ($listing->created_at != $listing->updated_at) {
                 $completedSteps[] = 'tagging-permissions';
             }
+            $mentions = [];
+            if (!empty($listing->mentions)) {
+                $ids = array_column($listing->mentions, 'id');
+                $mentions = Listing::query()
+                    ->with('service:id,slug,name')
+                    ->where('taggable', 1)
+                    ->where('published', 1)
+                    ->whereIn('id', $ids)
+                    ->get([
+                        'id', 'name', 'slug', 'folder', 'profile_image',
+                        'country_code', 'service_id',
+                    ]);
+            }
             return resJson([
                 'item' => $listing,
+                'mentions' => $mentions,
                 'completed_steps' => $completedSteps,
             ]);
         }
+        $listing->load('service:id,type');
         $serviceVariant = $request->input('service-variant', 'coach');
+        $listing->service_type = $listing->service ? $listing->service->type : '';
         return view('listings.edit', [
             'item' => $listing,
             'serviceVariant' => $serviceVariant,

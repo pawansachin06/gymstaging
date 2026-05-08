@@ -41,8 +41,8 @@ class Listing extends Model
         'service_id', 'business_id', 'category_id', 'user_id',
         'timetable', 'timetable_link', 'signup_url', 'country_code', 'timings',
         'title', 'keyword', 'description', 'published', 'verified', 'coupon_id',
-        'ctas', 'boosted', 'taggable',
-        'folder', 'media_files', 'transformation_files',
+        'ctas', 'boosted', 'place_id', 'place_name', 'taggable',
+        'folder', 'mentions', 'media_files', 'transformation_files',
     ];
 
     protected $casts = [
@@ -50,6 +50,7 @@ class Listing extends Model
         'ctas' => 'object',
         'taggable' => 'boolean',
         'folder' => 'string',
+        'mentions' => 'array',
         'media_files' => 'array',
         'transformation_files' => 'array',
     ];
@@ -136,6 +137,11 @@ class Listing extends Model
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id')->withTrashed();
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id');
     }
 
     public function business()
@@ -496,13 +502,15 @@ class Listing extends Model
                 $table->string('country_code', 3)->nullable()->after('signup_url');
                 $table->string('folder', 20)->nullable()->after('country_code');
                 $table->boolean('taggable')->default(false)->after('service_id');
+                $table->json('media_files')->nullable()->after('taggable');
+                $table->json('transformation_files')->nullable()->after('media_files');
             });
             $messages[] = "$tableName country_code added.";
         }
-        if (!Schema::hasColumn($tableName, 'media_files')) {
+        if (!Schema::hasColumn($tableName, 'place_name')) {
             Schema::table($tableName, function (Blueprint $table) {
-                $table->json('media_files')->nullable()->after('taggable');
-                $table->json('transformation_files')->nullable()->after('media_files');
+                $table->string('place_name', 255)->nullable()->after('folder');
+                $table->json('mentions')->nullable()->after('transformation_files');
             });
         }
         return $messages;

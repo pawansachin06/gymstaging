@@ -1,6 +1,18 @@
 document.addEventListener('alpine:init', function(){
     var self = null;
     var formId = 'item-update-form';
+
+    var sessionToken = null;
+    var autocompleteService = null;
+
+    window.addEventListener('google-maps-loaded', function () {
+        google.maps.importLibrary('places').then(function (places) {
+            autocompleteService = places.AutocompleteSuggestion;
+            sessionToken = new google.maps.places.AutocompleteSessionToken();
+        });
+    });
+
+
     Alpine.data('listing', function() {
         return {
             item: null,
@@ -14,6 +26,15 @@ document.addEventListener('alpine:init', function(){
 
             mediaFileDeletes: [],
             transformationFileDeletes: [],
+
+            placeId: '',
+            placeName: '',
+            placeKeyword: '',
+            placeSuggestions: [],
+
+            mentions: [],
+            mentionKeyword: '',
+            mentionSuggestions: [],
 
             handleSubmit() {
                 var form = document.getElementById(formId);
@@ -30,6 +51,13 @@ document.addEventListener('alpine:init', function(){
                 }
                 formData.append('media_file_deletes', JSON.stringify(self.mediaFileDeletes));
                 formData.append('transformation_file_deletes', JSON.stringify(self.transformationFileDeletes));
+
+                formData.append('place_id', self.placeId);
+                formData.append('place_name', self.placeName);
+                for (var k = 0; k < self.mentions.length; k++) {
+                    formData.append('mention_id[]', self.mentions[k].id);
+                }
+
                 self.updating = true;
                 self.messages = [];
                 self.message = 'Please wait...';
@@ -73,7 +101,12 @@ document.addEventListener('alpine:init', function(){
                     self.mediaFiles = res.data.item.media_files;
                     self.transformationFiles = res.data.item.transformation_files;
                     self.completedSteps = res.data.completed_steps;
+                    self.mentions = res.data.mentions;
+                    self.placeId = res.data.item.place_id;
+                    self.placeName = res.data.item.place_name;
                     self.checkStep('media');
+                    self.checkStep('location');
+                    self.checkStep('contact-and-socials');
                 }).catch(function(err) {
                 });
             },
@@ -167,6 +200,61 @@ document.addEventListener('alpine:init', function(){
                     console.log(e);
                 }
             },
+            handlePlaceChange() {
+                if (self.placeKeyword.length < 2) {
+                    self.placeSuggestions = [];
+                    return;
+                }
+                autocompleteService?.fetchAutocompleteSuggestions({
+                    input: self.placeKeyword,
+                    sessionToken: sessionToken,
+                    includedRegionCodes: ['gb'],
+                }).then(function (response) {
+                    const suggestions = response.suggestions;
+                    self.placeSuggestions = [];
+                    if (suggestions && suggestions.length > 0) {
+                        suggestions.forEach(function (suggestion) {
+                            var mainText = `${suggestion.placePrediction.mainText.text}, ${suggestion.placePrediction.secondaryText?.text}`;
+                            var placeId = suggestion.placePrediction.placeId;
+                            self.placeSuggestions.push({ id: placeId, name: mainText });
+                        });
+                    }
+                }).catch(function (err) {
+                    console.error(err);
+                    self.placeSuggestions = [];
+                    toast.error('Error fetching autocomplete suggestions');
+                });
+            },
+            handlePlaceSuggestionClick(val) {
+                self.placeId = val.id;
+                self.placeKeyword = '';
+                self.placeName = val.name;
+                self.placeSuggestions = [];
+                self.checkStep('location');
+            },
+            removePlace() {
+                self.placeId = '';
+                self.placeName = '';
+            },
+            handleMentionChange(){
+                axios.get('', {
+                    params: {ajax: 1, action: 'mentions', q: self.mentionKeyword},
+                }).then(function(res) {
+                    console.log(res.data);
+                    self.mentionSuggestions = res.data.items;
+                }).catch(function(err) {
+                    toast.error(getErrorMessage(err));
+                });
+            },
+            removeMention(val) {
+                self.mentions = [];
+            },
+            handleMentionSuggestionClick(val) {
+                self.mentions = [];
+                self.mentions.push(val);
+                self.mentionKeyword = '';
+                self.mentionSuggestions = [];
+            },
             checkSteps() {
                 // profile-and-cover-photo
                 if (!self.completedSteps.includes('profile-and-cover-photo')) {
@@ -176,7 +264,6 @@ document.addEventListener('alpine:init', function(){
                         self.completedSteps.push('profile-and-cover-photo');
                     }
                 }
-                // media
             },
             checkStep(val) {
                 if (val === 'tagging-permissions') {
@@ -189,6 +276,31 @@ document.addEventListener('alpine:init', function(){
                     } else {
                         self.completedSteps = self.completedSteps.filter(function(step) {
                             return step !== 'media';
+                        });
+                    }
+                } else if (val === 'contact-and-socials') {
+                    var section = document.getElementById('collapse-contact-and-socials');
+                    var inputs = section.querySelectorAll('input[name$="[value]"]');
+                    var hasAnyValue = false;
+                    for (var i = 0; i < inputs.length; i++) {
+                        if (inputs[i].value.trim() !== '') {
+                            hasAnyValue = true;
+                            break;
+                        }
+                    }
+                    if (hasAnyValue) {
+                        self.completedSteps.push('contact-and-socials');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'contact-and-socials';
+                        });
+                    }
+                } else if (val === 'location') {
+                    if (self.placeName.length > 0) {
+                        self.completedSteps.push('location');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'location';
                         });
                     }
                 }

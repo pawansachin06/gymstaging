@@ -45,7 +45,10 @@ class Service extends Model
 
     public function getVariantLabelAttribute()
     {
-        return $this->variant->label();
+        if ($this->variant) {
+            return $this->variant->label();
+        }
+        return '';
     }
 
     public function getIconUrlAttribute()

@@ -36,6 +36,7 @@ class FrontLayout extends Component
         ];
         $googleMaps = [
             'home',
+            'listings.edit',
             'listings.show',
         ];
         $needStripe = [
