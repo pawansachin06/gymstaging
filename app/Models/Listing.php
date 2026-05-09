@@ -43,7 +43,7 @@ class Listing extends Model
         'title', 'keyword', 'description', 'published', 'verified', 'coupon_id',
         'ctas', 'boosted', 'place_id', 'place_name', 'taggable',
         'folder', 'mentions', 'media_files', 'transformation_files',
-        'conversion',
+        'conversion', 'perks',
     ];
 
     protected $casts = [
@@ -55,6 +55,7 @@ class Listing extends Model
         'media_files' => 'array',
         'transformation_files' => 'array',
         'conversion' => 'array',
+        'perks' => 'array',
     ];
 
     protected $appends = ['permalink', 'profile_image_url', 'cover_image_url', 'image_url'];
@@ -570,12 +571,13 @@ class Listing extends Model
                 $table->json('transformation_files')->nullable()->after('media_files');
                 $table->string('place_name', 255)->nullable()->after('folder');
                 $table->json('mentions')->nullable()->after('transformation_files');
+                $table->json('conversion')->nullable()->after('transformation_files');
             });
             $messages[] = "$tableName country_code added.";
         }
-        if (!Schema::hasColumn($tableName, 'conversion')) {
+        if (!Schema::hasColumn($tableName, 'perks')) {
             Schema::table($tableName, function (Blueprint $table) {
-                $table->json('conversion')->nullable()->after('transformation_files');
+                $table->json('perks')->nullable()->after('conversion');
             });
         }
         return $messages;

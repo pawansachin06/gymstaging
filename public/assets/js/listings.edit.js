@@ -48,6 +48,97 @@ document.addEventListener('alpine:init', function(){
             conversionTypesOpen: false,
             conversionLabelsOpen: false,
 
+            perks: [],
+            newPerk: null,
+            perkOpen: false,
+            perkActionOpen: false,
+
+            openPerk() {
+                self.perkOpen = true;
+                self.newPerk = {
+                    id: Date.now(),
+                    title: '',
+                    action: {type: 'website', value: '', prefix: '44'},
+                    benefits: [{id: Date.now(), title: ''}],
+                    steps: [{id: Date.now(), title: ''}],
+                };
+            },
+            addPerkBenefit() {
+                if (self.newPerk.benefits.length >= 5) {
+                    toast.show('Max 5 allowed');
+                    return;
+                }
+                self.newPerk.benefits.push({
+                    id: Date.now(), title: '',
+                });
+            },
+            removePerkBenefit(val) {
+                var index = self.newPerk.benefits.findIndex(function(itemObj) {
+                    return itemObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.newPerk.benefits.splice(index, 1);
+                }
+            },
+            addPerkStep() {
+                if (self.newPerk.steps.length >= 5) {
+                    toast.show('Max 5 allowed');
+                    return;
+                }
+                self.newPerk.steps.push({
+                    id: Date.now(), title: '',
+                });
+            },
+            removePerkStep(val) {
+                var index = self.newPerk.steps.findIndex(function(itemObj) {
+                    return itemObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.newPerk.steps.splice(index, 1);
+                }
+            },
+            savePerk() {
+                if (!self.newPerk.title.length) {
+                    toast.error('Enter title of Perk');
+                    return;
+                }
+                if (!self.newPerk.action.value.length) {
+                    toast.error('How will they redeem Perk?');
+                    return;
+                }
+                self.perks.push(self.newPerk);
+                self.closePerk();
+                setTimeout(function(){
+                    var perksSection = document.getElementById('item-perks');
+                    if (perksSection) {
+                        perksSectionPosition = perksSection.getBoundingClientRect().top;
+                        window.scrollTo({ top: perksSectionPosition + window.pageYOffset - 100, behavior: 'smooth'});
+                    }
+                }, 100);
+            },
+            removePerk(val) {
+                var index = self.perks.findIndex(function(perkObj) {
+                    return perkObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.perks.splice(index, 1);
+                }
+            },
+            closePerk() {
+                self.perkOpen = false;
+            },
+            openPerkAction() {
+                self.perkActionOpen = true;
+            },
+            closePerkAction() {
+                self.perkActionOpen = false;
+            },
+            handlePerkActionType(val) {
+                self.closePerkAction();
+                self.newPerk.action.value = '';
+                self.newPerk.action.type = val.value;
+            },
+
             handleSubmit() {
                 var form = document.getElementById(formId);
                 var formData = new FormData(form);
@@ -69,6 +160,7 @@ document.addEventListener('alpine:init', function(){
                 for (var k = 0; k < self.mentions.length; k++) {
                     formData.append('mention_id[]', self.mentions[k].id);
                 }
+                formData.append('perks', JSON.stringify(self.perks));
                 formData.append('conversion', JSON.stringify(self.conversion));
 
                 self.updating = true;
@@ -118,10 +210,14 @@ document.addEventListener('alpine:init', function(){
                     self.mentions = res.data.mentions;
                     self.placeId = res.data.item.place_id;
                     self.placeName = res.data.item.place_name;
+                    if (res.data.item.perks) {
+                        self.perks = res.data.item.perks;
+                    }
                     if (res.data.item.conversion) {
                         self.conversion = res.data.item.conversion;
                     }
                     self.checkStep('media');
+                    self.checkStep('about');
                     self.checkStep('location');
                     self.checkStep('conversion');
                     self.checkStep('contact-and-socials');
@@ -387,6 +483,15 @@ document.addEventListener('alpine:init', function(){
                     } else {
                         self.completedSteps = self.completedSteps.filter(function(step) {
                             return step !== 'conversion';
+                        });
+                    }
+                } else if (val === 'about') {
+                    var itemAbout = document.getElementById('item-about');
+                    if (!!itemAbout?.value.trim().length) {
+                        self.completedSteps.push('about');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'about';
                         });
                     }
                 }

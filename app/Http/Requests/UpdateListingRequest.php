@@ -17,6 +17,7 @@ class UpdateListingRequest extends FormRequest
     {
         $mentions = [];
         $ctas = $this->input('ctas', []);
+        $perks = json_decode($this->input('perks', '[]'), true);
         $conversion = json_decode($this->input('conversion', '[]'), true);
         foreach ($ctas as $key => $cta) {
             $value = trim($cta['value'] ?? '');
@@ -28,6 +29,7 @@ class UpdateListingRequest extends FormRequest
         $conversion['enabled'] = !empty($conversion['value']);
         $this->merge([
             'ctas' => $ctas,
+            'perks' => $perks,
             'mentions' => $mentions,
             'conversion' => $conversion,
         ]);
@@ -61,6 +63,9 @@ class UpdateListingRequest extends FormRequest
             ],
             'mentions' => ['nullable', 'array'],
             'conversion' => ['nullable', 'array'],
+            'perks' => ['nullable', 'array'],
+
+            'about' => ['nullable', 'string'],
 
             'profile_image_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
             'cover_image_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
