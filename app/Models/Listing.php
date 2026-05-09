@@ -43,6 +43,7 @@ class Listing extends Model
         'title', 'keyword', 'description', 'published', 'verified', 'coupon_id',
         'ctas', 'boosted', 'place_id', 'place_name', 'taggable',
         'folder', 'mentions', 'media_files', 'transformation_files',
+        'conversion',
     ];
 
     protected $casts = [
@@ -53,6 +54,7 @@ class Listing extends Model
         'mentions' => 'array',
         'media_files' => 'array',
         'transformation_files' => 'array',
+        'conversion' => 'array',
     ];
 
     protected $appends = ['permalink', 'profile_image_url', 'cover_image_url', 'image_url'];
@@ -413,6 +415,68 @@ class Listing extends Model
         return $value;
     }
 
+    public static function getConversionTypes()
+    {
+        return [
+            [
+                'value' => 'website',
+                'title' => 'Website',
+                'labels' => [
+                    ['value' => 'visit-website', 'title' => 'Visit Website'],
+                    ['value' => 'learn-more', 'title' => 'Learn More'],
+                    ['value' => 'view-website', 'title' => 'View Website'],
+                    ['value' => 'custom', 'title' => 'Custom Text'],
+                ],
+                'placeholder' => 'https://example.com',
+            ],
+            [
+                'value' => 'call',
+                'title' => 'Call',
+                'labels' => [
+                    ['value' => 'call-no', 'title' => 'Call Now'],
+                    ['value' => 'book-call', 'title' => 'Book a Call'],
+                    ['value' => 'speak-with-me', 'title' => 'Speak with me'],
+                ],
+                'placeholder' => '+91 9999999999',
+            ],
+            [
+                'value' => 'whatsapp',
+                'title' => 'WhatsApp',
+                'labels' => [
+                    ['value' => 'whatsapp', 'title' => 'WhatsApp'],
+                    ['value' => 'chat-on-whatsapp', 'title' => 'Chat on WhatsApp'],
+                ],
+                'placeholder' => '+91 9999999999',
+            ],
+            [
+                'value' => 'email',
+                'title' => 'Email',
+                'labels' => [
+                    ['value' => 'send-email', 'title' => 'Send Email'],
+                    ['value' => 'contact-us', 'title' => 'Contact Us'],
+                ],
+                'placeholder' => 'hello@example.com',
+            ],
+            [
+                'value' => 'form',
+                'title' => 'Enquiry Form',
+                'labels' => [
+                    ['value' => 'enquire-now', 'title' => 'Enquire Now'],
+                    ['value' => 'get-quote', 'title' => 'Get Quote'],
+                ],
+                'placeholder' => 'Form ID / URL',
+            ],
+            [
+                'value' => 'custom',
+                'title' => 'Custom Link',
+                'labels' => [
+                    ['value' => 'open-link', 'title' => 'Open Link'],
+                ],
+                'placeholder' => 'https://example.com',
+            ],
+        ];
+    }
+
     public function generateMarkerImage()
     {
         $markerFolder = storage_path("app/public/markers");
@@ -504,13 +568,14 @@ class Listing extends Model
                 $table->boolean('taggable')->default(false)->after('service_id');
                 $table->json('media_files')->nullable()->after('taggable');
                 $table->json('transformation_files')->nullable()->after('media_files');
+                $table->string('place_name', 255)->nullable()->after('folder');
+                $table->json('mentions')->nullable()->after('transformation_files');
             });
             $messages[] = "$tableName country_code added.";
         }
-        if (!Schema::hasColumn($tableName, 'place_name')) {
+        if (!Schema::hasColumn($tableName, 'conversion')) {
             Schema::table($tableName, function (Blueprint $table) {
-                $table->string('place_name', 255)->nullable()->after('folder');
-                $table->json('mentions')->nullable()->after('transformation_files');
+                $table->json('conversion')->nullable()->after('transformation_files');
             });
         }
         return $messages;

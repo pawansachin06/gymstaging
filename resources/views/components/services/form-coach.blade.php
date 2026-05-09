@@ -127,35 +127,7 @@
 
 <x-listings.form-location :item="$item" />
 
-<div class="accordion-item mb-3 shadow rounded-4 border-0 border-gradient-primary">
-    <h2 class="accordion-header">
-        <button class="accordion-button px-3 py-2 shadow-none bg-transparent collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-conversion-boosters" aria-expanded="false" aria-controls="collapse-conversion-boosters">
-            <span class="fw-semibold">Conversion Boosters</span>
-        </button>
-    </h2>
-    <div id="collapse-conversion-boosters" class="accordion-collapse collapse" data-bs-parent="#accordion-listing">
-        <div class="accordion-body pt-0">
-            <p class="text-center fw-medium">Unlock high-impact tools to boost visibility and conversions</p>
-            <div class="row gy-3">
-                <div class="col-12 col-md-6">
-                    <span class="fw-semibold mb-2 d-inline-block">Prime call to action (CTA)</span>
-                    <p class="small">What action would you most like users to take?</p>
-                </div>
-                <div class="col-12 col-md-6">
-                    <span class="fw-semibold mb-2 d-inline-block">Preview</span>
-                    <p class="small">How your CTA will appear.</p>
-                </div>
-            </div>
-            <hr class="my-4" />
-            <span class="fw-semibold mb-2 d-inline-block">Perks</span>
-            <p class="small">Add perks to engage users and boost your visibility & conversions.</p>
-            <div class="row gy-3">
-                <div class="col-12 col-md-6"></div>
-                <div class="col-12 col-md-6"></div>
-            </div>
-        </div>
-    </div>
-</div>
+<x-listings.form-conversion-boosters :item="$item" />
 
 <div class="accordion-item mb-3 shadow rounded-4 border-0 border-gradient">
     <h2 class="accordion-header">

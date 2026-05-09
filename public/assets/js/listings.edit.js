@@ -36,6 +36,18 @@ document.addEventListener('alpine:init', function(){
             mentionKeyword: '',
             mentionSuggestions: [],
 
+            conversion: {
+                enabled: false,
+                type: '',
+                label: '',
+                prefix: '44',
+                title: '', // custom btn title
+                value: '', // custom btn url
+            },
+            conversionTypes: [],
+            conversionTypesOpen: false,
+            conversionLabelsOpen: false,
+
             handleSubmit() {
                 var form = document.getElementById(formId);
                 var formData = new FormData(form);
@@ -57,6 +69,7 @@ document.addEventListener('alpine:init', function(){
                 for (var k = 0; k < self.mentions.length; k++) {
                     formData.append('mention_id[]', self.mentions[k].id);
                 }
+                formData.append('conversion', JSON.stringify(self.conversion));
 
                 self.updating = true;
                 self.messages = [];
@@ -99,13 +112,18 @@ document.addEventListener('alpine:init', function(){
                 axios.get('', { params: {ajax: 1} }).then(function(res) {
                     self.item = res.data.item;
                     self.mediaFiles = res.data.item.media_files;
+                    self.conversionTypes = res.data.conversion_types;
                     self.transformationFiles = res.data.item.transformation_files;
                     self.completedSteps = res.data.completed_steps;
                     self.mentions = res.data.mentions;
                     self.placeId = res.data.item.place_id;
                     self.placeName = res.data.item.place_name;
+                    if (res.data.item.conversion) {
+                        self.conversion = res.data.item.conversion;
+                    }
                     self.checkStep('media');
                     self.checkStep('location');
+                    self.checkStep('conversion');
                     self.checkStep('contact-and-socials');
                 }).catch(function(err) {
                 });
@@ -255,6 +273,66 @@ document.addEventListener('alpine:init', function(){
                 self.mentionKeyword = '';
                 self.mentionSuggestions = [];
             },
+            conversionTitleFor(value) {
+                for (var i = 0; i < self.conversionTypes.length; i++) {
+                    if (value === self.conversionTypes[i].value) {
+                        return self.conversionTypes[i].title;
+                    }
+                }
+                return 'Select Type';
+            },
+            conversionLabelFor(value) {
+                for (var i = 0; i < self.conversionTypes.length; i++) {
+                    if (self.conversion.type === self.conversionTypes[i].value) {
+                        for (var j = 0; j < self.conversionTypes[i].labels.length; j++) {
+                            if (value === self.conversionTypes[i].labels[j].value) {
+                                return self.conversionTypes[i].labels[j].title;
+                            }
+                        }
+                    }
+                }
+                return 'Select Button Text';
+            },
+            getConversionLabels() {
+                for (var i = 0; i < self.conversionTypes.length; i++) {
+                    if (self.conversion.type === self.conversionTypes[i].value) {
+                        return self.conversionTypes[i].labels;
+                    }
+                }
+                return [];
+            },
+            conversionPlaceholderFor(type) {
+                return this.conversionTypes[type]?.placeholder || '';
+            },
+            openConversionTypes() {
+                self.conversionTypesOpen = true;
+            },
+            closeConversionTypes() {
+                self.conversionTypesOpen = false;
+            },
+            handleConversionType(val) {
+                self.closeConversionTypes();
+                self.conversion.title = '';
+                self.conversion.label = '';
+                self.conversion.value = '';
+                self.conversion.type = val.value;
+            },
+            openConversionLabels() {
+                self.conversionLabelsOpen = true;
+            },
+            closeConversionLabels() {
+                self.conversionLabelsOpen = false;
+            },
+            handleConversionLabel(val) {
+                self.closeConversionLabels();
+                if (val.value === 'custom') {
+                    self.conversion.title = '';
+                } else {
+                    self.conversion.title = val.title;
+                }
+                self.conversion.label = val.value;
+                self.checkStep('conversion');
+            },
             checkSteps() {
                 // profile-and-cover-photo
                 if (!self.completedSteps.includes('profile-and-cover-photo')) {
@@ -301,6 +379,14 @@ document.addEventListener('alpine:init', function(){
                     } else {
                         self.completedSteps = self.completedSteps.filter(function(step) {
                             return step !== 'location';
+                        });
+                    }
+                } else if (val === 'conversion') {
+                    if (!!self.conversion.value.length) {
+                        self.completedSteps.push('conversion');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'conversion';
                         });
                     }
                 }

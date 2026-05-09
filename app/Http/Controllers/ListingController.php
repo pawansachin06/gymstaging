@@ -114,15 +114,18 @@ class ListingController extends Controller
                         'country_code', 'service_id',
                     ]);
             }
+            $conversionTypes = Listing::getConversionTypes();
             return resJson([
                 'item' => $listing,
                 'mentions' => $mentions,
                 'completed_steps' => $completedSteps,
+                'conversion_types' => $conversionTypes,
             ]);
         }
-        $listing->load('service:id,type');
+        $listing->load('service:id,slug,type');
         $serviceVariant = $request->input('service-variant', 'coach');
         $listing->service_type = $listing->service ? $listing->service->type : '';
+        $listing->service_slug = $listing->service ? $listing->service->slug : '';
         return view('listings.edit', [
             'item' => $listing,
             'serviceVariant' => $serviceVariant,

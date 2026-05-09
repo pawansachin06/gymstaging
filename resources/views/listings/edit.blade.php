@@ -1,5 +1,5 @@
 <x-front-layout>
-    <section x-data="listing" data-service-type="{{ $item->service_type }}" class="container my-4">
+    <section x-data="listing" data-service="{{ $item->service_type }}-{{ $item->service_slug }}" class="container my-4">
         <form action="{{ route('listings.update', $item) }}" x-on:submit.prevent="handleSubmit()" id="item-update-form" method="post">
             @method('PUT')
             <div class="mb-4 accordion accordion-flush" data-variant="{{ $serviceVariant }}" id="accordion-listing">
