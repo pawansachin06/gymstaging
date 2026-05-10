@@ -18,6 +18,7 @@ class UpdateListingRequest extends FormRequest
         $mentions = [];
         $ctas = $this->input('ctas', []);
         $perks = json_decode($this->input('perks', '[]'), true);
+        $packages = json_decode($this->input('packages', '[]'), true);
         $conversion = json_decode($this->input('conversion', '[]'), true);
         foreach ($ctas as $key => $cta) {
             $value = trim($cta['value'] ?? '');
@@ -31,6 +32,7 @@ class UpdateListingRequest extends FormRequest
             'ctas' => $ctas,
             'perks' => $perks,
             'mentions' => $mentions,
+            'packages' => $packages,
             'conversion' => $conversion,
         ]);
     }
@@ -63,9 +65,14 @@ class UpdateListingRequest extends FormRequest
             ],
             'mentions' => ['nullable', 'array'],
             'conversion' => ['nullable', 'array'],
+            'packages' => ['nullable', 'array'],
             'perks' => ['nullable', 'array'],
 
             'about' => ['nullable', 'string'],
+            
+            'timetable' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'timetable_link' => ['nullable', 'url', 'max:200'],
+            'remove_timetable' => ['nullable', 'boolean'],
 
             'profile_image_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
             'cover_image_file' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
@@ -103,6 +110,27 @@ class UpdateListingRequest extends FormRequest
                         $validator->errors()->add(
                             'conversion',
                             'Conversion CTA must contain a valid URL.'
+                        );
+                    }
+                }
+            }
+
+            $packages = $this->input('packages', []);
+            foreach ($packages as $package) {
+                $packageType = $package['action']['type'] ?? '';
+                $packageValue = $package['action']['value'] ?? '';
+                if ($packageType === 'email') {
+                    if (!filter_var($packageValue, FILTER_VALIDATE_EMAIL)) {
+                        $validator->errors()->add(
+                            'packages',
+                            'Package CTA must contain a valid email address.'
+                        );
+                    }
+                } elseif (in_array($packageType, ['website', 'form', 'custom'])) {
+                    if (!filter_var($packageValue, FILTER_VALIDATE_URL)) {
+                        $validator->errors()->add(
+                            'packages',
+                            'Package CTA must contain a valid URL.'
                         );
                     }
                 }

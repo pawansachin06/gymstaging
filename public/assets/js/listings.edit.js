@@ -53,91 +53,13 @@ document.addEventListener('alpine:init', function(){
             perkOpen: false,
             perkActionOpen: false,
 
-            openPerk() {
-                self.perkOpen = true;
-                self.newPerk = {
-                    id: Date.now(),
-                    title: '',
-                    action: {type: 'website', value: '', prefix: '44'},
-                    benefits: [{id: Date.now(), title: ''}],
-                    steps: [{id: Date.now(), title: ''}],
-                };
-            },
-            addPerkBenefit() {
-                if (self.newPerk.benefits.length >= 5) {
-                    toast.show('Max 5 allowed');
-                    return;
-                }
-                self.newPerk.benefits.push({
-                    id: Date.now(), title: '',
-                });
-            },
-            removePerkBenefit(val) {
-                var index = self.newPerk.benefits.findIndex(function(itemObj) {
-                    return itemObj.id === val.id;
-                });
-                if (index !== -1) {
-                    self.newPerk.benefits.splice(index, 1);
-                }
-            },
-            addPerkStep() {
-                if (self.newPerk.steps.length >= 5) {
-                    toast.show('Max 5 allowed');
-                    return;
-                }
-                self.newPerk.steps.push({
-                    id: Date.now(), title: '',
-                });
-            },
-            removePerkStep(val) {
-                var index = self.newPerk.steps.findIndex(function(itemObj) {
-                    return itemObj.id === val.id;
-                });
-                if (index !== -1) {
-                    self.newPerk.steps.splice(index, 1);
-                }
-            },
-            savePerk() {
-                if (!self.newPerk.title.length) {
-                    toast.error('Enter title of Perk');
-                    return;
-                }
-                if (!self.newPerk.action.value.length) {
-                    toast.error('How will they redeem Perk?');
-                    return;
-                }
-                self.perks.push(self.newPerk);
-                self.closePerk();
-                setTimeout(function(){
-                    var perksSection = document.getElementById('item-perks');
-                    if (perksSection) {
-                        perksSectionPosition = perksSection.getBoundingClientRect().top;
-                        window.scrollTo({ top: perksSectionPosition + window.pageYOffset - 100, behavior: 'smooth'});
-                    }
-                }, 100);
-            },
-            removePerk(val) {
-                var index = self.perks.findIndex(function(perkObj) {
-                    return perkObj.id === val.id;
-                });
-                if (index !== -1) {
-                    self.perks.splice(index, 1);
-                }
-            },
-            closePerk() {
-                self.perkOpen = false;
-            },
-            openPerkAction() {
-                self.perkActionOpen = true;
-            },
-            closePerkAction() {
-                self.perkActionOpen = false;
-            },
-            handlePerkActionType(val) {
-                self.closePerkAction();
-                self.newPerk.action.value = '';
-                self.newPerk.action.type = val.value;
-            },
+            packages: [],
+            newPackage: null,
+            packageOpen: false,
+            packageActionOpen: false,
+
+            timetableFile: null,
+            timetableLink: '',
 
             handleSubmit() {
                 var form = document.getElementById(formId);
@@ -161,7 +83,14 @@ document.addEventListener('alpine:init', function(){
                     formData.append('mention_id[]', self.mentions[k].id);
                 }
                 formData.append('perks', JSON.stringify(self.perks));
+                formData.append('packages', JSON.stringify(self.packages));
                 formData.append('conversion', JSON.stringify(self.conversion));
+
+                if (self.timetableFile.file) {
+                    formData.append('timetable', self.timetableFile.file);
+                } else if (self.timetableFile.remove) {
+                    formData.append('remove_timetable', '1');
+                }
 
                 self.updating = true;
                 self.messages = [];
@@ -216,9 +145,20 @@ document.addEventListener('alpine:init', function(){
                     if (res.data.item.conversion) {
                         self.conversion = res.data.item.conversion;
                     }
+                    if (res.data.item.packages) {
+                        self.packages = res.data.item.packages;
+                    }
+                    if (res.data.item.timetable?.length) {
+                        self.timetableFile = {
+                            name: self.cleanFilename(res.data.item.timetable),
+                            url: res.data.item.timetable_url,
+                        };
+                    }
                     self.checkStep('media');
                     self.checkStep('about');
+                    self.checkStep('packages');
                     self.checkStep('location');
+                    self.checkStep('timetable');
                     self.checkStep('conversion');
                     self.checkStep('contact-and-socials');
                 }).catch(function(err) {
@@ -312,6 +252,40 @@ document.addEventListener('alpine:init', function(){
                     }
                 } catch (e) {
                     console.log(e);
+                }
+            },
+            handleTimetableFile(e) {
+                if (e.target.files.length) {
+                    var file = e.target.files[0];
+                    if (file.size > 5242880) {
+                        toast.error('File too large: ' + file.name);
+                        e.target.value = '';
+                        return;
+                    }
+                    self.timetableFile = {
+                        name: file.name,
+                        file: file,
+                    };
+                    e.target.value = '';
+                    self.checkStep('timetable');
+                }
+            },
+            removeTimetableFile() {
+                self.timetableFile = {
+                    name: '',
+                    remove: true,
+                }
+                self.checkStep('timetable');
+            },
+            downloadTimetableFile() {
+                if (self.timetableFile.url.length) {
+                    var a = document.createElement('a');
+                    a.setAttribute('target', '_blank');
+                    a.setAttribute('download', self.timetableFile.name);
+                    a.setAttribute('href', self.timetableFile.url);
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
                 }
             },
             handlePlaceChange() {
@@ -429,6 +403,174 @@ document.addEventListener('alpine:init', function(){
                 self.conversion.label = val.value;
                 self.checkStep('conversion');
             },
+
+            openPackage() {
+                self.packageOpen = true;
+                self.newPackage = {
+                    id: Date.now(),
+                    title: '',
+                    price: '',
+                    action: {type: 'website', value: '', prefix: '44'},
+                    benefits: [{id: Date.now(), title: ''}],
+                };
+            },
+            addPackageBenefit() {
+                if (self.newPackage.benefits.length >= 5) {
+                    toast.show('Max 5 allowed');
+                    return;
+                }
+                self.newPackage.benefits.push({
+                    id: Date.now(), title: '',
+                });
+            },
+            removePackageBenefit(val) {
+                var index = self.newPackage.benefits.findIndex(function(itemObj) {
+                    return itemObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.newPackage.benefits.splice(index, 1);
+                }
+            },
+            savePackage() {
+                if (!self.newPackage.title.length) {
+                    toast.error('Enter title of Package');
+                    return;
+                }
+                if (!self.newPackage.action.value.length) {
+                    toast.error('Add a call to action in Package');
+                    return;
+                }
+                if (['email'].includes(self.newPackage.action.type) && !self.isValidEmail(self.newPackage.action.value)) {
+                    toast.error('Enter valid email');
+                    return;
+                }
+                if (['website', 'form', 'custom'].includes(self.newPackage.action.type) && !self.isValidUrl(self.newPackage.action.value)) {
+                    toast.error('Enter valid url');
+                    return;
+                }
+                self.packages.push(self.newPackage);
+                self.closePackage();
+                setTimeout(function(){
+                    var packagesSection = document.getElementById('item-packages');
+                    if (packagesSection) {
+                        packagesSectionPosition = packagesSection.getBoundingClientRect().top;
+                        window.scrollTo({ top: packagesSectionPosition + window.pageYOffset - 100, behavior: 'smooth'});
+                    }
+                }, 100);
+            },
+            removePackage(val) {
+                var index = self.packages.findIndex(function(itemObj) {
+                    return itemObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.packages.splice(index, 1);
+                }
+                self.checkStep('packages');
+            },
+            closePackage() {
+                self.packageOpen = false;
+                self.checkStep('packages');
+            },
+            openPackageAction() {
+                self.packageActionOpen = true;
+                self.checkStep('packages');
+            },
+            closePackageAction() {
+                self.packageActionOpen = false;
+            },
+            handlePackageActionType(val) {
+                self.closePackageAction();
+                self.newPackage.action.value = '';
+                self.newPackage.action.type = val.value;
+            },
+
+
+            openPerk() {
+                self.perkOpen = true;
+                self.newPerk = {
+                    id: Date.now(),
+                    title: '',
+                    action: {type: 'website', value: '', prefix: '44'},
+                    benefits: [{id: Date.now(), title: ''}],
+                    steps: [{id: Date.now(), title: ''}],
+                };
+            },
+            addPerkBenefit() {
+                if (self.newPerk.benefits.length >= 5) {
+                    toast.show('Max 5 allowed');
+                    return;
+                }
+                self.newPerk.benefits.push({
+                    id: Date.now(), title: '',
+                });
+            },
+            removePerkBenefit(val) {
+                var index = self.newPerk.benefits.findIndex(function(itemObj) {
+                    return itemObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.newPerk.benefits.splice(index, 1);
+                }
+            },
+            addPerkStep() {
+                if (self.newPerk.steps.length >= 5) {
+                    toast.show('Max 5 allowed');
+                    return;
+                }
+                self.newPerk.steps.push({
+                    id: Date.now(), title: '',
+                });
+            },
+            removePerkStep(val) {
+                var index = self.newPerk.steps.findIndex(function(itemObj) {
+                    return itemObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.newPerk.steps.splice(index, 1);
+                }
+            },
+            savePerk() {
+                if (!self.newPerk.title.length) {
+                    toast.error('Enter title of Perk');
+                    return;
+                }
+                if (!self.newPerk.action.value.length) {
+                    toast.error('How will they redeem Perk?');
+                    return;
+                }
+                self.perks.push(self.newPerk);
+                self.closePerk();
+                setTimeout(function(){
+                    var perksSection = document.getElementById('item-perks');
+                    if (perksSection) {
+                        perksSectionPosition = perksSection.getBoundingClientRect().top;
+                        window.scrollTo({ top: perksSectionPosition + window.pageYOffset - 100, behavior: 'smooth'});
+                    }
+                }, 100);
+            },
+            removePerk(val) {
+                var index = self.perks.findIndex(function(perkObj) {
+                    return perkObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.perks.splice(index, 1);
+                }
+            },
+            closePerk() {
+                self.perkOpen = false;
+            },
+            openPerkAction() {
+                self.perkActionOpen = true;
+            },
+            closePerkAction() {
+                self.perkActionOpen = false;
+            },
+            handlePerkActionType(val) {
+                self.closePerkAction();
+                self.newPerk.action.value = '';
+                self.newPerk.action.type = val.value;
+            },
+
             checkSteps() {
                 // profile-and-cover-photo
                 if (!self.completedSteps.includes('profile-and-cover-photo')) {
@@ -485,6 +627,14 @@ document.addEventListener('alpine:init', function(){
                             return step !== 'conversion';
                         });
                     }
+                } else if (val === 'packages') {
+                    if (!!self.packages?.length) {
+                        self.completedSteps.push('packages');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'packages';
+                        });
+                    }
                 } else if (val === 'about') {
                     var itemAbout = document.getElementById('item-about');
                     if (!!itemAbout?.value.trim().length) {
@@ -494,6 +644,39 @@ document.addEventListener('alpine:init', function(){
                             return step !== 'about';
                         });
                     }
+                } else if (val === 'timetable') {
+                    if (self.timetableLink?.length || self.timetableFile.name?.length) {
+                        self.completedSteps.push('timetable');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'timetable';
+                        });
+                    }
+                }
+            },
+
+            cleanFilename(filename) {
+                // remove everything up to and including "-timetable-"
+                // Then remove ULID (26 chars) right before the extension
+                return filename
+                    .replace(/^.*-timetable-/, '')           // remove start through "-timetable-"
+                    .replace(/-[0-9A-HJKMNP-TV-Z]{26}(?=\.[^.]+$)/, ''); // remove -ULID before ext
+            },
+            isValidEmail(value) {
+                try {
+                    return String(value)
+                        .toLowerCase()
+                        .match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+                } catch (_) {
+                    return false;
+                }
+            },
+            isValidUrl(value) {
+                try {
+                    var url = new URL(value);
+                    return ['http:', 'https:'].includes(url.protocol);
+                } catch (_) {
+                    return false;
                 }
             },
             init() {

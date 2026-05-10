@@ -115,6 +115,7 @@ class ListingController extends Controller
                     ]);
             }
             $conversionTypes = Listing::getConversionTypes();
+            $listing->append(['timetable_url']);
             return resJson([
                 'item' => $listing,
                 'mentions' => $mentions,
@@ -122,8 +123,8 @@ class ListingController extends Controller
                 'conversion_types' => $conversionTypes,
             ]);
         }
-        $listing->load('service:id,slug,type');
-        $serviceVariant = $request->input('service-variant', 'coach');
+        $listing->load('service:id,slug,type,variant');
+        $serviceVariant = $listing->service ? $listing->service->variant->value : 'coach';
         $listing->service_type = $listing->service ? $listing->service->type : '';
         $listing->service_slug = $listing->service ? $listing->service->slug : '';
         return view('listings.edit', [
@@ -159,6 +160,20 @@ class ListingController extends Controller
                     $oldFiles[] = "{$folder}/{$listing->cover_image}";
                 }
                 $updates['cover_image'] = $filename;
+            }
+            if ($request->hasFile('timetable')) {
+                $timetable = $request->file('timetable');
+                $filename = site()->generateFilename($timetable, "{$listing->id}-timetable");
+                Storage::disk('uploads')->putFileAs($folder, $timetable, $filename);
+                $updates['timetable'] = $filename;
+                if (!empty($listing->timetable)) {
+                    $oldFiles[] = "{$folder}/{$listing->timetable}";
+                }
+            } elseif ($request->boolean('remove_timetable')) {
+                if (!empty($listing->timetable)) {
+                    $oldFiles[] = "{$folder}/{$listing->timetable}";
+                }
+                $updates['timetable'] = null;
             }
 
             $mediaFiles = collect($listing->media_files ?? []);

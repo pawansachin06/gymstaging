@@ -43,7 +43,7 @@ class Listing extends Model
         'title', 'keyword', 'description', 'published', 'verified', 'coupon_id',
         'ctas', 'boosted', 'place_id', 'place_name', 'taggable',
         'folder', 'mentions', 'media_files', 'transformation_files',
-        'conversion', 'perks',
+        'conversion', 'perks', 'packages',
     ];
 
     protected $casts = [
@@ -56,6 +56,7 @@ class Listing extends Model
         'transformation_files' => 'array',
         'conversion' => 'array',
         'perks' => 'array',
+        'packages' => 'array',
     ];
 
     protected $appends = ['permalink', 'profile_image_url', 'cover_image_url', 'image_url'];
@@ -334,19 +335,27 @@ class Listing extends Model
         $value = $this->{$prop};
         return (!preg_match("~^(?:f|ht)tps?://~i", $value)) ? "http://" . $value : $value;
     }
-
-    public function getTimeTableUrlAttribute()
+    
+    public function getTimetableUrlAttribute()
     {
-        if ($this->timetable) {
-            return $this->getUrl('timetable');
+        $folder = $this->folder;
+        $timetable = $this->timetable;
+        if (!empty($timetable)) {
+            return url("uploads/{$folder}/{$timetable}");
         }
-
-        if ($this->timetable_link) {
-            return $this->timetable_link;
-        }
-
-        return false;
+        return null;
     }
+
+    // public function getTimeTableUrlAttribute()
+    // {
+    //     if ($this->timetable) {
+    //         return $this->getUrl('timetable');
+    //     }
+    //     if ($this->timetable_link) {
+    //         return $this->timetable_link;
+    //     }
+    //     return false;
+    // }
 
     public function scopePendingverify($query)
     {
@@ -572,12 +581,13 @@ class Listing extends Model
                 $table->string('place_name', 255)->nullable()->after('folder');
                 $table->json('mentions')->nullable()->after('transformation_files');
                 $table->json('conversion')->nullable()->after('transformation_files');
+                $table->json('perks')->nullable()->after('conversion');
             });
             $messages[] = "$tableName country_code added.";
         }
-        if (!Schema::hasColumn($tableName, 'perks')) {
+        if (!Schema::hasColumn($tableName, 'packages')) {
             Schema::table($tableName, function (Blueprint $table) {
-                $table->json('perks')->nullable()->after('conversion');
+                $table->json('packages')->nullable()->after('perks');
             });
         }
         return $messages;
