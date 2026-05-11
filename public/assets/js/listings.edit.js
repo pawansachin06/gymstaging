@@ -62,58 +62,43 @@ document.addEventListener('alpine:init', function(){
             timetableLink: '',
 
             teams: [],
+            timings: [
+                {
+                    key: 1, title: 'Monday', enabled: true, is24Hours: false,
+                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                }, {
+                    key: 2, title: 'Tuesday', enabled: true, is24Hours: false,
+                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                }, {
+                    key: 3, title: 'Wednesday', enabled: true, is24Hours: false,
+                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                }, {
+                    key: 4, title: 'Thursday', enabled: true, is24Hours: false,
+                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                }, {
+                    key: 5, title: 'Friday', enabled: true, is24Hours: false,
+                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                }, {
+                    key: 6, title: 'Saturday', enabled: false, is24Hours: false,
+                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                }, {
+                    key: 0, title: 'Sunday', enabled: false, is24Hours: false,
+                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                },
+            ],
 
-            addTeam() {
-                if (self.teams.length >= 10) {
-                    toast.error('Max 10 team members allowed');
+            addTimingsHour(val) {
+                if (val.hours.length >= 10) {
+                    toast.error('Max 10 allowed');
                     return;
                 }
-                self.teams.push({
-                    id: Date.now(),
-                    job: '',
-                    name: '',
-                    keyword: '',
-                    suggestions: [],
-                    listing_id: null,
+                val.hours.push({ id: Date.now(), start: { hh:'', mm:'' }, end: { hh:'', mm:'' } });
+            },
+            removeTimingsHour(val, hour) {
+                var index = val.hours.findIndex(function(itemObj) {
+                    return itemObj.id === hour.id;
                 });
-                self.checkStep('teams');
-            },
-            removeTeam(val) {
-                var index = self.teams.findIndex(function(fileObj) {
-                    return fileObj.id === val.id;
-                });
-                if (index !== -1) {
-                    self.teams.splice(index, 1);
-                }
-            },
-            handleTeamFile(e, team) {
-                if (e.target.files.length) {
-                    var file = e.target.files[0];
-                    team.file = file; // the File object
-                    team.file_url = URL.createObjectURL(file);
-                    e.target.value = '';
-                }
-            },
-            handleTeamKeyword(team) {
-                team.open = true;
-                team.loading = true;
-                axios.get('', {
-                    params: {ajax: 1, q: team.keyword, action: 'teams'}
-                }).then(function(res) {
-                    team.suggestions = res.data.items;
-                }).catch(function(err) {
-                    toast.error(getErrorMessage(err));
-                }).finally(function() {
-                    team.loading = false;
-                });
-            },
-            handleTeamSuggestion(val, team) {
-                team.listing = val;
-                team.open = false;
-            },
-            removeTeamSuggestion(team) {
-                team.keyword = '';
-                team.listing = null;
+                val.hours.splice(index, 1);
             },
 
 
@@ -227,6 +212,7 @@ document.addEventListener('alpine:init', function(){
                             url: res.data.item.timetable_url,
                         };
                     }
+                    self.checkStep('hours');
                     self.checkStep('teams');
                     self.checkStep('media');
                     self.checkStep('about');
@@ -362,6 +348,60 @@ document.addEventListener('alpine:init', function(){
                     a.remove();
                 }
             },
+
+            addTeam() {
+                if (self.teams.length >= 10) {
+                    toast.error('Max 10 team members allowed');
+                    return;
+                }
+                self.teams.push({
+                    id: Date.now(),
+                    job: '',
+                    name: '',
+                    keyword: '',
+                    suggestions: [],
+                    listing_id: null,
+                });
+                self.checkStep('teams');
+            },
+            removeTeam(val) {
+                var index = self.teams.findIndex(function(fileObj) {
+                    return fileObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.teams.splice(index, 1);
+                }
+            },
+            handleTeamFile(e, team) {
+                if (e.target.files.length) {
+                    var file = e.target.files[0];
+                    team.file = file; // the File object
+                    team.file_url = URL.createObjectURL(file);
+                    e.target.value = '';
+                }
+            },
+            handleTeamKeyword(team) {
+                team.open = true;
+                team.loading = true;
+                axios.get('', {
+                    params: {ajax: 1, q: team.keyword, action: 'teams'}
+                }).then(function(res) {
+                    team.suggestions = res.data.items;
+                }).catch(function(err) {
+                    toast.error(getErrorMessage(err));
+                }).finally(function() {
+                    team.loading = false;
+                });
+            },
+            handleTeamSuggestion(val, team) {
+                team.listing = val;
+                team.open = false;
+            },
+            removeTeamSuggestion(team) {
+                team.keyword = '';
+                team.listing = null;
+            },
+
             handlePlaceChange() {
                 if (self.placeKeyword.length < 2) {
                     self.placeSuggestions = [];
@@ -732,6 +772,17 @@ document.addEventListener('alpine:init', function(){
                     } else {
                         self.completedSteps = self.completedSteps.filter(function(step) {
                             return step !== 'teams';
+                        });
+                    }
+                } else if (val === 'hours') {
+                    var hasEnabledDay = self.timings.some(function(day) {
+                        return day.enabled;
+                    });
+                    if (hasEnabledDay) {
+                        self.completedSteps.push('hours');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'hours';
                         });
                     }
                 }
