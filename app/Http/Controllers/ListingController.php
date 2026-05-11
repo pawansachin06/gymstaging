@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Listing;
+use App\Models\ListingTeam;
 use App\Models\ListingReview;
 use App\Models\Service;
 use App\Http\Requests\UpdateListingRequest;
@@ -76,7 +77,7 @@ class ListingController extends Controller
             abort(500, 'Listing not found');
         }
         if ($request->boolean('ajax')) {
-            if ($action === 'mentions') {
+            if (in_array($action, ['mentions', 'teams'])) {
                 $mentionsQuery = Listing::query()
                     ->with('service:id,slug,name')
                     ->where('taggable', 1)->where('published', 1)
@@ -114,9 +115,14 @@ class ListingController extends Controller
                         'country_code', 'service_id',
                     ]);
             }
+            $teams = $listing->teams()->with('listing:id,name,folder,profile_image')->get();
+            // foreach ($teams as $team) {
+            //     $team->folder = $listing->folder;
+            // }
             $conversionTypes = Listing::getConversionTypes();
             $listing->append(['timetable_url']);
             return resJson([
+                'teams' => $teams,
                 'item' => $listing,
                 'mentions' => $mentions,
                 'completed_steps' => $completedSteps,
@@ -228,6 +234,53 @@ class ListingController extends Controller
             $updates['transformation_files'] = $transformationFiles->values()->toArray();
             $listing->update($updates);
             DB::commit();
+
+            // teams start
+            $existingTeamIds = [];
+            $teams = $request->teams ?? [];
+            foreach ($teams as $index => $teamData) {
+                $team = null;
+                // existing team
+                if (!empty($teamData['id']) && is_numeric($teamData['id'])) {
+                    $team = ListingTeam::query()->where('listing_id', $listing->id)->find($teamData['id']);
+                }
+                // new team
+                if (!$team) {
+                    $team = new ListingTeam();
+                    $team->listing_id = $listing->id;
+                    $team->user_id = $listing->user_id;
+                }
+                $team->job = $teamData['job'];
+                $team->name = $teamData['name'];
+                // upload file
+                if ($request->hasFile("team_files.$index")) {
+                    // delete old
+                    if ($team->file_path) {
+                        $path = "{$folder}/{$team->file_path}";
+                        Storage::disk('public')->delete($path);
+                    }
+                    $file = $request->file("team_files.$index");
+                    $filename = site()->generateFilename($file, "{$listing->id}-team");
+                    Storage::disk('uploads')->putFileAs($folder, $file, $filename);
+                    $team->file_path = $filename;
+                }
+                $team->save();
+                $existingTeamIds[] = $team->id;
+            }
+            
+            $removedTeams = ListingTeam::query()
+                ->where('listing_id', $listing->id)
+                ->whereNotIn('id', $existingTeamIds)
+                ->get();
+            foreach ($removedTeams as $team) {
+                if ($team->file_path) {
+                    $path = "{$folder}/{$team->file_path}";
+                    Storage::disk('uploads')->delete($path);
+                }
+                $team->delete();
+            }
+            // teams end
+            
             foreach ($oldFiles as $oldFile) {
                 Storage::disk('uploads')->delete($oldFile);
             }

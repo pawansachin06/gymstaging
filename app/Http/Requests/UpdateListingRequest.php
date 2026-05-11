@@ -17,6 +17,7 @@ class UpdateListingRequest extends FormRequest
     {
         $mentions = [];
         $ctas = $this->input('ctas', []);
+        $teams = json_decode($this->teams ?? '[]', true);
         $perks = json_decode($this->input('perks', '[]'), true);
         $packages = json_decode($this->input('packages', '[]'), true);
         $conversion = json_decode($this->input('conversion', '[]'), true);
@@ -31,6 +32,7 @@ class UpdateListingRequest extends FormRequest
         $this->merge([
             'ctas' => $ctas,
             'perks' => $perks,
+            'teams' => $teams,
             'mentions' => $mentions,
             'packages' => $packages,
             'conversion' => $conversion,
@@ -67,6 +69,17 @@ class UpdateListingRequest extends FormRequest
             'conversion' => ['nullable', 'array'],
             'packages' => ['nullable', 'array'],
             'perks' => ['nullable', 'array'],
+
+            'teams' => ['nullable', 'array', 'max:10'],
+            'teams.*.id' => ['nullable'],
+            'teams.*.name' => ['required', 'string', 'max:100'],
+            'teams.*.job' => ['nullable', 'string', 'max:100'],
+            'teams.*.listing_id' => [
+                'nullable',
+                Rule::exists('listings', 'id')->where('published', 1),
+            ],
+            'team_files' => ['nullable', 'array'],
+            'team_files.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
 
             'about' => ['nullable', 'string'],
             

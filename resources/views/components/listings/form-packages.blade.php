@@ -13,35 +13,36 @@
             <span class="fw-semibold mb-2 d-inline-block">Packages</span>
             <p class="small">Add any services, plans, or packages you’d like to showcase.</p>
 
-            
             <div class="row gx-5 gy-3">
                 <div class="col-12 col-md-6">
                     <div id="item-packages">
                         <template x-for="package in packages" x-bind:key="package.id">
                             <div x-data="{open: false}" style="min-height:56px;"
-                                class="position-relative mb-3 px-3 py-2 d-flex align-items-center gap-2 border border-light rounded-3 shadow">
-                                <div x-on:click="open = !open" class="flex-grow-1 pe-3 cursor-pointer">
-                                    <div>
-                                        <p class="mb-0 fw-semibold" x-text="package.title"></p>
-                                        <p class="mb-2 fw-semibold small text-info" x-text="package.price"></p>
-                                        <div x-show="open">
-                                            <ol class="small">
-                                                <template x-for="packageBenefit in package.benefits" x-bind:key="packageBenefit.id">
-                                                    <li x-text="packageBenefit.title"></li>
-                                                </template>
-                                            </ol>
-                                            <p class="mb-0 small" x-text="package.action.value"></p>
+                                class="position-relative mb-3 z-1 border-gradient rounded-3 shadow">
+                                <div class="px-3 py-2 d-flex align-items-center gap-2 rounded-3 bg-white">
+                                    <div x-on:click="open = !open" class="flex-grow-1 pe-3 cursor-pointer">
+                                        <div>
+                                            <p class="mb-0 fw-semibold" x-text="package.title"></p>
+                                            <p class="mb-2 fw-semibold small text-info" x-text="package.price"></p>
+                                            <div x-show="open">
+                                                <ol class="small">
+                                                    <template x-for="packageBenefit in package.benefits" x-bind:key="packageBenefit.id">
+                                                        <li x-text="packageBenefit.title"></li>
+                                                    </template>
+                                                </ol>
+                                                <p class="mb-0 small" x-text="package.action.value"></p>
+                                            </div>
+                                        </div>
+                                        <div class="position-absolute top-0 end-0 px-2 py-3">
+                                            <x-icons.material.keyboard-arrow-up x-show="open" />
+                                            <x-icons.material.keyboard-arrow-down x-show="!open" />
                                         </div>
                                     </div>
-                                    <div class="position-absolute top-0 end-0 px-2 py-3">
-                                        <x-icons.material.keyboard-arrow-up x-show="open" />
-                                        <x-icons.material.keyboard-arrow-down x-show="!open" />
+                                    <div x-on:click="removePackage(package)" class="z-1 position-absolute top-0 start-100 translate-middle">
+                                        <button type="button" class="btn btn-sm px-0 py-0 rounded-pill border-2 text-secondary border-secondary bg-white">
+                                            <x-icons.material.close />
+                                        </button>
                                     </div>
-                                </div>
-                                <div x-on:click="removePackage(package)" class="z-1 position-absolute top-0 start-100 translate-middle">
-                                    <button type="button" class="btn btn-sm px-0 py-0 rounded-pill border-2 text-secondary border-secondary bg-white">
-                                        <x-icons.material.close />
-                                    </button>
                                 </div>
                             </div>
                         </template>

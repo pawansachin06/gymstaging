@@ -61,6 +61,62 @@ document.addEventListener('alpine:init', function(){
             timetableFile: null,
             timetableLink: '',
 
+            teams: [],
+
+            addTeam() {
+                if (self.teams.length >= 10) {
+                    toast.error('Max 10 team members allowed');
+                    return;
+                }
+                self.teams.push({
+                    id: Date.now(),
+                    job: '',
+                    name: '',
+                    keyword: '',
+                    suggestions: [],
+                    listing_id: null,
+                });
+                self.checkStep('teams');
+            },
+            removeTeam(val) {
+                var index = self.teams.findIndex(function(fileObj) {
+                    return fileObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.teams.splice(index, 1);
+                }
+            },
+            handleTeamFile(e, team) {
+                if (e.target.files.length) {
+                    var file = e.target.files[0];
+                    team.file = file; // the File object
+                    team.file_url = URL.createObjectURL(file);
+                    e.target.value = '';
+                }
+            },
+            handleTeamKeyword(team) {
+                team.open = true;
+                team.loading = true;
+                axios.get('', {
+                    params: {ajax: 1, q: team.keyword, action: 'teams'}
+                }).then(function(res) {
+                    team.suggestions = res.data.items;
+                }).catch(function(err) {
+                    toast.error(getErrorMessage(err));
+                }).finally(function() {
+                    team.loading = false;
+                });
+            },
+            handleTeamSuggestion(val, team) {
+                team.listing = val;
+                team.open = false;
+            },
+            removeTeamSuggestion(team) {
+                team.keyword = '';
+                team.listing = null;
+            },
+
+
             handleSubmit() {
                 var form = document.getElementById(formId);
                 var formData = new FormData(form);
@@ -86,11 +142,25 @@ document.addEventListener('alpine:init', function(){
                 formData.append('packages', JSON.stringify(self.packages));
                 formData.append('conversion', JSON.stringify(self.conversion));
 
-                if (self.timetableFile.file) {
+                if (self.timetableFile?.file) {
                     formData.append('timetable', self.timetableFile.file);
-                } else if (self.timetableFile.remove) {
+                } else if (self.timetableFile?.remove) {
                     formData.append('remove_timetable', '1');
                 }
+
+                var teams = self.teams.map(function(team, index) {
+                    if (team.file) {
+                        formData.append('team_files[' + index + ']', team.file);
+                    }
+                    return {
+                        id: team.id,
+                        job: team.job,
+                        name: team.name,
+                        has_file: !!team.file,
+                        listing_id: team.listing_id,
+                    };
+                });
+                formData.append('teams', JSON.stringify(teams));
 
                 self.updating = true;
                 self.messages = [];
@@ -139,6 +209,9 @@ document.addEventListener('alpine:init', function(){
                     self.mentions = res.data.mentions;
                     self.placeId = res.data.item.place_id;
                     self.placeName = res.data.item.place_name;
+                    if (res.data.teams) {
+                        self.teams = res.data.teams;
+                    }
                     if (res.data.item.perks) {
                         self.perks = res.data.item.perks;
                     }
@@ -154,6 +227,7 @@ document.addEventListener('alpine:init', function(){
                             url: res.data.item.timetable_url,
                         };
                     }
+                    self.checkStep('teams');
                     self.checkStep('media');
                     self.checkStep('about');
                     self.checkStep('packages');
@@ -650,6 +724,14 @@ document.addEventListener('alpine:init', function(){
                     } else {
                         self.completedSteps = self.completedSteps.filter(function(step) {
                             return step !== 'timetable';
+                        });
+                    }
+                } else if (val === 'teams') {
+                    if (!!self.teams.length) {
+                        self.completedSteps.push('teams');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'teams';
                         });
                     }
                 }
