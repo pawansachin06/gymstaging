@@ -39,7 +39,7 @@ class Listing extends Model
     protected $fillable = [
         'name', 'about', 'profile_image', 'cover_image', 'marker_image',
         'service_id', 'business_id', 'category_id', 'user_id',
-        'timetable', 'timetable_link', 'signup_url', 'country_code', 'timings',
+        'timetable', 'timetable_link', 'signup_url', 'country_code', 'timings', 'timings_note',
         'title', 'keyword', 'description', 'published', 'verified', 'coupon_id',
         'ctas', 'boosted', 'place_id', 'place_name', 'taggable',
         'folder', 'mentions', 'media_files', 'transformation_files',
@@ -57,6 +57,7 @@ class Listing extends Model
         'conversion' => 'array',
         'perks' => 'array',
         'packages' => 'array',
+        'timings_note' => 'string',
     ];
 
     protected $appends = ['permalink', 'profile_image_url', 'cover_image_url', 'image_url'];
@@ -582,12 +583,13 @@ class Listing extends Model
                 $table->json('mentions')->nullable()->after('transformation_files');
                 $table->json('conversion')->nullable()->after('transformation_files');
                 $table->json('perks')->nullable()->after('conversion');
+                $table->json('packages')->nullable()->after('perks');
             });
             $messages[] = "$tableName country_code added.";
         }
-        if (!Schema::hasColumn($tableName, 'packages')) {
+        if (!Schema::hasColumn($tableName, 'timings_note')) {
             Schema::table($tableName, function (Blueprint $table) {
-                $table->json('packages')->nullable()->after('perks');
+                $table->string('timings_note', 255)->nullable()->after('timings');
             });
         }
         return $messages;

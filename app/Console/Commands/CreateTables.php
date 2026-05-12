@@ -10,6 +10,7 @@ use App\Models\Membership;
 use App\Models\CheckoutSession;
 use App\Models\LocationBoostCity;
 use App\Models\LocationBoostPrice;
+use App\Models\ListingQualification;
 use App\Models\Payment;
 use Illuminate\Console\Command;
 
@@ -31,6 +32,7 @@ class CreateTables extends Command
         $msgs[] = CheckoutSession::createTable();
         $msgs[] = LocationBoostCity::createTable();
         $msgs[] = LocationBoostPrice::createTable();
+        $msgs[] = ListingQualification::createTable();
         $msgs[] = Payment::createTable();
 
         foreach ($msgs as $msg) {

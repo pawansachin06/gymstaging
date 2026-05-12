@@ -61,23 +61,28 @@ document.addEventListener('alpine:init', function(){
             timetableFile: null,
             timetableLink: '',
 
+            qualifications: [],
+            newQualification: {
+                id: 1, open: false, name: '', file: null, consent: false,
+            },
+
             teams: [],
             timings: [
                 {
                     key: 1, title: 'Monday', enabled: true, is24Hours: false,
-                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                    hours: [{ id: 1, start: { hh:'06', mm:'00' }, end: { hh:'22', mm:'00' } }],
                 }, {
                     key: 2, title: 'Tuesday', enabled: true, is24Hours: false,
-                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                    hours: [{ id: 1, start: { hh:'06', mm:'00' }, end: { hh:'22', mm:'00' } }],
                 }, {
                     key: 3, title: 'Wednesday', enabled: true, is24Hours: false,
-                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                    hours: [{ id: 1, start: { hh:'06', mm:'00' }, end: { hh:'22', mm:'00' } }],
                 }, {
                     key: 4, title: 'Thursday', enabled: true, is24Hours: false,
-                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                    hours: [{ id: 1, start: { hh:'06', mm:'00' }, end: { hh:'22', mm:'00' } }],
                 }, {
                     key: 5, title: 'Friday', enabled: true, is24Hours: false,
-                    hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
+                    hours: [{ id: 1, start: { hh:'06', mm:'00' }, end: { hh:'22', mm:'00' } }],
                 }, {
                     key: 6, title: 'Saturday', enabled: false, is24Hours: false,
                     hours: [{ id: 1, start: { hh:'', mm:'' }, end: { hh:'', mm:'' } }],
@@ -99,6 +104,52 @@ document.addEventListener('alpine:init', function(){
                     return itemObj.id === hour.id;
                 });
                 val.hours.splice(index, 1);
+            },
+
+            addQualification() {
+                if (self.qualifications.length >= 10) {
+                    toast.error('Max 10 allowed');
+                    return;
+                }
+                if (!self.newQualification.name.trim().length) {
+                    toast.error('Name is required');
+                    return;
+                }
+                if (!self.newQualification.file) {
+                    toast.error('Please add image or pdf file');
+                    return;
+                }
+                if (!self.newQualification.consent) {
+                    toast.error('Please accept consent');
+                    return;
+                }
+                self.qualifications.push({
+                    id: Date.now(),
+                    status: 'pending',
+                    name: self.newQualification.name,
+                    file: self.newQualification.file,
+                });
+                self.newQualification.name = '';
+                self.newQualification.file = null;
+                self.newQualification.open = false;
+                self.newQualification.consent = false;
+                self.checkStep('qualifications');
+            },
+            removeQualification(val) {
+                var index = self.qualifications.findIndex(function(itemObj) {
+                    return itemObj.id === val.id;
+                });
+                if (index !== -1) {
+                    self.qualifications.splice(index, 1);
+                }
+                self.checkStep('qualifications');
+            },
+            handleQualificationFile(e) {
+                if (e.target.files.length) {
+                    var file = e.target.files[0];
+                    self.newQualification.file = file;
+                    e.target.value = '';
+                }
             },
 
 
@@ -133,6 +184,8 @@ document.addEventListener('alpine:init', function(){
                     formData.append('remove_timetable', '1');
                 }
 
+                formData.append('timings', JSON.stringify(self.timings));
+
                 var teams = self.teams.map(function(team, index) {
                     if (team.file) {
                         formData.append('team_files[' + index + ']', team.file);
@@ -146,6 +199,19 @@ document.addEventListener('alpine:init', function(){
                     };
                 });
                 formData.append('teams', JSON.stringify(teams));
+
+                var qualifications = self.qualifications.map(function(item, index) {
+                    if (item.file && typeof item.file !== 'string') {
+                        formData.append('qualification_files[' + index + ']', item.file);
+                    }
+                    return {
+                        id: item.id,
+                        name: item.name,
+                        has_file: !!item.file,
+                        status: item.status == 'pending' ? item.status : null,
+                    };
+                });
+                formData.append('qualifications', JSON.stringify(qualifications));
 
                 self.updating = true;
                 self.messages = [];
@@ -176,6 +242,12 @@ document.addEventListener('alpine:init', function(){
                     for (let j = 0; j < fileInputs.length; j++) {
                         fileInputs[j].value = '';
                     }
+                    if (res.data.teams?.length) {
+                        self.teams = res.data.teams;
+                    }
+                    if (res.data.qualifications?.length) {
+                        self.qualifications = res.data.qualifications;
+                    }
                 }).catch(function(err) {
                     var msg = getErrorMessage(err);
                     self.message = msg;
@@ -197,8 +269,14 @@ document.addEventListener('alpine:init', function(){
                     if (res.data.teams) {
                         self.teams = res.data.teams;
                     }
+                    if (res.data.qualifications) {
+                        self.qualifications = res.data.qualifications;
+                    }
                     if (res.data.item.perks) {
                         self.perks = res.data.item.perks;
+                    }
+                    if (res.data.item.timings) {
+                        self.timings = res.data.item.timings;
                     }
                     if (res.data.item.conversion) {
                         self.conversion = res.data.item.conversion;
@@ -220,8 +298,10 @@ document.addEventListener('alpine:init', function(){
                     self.checkStep('location');
                     self.checkStep('timetable');
                     self.checkStep('conversion');
+                    self.checkStep('qualifications');
                     self.checkStep('contact-and-socials');
                 }).catch(function(err) {
+                    console.log(getErrorMessage(err), err);
                 });
             },
             isDuplicateFile(newFile, allFiles) {
@@ -759,7 +839,7 @@ document.addEventListener('alpine:init', function(){
                         });
                     }
                 } else if (val === 'timetable') {
-                    if (self.timetableLink?.length || self.timetableFile.name?.length) {
+                    if (self.timetableLink?.length || self.timetableFile?.name?.length) {
                         self.completedSteps.push('timetable');
                     } else {
                         self.completedSteps = self.completedSteps.filter(function(step) {
@@ -783,6 +863,14 @@ document.addEventListener('alpine:init', function(){
                     } else {
                         self.completedSteps = self.completedSteps.filter(function(step) {
                             return step !== 'hours';
+                        });
+                    }
+                } else if (val === 'qualifications') {
+                    if (self.qualifications.length > 0) {
+                        self.completedSteps.push('qualifications');
+                    } else {
+                        self.completedSteps = self.completedSteps.filter(function(step) {
+                            return step !== 'qualifications';
                         });
                     }
                 }

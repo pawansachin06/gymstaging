@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Listing;
 use App\Models\ListingTeam;
 use App\Models\ListingReview;
+use App\Models\ListingQualification;
 use App\Models\Service;
 use App\Http\Requests\UpdateListingRequest;
 use Illuminate\Http\Request;
@@ -116,6 +117,7 @@ class ListingController extends Controller
                     ]);
             }
             $teams = $listing->teams()->with('listing:id,name,folder,profile_image')->get();
+            $qualifications = $listing->qualifications()->with('listing:id,folder')->get();
             // foreach ($teams as $team) {
             //     $team->folder = $listing->folder;
             // }
@@ -125,6 +127,7 @@ class ListingController extends Controller
                 'teams' => $teams,
                 'item' => $listing,
                 'mentions' => $mentions,
+                'qualifications' => $qualifications,
                 'completed_steps' => $completedSteps,
                 'conversion_types' => $conversionTypes,
             ]);
@@ -257,7 +260,7 @@ class ListingController extends Controller
                     // delete old
                     if ($team->file_path) {
                         $path = "{$folder}/{$team->file_path}";
-                        Storage::disk('public')->delete($path);
+                        Storage::disk('uploads')->delete($path);
                     }
                     $file = $request->file("team_files.$index");
                     $filename = site()->generateFilename($file, "{$listing->id}-team");
@@ -280,11 +283,63 @@ class ListingController extends Controller
                 $team->delete();
             }
             // teams end
-            
+
+            // qualifications start
+            $qualifications = $request->qualifications ?? [];
+            $savedQualificationIds = [];
+            foreach ($qualifications as $index => $item) {
+                $qualification = null;
+                // existing
+                if (!empty($item['id']) && is_numeric($item['id'])) {
+                    $qualification = ListingQualification::query()
+                        ->where('listing_id', $listing->id)
+                        ->find($item['id']);
+                }
+                // new
+                if (!$qualification) {
+                    $qualification = new ListingQualification();
+                    $qualification->listing_id = $listing->id;
+                    $qualification->status = 'pending';
+                }
+                $qualification->name = $item['name'];
+                // upload
+                if ($request->hasFile("qualification_files.$index")) {
+                    // delete old
+                    if ($qualification->file) {
+                        $path = "{$folder}/{$qualification->file}";
+                        Storage::disk('uploads')->delete($path);
+                    }
+                    $file = $request->file("qualification_files.$index");
+                    $filename = site()->generateFilename($file, "{$listing->id}-qualification");
+                    Storage::disk('uploads')->putFileAs($folder, $file, $filename);
+                    $qualification->file = $filename;
+                }
+                $qualification->save();
+                $savedQualificationIds[] = $qualification->id;
+            }
+            $deletedItems = ListingQualification::query()
+                ->where('listing_id', $listing->id)
+                ->whereNotIn('id', $savedQualificationIds)
+                ->get();
+            foreach ($deletedItems as $item) {
+                if ($item->file) {
+                    $path = "{$folder}/{$item->file}";
+                    Storage::disk('uploads')->delete($path);
+                }
+                $item->delete();
+            }
+            // qualifications end
+
             foreach ($oldFiles as $oldFile) {
                 Storage::disk('uploads')->delete($oldFile);
             }
-            return resJson('Saved successfully');
+            $teams = $listing->teams()->with('listing:id,name,folder,profile_image')->get();
+            $qualifications = $listing->qualifications()->with('listing:id,folder')->get();
+            return resJson([
+                'teams' => $teams,
+                'qualifications' => $qualifications,
+                'message' => 'Saved successfully'
+            ]);
         } catch (Exception $e) {
             DB::rollBack();
             return resJson($e->getMessage(), 500, $e);

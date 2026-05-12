@@ -151,6 +151,9 @@
                     </div>
                 </div>
             </template>
+            <hr />
+            <p class="mb-0 small fw-semibold">Additional Notes (optional)</p>
+            <textarea name="timings_note" placeholder="e.g. Bank holidays, seasonal hours, last entry times, members-only access" class="form-control">{{ $item->timings_note }}</textarea>
         </div>
     </div>
 </div>

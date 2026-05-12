@@ -18,9 +18,11 @@ class UpdateListingRequest extends FormRequest
         $mentions = [];
         $ctas = $this->input('ctas', []);
         $teams = json_decode($this->teams ?? '[]', true);
+        $timings = json_decode($this->timings ?? '[]', true);
         $perks = json_decode($this->input('perks', '[]'), true);
         $packages = json_decode($this->input('packages', '[]'), true);
         $conversion = json_decode($this->input('conversion', '[]'), true);
+        $qualifications = json_decode($this->qualifications ?? '[]', true);
         foreach ($ctas as $key => $cta) {
             $value = trim($cta['value'] ?? '');
             $ctas[$key]['enabled'] = $value !== '' ? 1 : 0;
@@ -33,9 +35,11 @@ class UpdateListingRequest extends FormRequest
             'ctas' => $ctas,
             'perks' => $perks,
             'teams' => $teams,
+            'timings' => $timings,
             'mentions' => $mentions,
             'packages' => $packages,
             'conversion' => $conversion,
+            'qualifications' => $qualifications,
         ]);
     }
 
@@ -80,6 +84,15 @@ class UpdateListingRequest extends FormRequest
             ],
             'team_files' => ['nullable', 'array'],
             'team_files.*' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'timings' => ['nullable', 'array'],
+            'timings_note' => ['nullable', 'string', 'max:255'],
+
+            'qualifications' => ['nullable', 'array', 'max:10'],
+            'qualifications.*.id' => ['nullable'],
+            'qualifications.*.name' => ['required', 'string', 'max:200'],
+            'qualifications.*.status' => ['nullable', 'in:pending'],
+            'qualification_files' => ['nullable', 'array'],
+            'qualification_files.*' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp,pdf', 'max:5120'],
 
             'about' => ['nullable', 'string'],
             
@@ -144,6 +157,67 @@ class UpdateListingRequest extends FormRequest
                         $validator->errors()->add(
                             'packages',
                             'Package CTA must contain a valid URL.'
+                        );
+                    }
+                }
+            }
+
+            $timings = $this->input('timings', []);
+            foreach ($timings as $dayIndex => $day) {
+                $enabled = $day['enabled'] ?? false;
+                $is24Hours = $day['is24Hours'] ?? false;
+                $hours = $day['hours'] ?? [];
+                if (!$enabled) { // skip disabled day
+                    continue;
+                }
+                // if enabled and not 24h, must have slots
+                if (!$is24Hours && empty($hours)) {
+                    $validator->errors()->add(
+                        "timings.$dayIndex.hours",
+                        'At least one timing slot is required.'
+                    );
+                    continue;
+                }
+                if ($is24Hours) { // skip slot validation for 24 hours
+                    continue;
+                }
+                foreach ($hours as $slotIndex => $slot) {
+                    $startHh = $slot['start']['hh'] ?? '';
+                    $startMm = $slot['start']['mm'] ?? '';
+                    $endHh = $slot['end']['hh'] ?? '';
+                    $endMm = $slot['end']['mm'] ?? '';
+                    // required validation
+                    if (
+                        $startHh === '' || $startMm === '' ||
+                        $endHh === '' || $endMm === ''
+                    ) {
+                        $validator->errors()->add(
+                            "timings.$dayIndex.hours.$slotIndex",
+                            'Opening and closing times are required.'
+                        );
+                        continue;
+                    }
+                    // create proper time strings
+                    $start = sprintf('%02d:%02d', $startHh, $startMm);
+                    $end = sprintf('%02d:%02d', $endHh, $endMm);
+                    // validate HH/MM ranges
+                    if (
+                        $startHh < 0 || $startHh > 23 ||
+                        $endHh < 0 || $endHh > 23 ||
+                        $startMm < 0 || $startMm > 59 ||
+                        $endMm < 0 || $endMm > 59
+                    ) {
+                        $validator->errors()->add(
+                            "timings.$dayIndex.hours.$slotIndex",
+                            'Invalid time.'
+                        );
+                        continue;
+                    }
+                    // compare times
+                    if (strtotime($start) >= strtotime($end)) {
+                        $validator->errors()->add(
+                            "timings.$dayIndex.hours.$slotIndex",
+                            'Opening time must be before closing time.'
                         );
                     }
                 }

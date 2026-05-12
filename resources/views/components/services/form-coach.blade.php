@@ -174,6 +174,9 @@
             </div>
             <span class="fw-semibold mb-2 d-inline-block">Packages</span>
             <p class="small">Add any services, plans, or packages you’d like to showcase.</p>
+
+            <x-listings.form-packages-content :item="$item" />
+
         </div>
     </div>
 </div>
